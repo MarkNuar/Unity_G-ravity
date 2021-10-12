@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 namespace HSVPicker
 {
     public class ColorPicker : MonoBehaviour
@@ -205,7 +204,7 @@ namespace HSVPicker
             _color = color;
         }
 
-        public void SendChangedEvent()
+        private void SendChangedEvent()
         {
             onValueChanged.Invoke(CurrentColor);
             onHSVChanged.Invoke(_hue, _saturation, _brightness);
@@ -243,7 +242,6 @@ namespace HSVPicker
 
         public void AssignColor(Color color)
         {
-            Debug.Log("Assigning color");
             CurrentColor = color;
         }
 

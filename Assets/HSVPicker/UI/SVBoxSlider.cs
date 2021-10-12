@@ -12,8 +12,8 @@ namespace HSVPicker
         private BoxSlider slider;
         private RawImage image;
 
-        private int textureWidth = 130;
-        private int textureHeight = 130;
+        private int textureWidth = 128;
+        private int textureHeight = 128;
 
         private float lastH = -1;
         private bool listen = true;

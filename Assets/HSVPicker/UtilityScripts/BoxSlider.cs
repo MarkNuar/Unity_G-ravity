@@ -308,8 +308,6 @@ namespace HSVPicker
 
 				m_HandleRect.anchorMin = anchorMin;
 				m_HandleRect.anchorMax = anchorMax;
-
-				m_HandleRect.sizeDelta = new Vector2(15, 15);
 			}
 		}
 		
@@ -325,11 +323,9 @@ namespace HSVPicker
 				localCursor -= clickRect.rect.position;
 				
 				float val = Mathf.Clamp01((localCursor - m_Offset)[0] / clickRect.rect.size[0]);
-				//float val = Mathf.Clamp01((localCursor)[0] / clickRect.rect.size[0]);
 				normalizedValue = (val);
 
 				float valY = Mathf.Clamp01((localCursor - m_Offset)[1] / clickRect.rect.size[1]);
-				//float valY = Mathf.Clamp01((localCursor)[1] / clickRect.rect.size[1]);
 				normalizedValueY = ( valY);
 
 			}
@@ -350,10 +346,10 @@ namespace HSVPicker
 			m_Offset = Vector2.zero;
 			if (m_HandleContainerRect != null && RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.position, eventData.enterEventCamera))
 			{
-				// Vector2 localMousePos;
-				// if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.position, eventData.pressEventCamera, out localMousePos))
-				// 	m_Offset = localMousePos;
-				// m_Offset.y = -m_Offset.y;
+				Vector2 localMousePos;
+				if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.position, eventData.pressEventCamera, out localMousePos))
+					m_Offset = localMousePos;
+				m_Offset.y = -m_Offset.y;
 			}
 			else
 			{

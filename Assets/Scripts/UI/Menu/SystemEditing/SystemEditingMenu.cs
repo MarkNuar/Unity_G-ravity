@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using CBodies.Data;
 using HSVPicker;
@@ -18,14 +17,17 @@ namespace UI.Menu.SystemEditing
         public GameObject cBodyPrefab;
         public float height = 80;
         public float width = 60;
-        
-        private readonly List<CBodyAppearanceSettings> _cBodyAppearanceList = new List<CBodyAppearanceSettings>();
-        
-        private CBodyAppearanceSettings _currentCBodyAppearance;
-        private GameObject _currentUIListElement = null;
-        private int _currentUIListElementPos;
 
-        [SerializeField] private TMP_InputField inputField = null;
+        private SystemData _systemData = null;
+        //private readonly List<CBodyAppearanceSettings> _cBodyAppearanceList = new List<CBodyAppearanceSettings>();
+        
+        private int _currentCBodyIndex;
+        
+        private GameObject _currentUIListElement = null;
+
+        [SerializeField] private TMP_InputField inputSystemName = null;
+        
+        [SerializeField] private TMP_InputField inputCBodyName = null;
         [SerializeField] private ColorPicker colorPicker = null;
         [SerializeField] private Button cBodyColorButton = null;
 
@@ -36,35 +38,45 @@ namespace UI.Menu.SystemEditing
         private void Start()
         {
             // load saved CBodies
-            var systemSettings = GameManager.Instance.LoadSystem("test_system");
+            var systemSettings = GameManager.Instance.LoadSystem("Varudia");
             if (systemSettings != null)
             {
-                foreach (var a in systemSettings.Appearances)
+                _systemData = systemSettings;
+                inputSystemName.text = _systemData.systemName;
+                foreach (var cb in _systemData.GetCBodies())
                 {
-                    _currentCBodyAppearance = a;
+                    _currentCBodyIndex = cb.index;
                     CompleteCBodyCreation();
                 }
+            }
+            else
+            {
+                _systemData = new SystemData();
             }
             
             // sometimes the color handle is spawned in the wrong position
             colorHandle.anchoredPosition = new Vector2(0, 0);
         }
 
+        public void SetSystemName(string systemName)
+        {
+            _systemData.systemName = systemName;
+            Debug.Log(systemName);
+        }
+
         public void BeginCBodyCreation()
         {
-            if (_cBodyAppearanceList.Count < maxCBodyElements)
+            if (_systemData.GetCBodies().Count < maxCBodyElements)
             {
                 ShowPanel(1);
                 // todo: show planet in the canvas
-                _currentCBodyAppearance = new CBodyAppearanceSettings();
-                _currentCBodyAppearance.Init();
+                _currentCBodyIndex = _systemData.AddNewCBody();
+
+                inputCBodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
                 
-                inputField.text = _currentCBodyAppearance.Name;
-                
-                colorPicker.CurrentColor = (_currentCBodyAppearance.Color);
-                //colorPicker.ToggleColorSliders();
-                
-                SetButtonColor(cBodyColorButton, _currentCBodyAppearance.Color);
+                colorPicker.CurrentColor = (_systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
+
+                SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
             }
             else
             {
@@ -72,37 +84,35 @@ namespace UI.Menu.SystemEditing
             }
         }
 
-        private void BeginCBodyEditing(CBodyAppearanceSettings settings, GameObject currentListEl)
+        private void BeginCBodyEditing(CBodyData cBodyData, GameObject currentListEl)
         {
             _currentUIListElement = currentListEl;
-            _currentUIListElementPos = _cBodyAppearanceList.LastIndexOf(settings);
             ShowPanel(1);
 
-            _currentCBodyAppearance = settings;
+            _currentCBodyIndex = cBodyData.index;
+
+            inputCBodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
             
-            inputField.text = _currentCBodyAppearance.Name;
-            
-            colorPicker.CurrentColor = (_currentCBodyAppearance.Color);
-            //colorPicker.ToggleColorSliders();
-            
-            SetButtonColor(cBodyColorButton, _currentCBodyAppearance.Color);
+            colorPicker.CurrentColor = (_systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
+
+            SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
         }
 
         public void SetCBodyName(string cbName)
         {
-            _currentCBodyAppearance.Name = cbName;
+            _systemData.GetCBodies()[_currentCBodyIndex].name = cbName;
         }
 
         public void PickColor()
         {
-            //todo colorPicker.AssignColor(_currentCBodyAppearance.Color);
+            colorPicker.CurrentColor = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
             OverlayPanel(2,true);
         }
 
         private void SetCBodyColor(Color color)
         {
-            _currentCBodyAppearance.Color = color;
+            _systemData.GetCBodies()[_currentCBodyIndex].appearance.color = color;
             SetButtonColor(cBodyColorButton, color);
         }
 
@@ -115,7 +125,7 @@ namespace UI.Menu.SystemEditing
         public void CancelCBodyCreationOrEditing()
         {
             _currentUIListElement = null;
-            _currentCBodyAppearance = null;
+            _currentCBodyIndex = -1;
             ShowPanel(0);
         }
         
@@ -131,31 +141,31 @@ namespace UI.Menu.SystemEditing
                     elRect.localScale = Vector3.one;
                     elRect.sizeDelta = new Vector2(width, height);
                 }
-                _cBodyAppearanceList.Add(_currentCBodyAppearance);
-                var appearanceSettings = _cBodyAppearanceList[_cBodyAppearanceList.Count - 1];
-                listElement.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(() => RemoveElement(appearanceSettings, listElement));
-                listElement.transform.GetChild(3).GetComponent<Button>().onClick.AddListener(() => BeginCBodyEditing(appearanceSettings, listElement));
+                var currentCBody = _systemData.GetCBodies()[_currentCBodyIndex];
+                listElement.transform.GetChild(0).GetComponent<Button>().onClick.AddListener
+                    (() => RemoveElement(currentCBody, listElement));
+                listElement.transform.GetChild(3).GetComponent<Button>().onClick.AddListener
+                    (() => BeginCBodyEditing(currentCBody, listElement));
             }
             else
             {
                 listElement = _currentUIListElement;
-                _cBodyAppearanceList[_currentUIListElementPos] = _currentCBodyAppearance;
             }
 
-            listElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = _currentCBodyAppearance.Name;
-            listElement.transform.GetChild(2).GetComponent<Image>().color = _currentCBodyAppearance.Color;
+            listElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = _systemData.GetCBodies()[_currentCBodyIndex].name;
+            listElement.transform.GetChild(2).GetComponent<Image>().color = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
             
-            _currentCBodyAppearance = null;
+            _currentCBodyIndex = -1;
             _currentUIListElement = null;
-            _currentUIListElementPos = 0;
+            
             SetButtonColor(cBodyColorButton, Color.white);
             
             ShowPanel(0);
         }
 
-        private void RemoveElement(CBodyAppearanceSettings settings,GameObject element)
+        private void RemoveElement(CBodyData cBodyData, GameObject element)
         {
-            _cBodyAppearanceList.Remove(settings);
+            _systemData.RemoveCBodyAtIndex(cBodyData.index);
             Destroy(element);
         }
         
@@ -181,12 +191,7 @@ namespace UI.Menu.SystemEditing
         
         private void OnDestroy()
         {
-            var s = new CBodySystemSettings
-            {
-                SystemName = "test_system",
-                Appearances = _cBodyAppearanceList
-            };
-            GameManager.Instance.SaveSystem(s);
+            GameManager.Instance.SaveSystem(_systemData);
         }
     }
 }

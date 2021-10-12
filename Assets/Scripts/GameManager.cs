@@ -19,16 +19,17 @@ public class GameManager : MonoBehaviour
         QualitySettings.vSyncCount = 1;
     }
 
-    public void SaveSystem(CBodySystemSettings systemSettings)
+    public void SaveSystem(SystemData systemData)
     {
         if (storePath == null) return;
-        var path = storePath + systemSettings.SystemName;
+        var path = storePath + systemData.systemName;
         var writer = new StreamWriter(path, false);
-        writer.WriteLine(JsonUtility.ToJson(systemSettings));
+        var res = JsonUtility.ToJson(systemData);
+        writer.WriteLine(res);
         writer.Close();
     }
 
-    public CBodySystemSettings LoadSystem(string systemName)
+    public SystemData LoadSystem(string systemName)
     {
         var path = storePath + systemName;
         Debug.Log(path);
@@ -36,7 +37,7 @@ public class GameManager : MonoBehaviour
         {
             // There exists already a previous saved state
             var reader = new StreamReader(path);
-            var loadedSettings = JsonUtility.FromJson<CBodySystemSettings>(reader.ReadToEnd());
+            var loadedSettings = JsonUtility.FromJson<SystemData>(reader.ReadToEnd());
             if (loadedSettings != null)
             {
                 return loadedSettings;
