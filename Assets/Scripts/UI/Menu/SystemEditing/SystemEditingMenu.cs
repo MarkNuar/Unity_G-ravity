@@ -15,8 +15,6 @@ namespace UI.Menu.SystemEditing
         public RectTransform contentRef;
         // Prefab of ui list element
         public GameObject cBodyPrefab;
-        public float height = 80;
-        public float width = 60;
 
         private SystemData _systemData = null;
         //private readonly List<CBodyAppearanceSettings> _cBodyAppearanceList = new List<CBodyAppearanceSettings>();
@@ -131,7 +129,8 @@ namespace UI.Menu.SystemEditing
         
         public void CompleteCBodyCreation()
         {
-            GameObject listElement;
+            GameObject listElement = null;
+            CBodyUIElement listElementUI = null;
             if (_currentUIListElement == null)
             {
                 listElement = Instantiate(cBodyPrefab, transform, true);
@@ -139,26 +138,26 @@ namespace UI.Menu.SystemEditing
                 {
                     elRect.SetParent(contentRef);
                     elRect.localScale = Vector3.one;
-                    elRect.sizeDelta = new Vector2(width, height);
                 }
                 var currentCBody = _systemData.GetCBodies()[_currentCBodyIndex];
-                listElement.transform.GetChild(0).GetComponent<Button>().onClick.AddListener
+                listElementUI = listElement.GetComponent<CBodyUIElement>();
+                listElementUI.deleteButton.onClick.AddListener
                     (() => RemoveElement(currentCBody, listElement));
-                listElement.transform.GetChild(3).GetComponent<Button>().onClick.AddListener
+                listElementUI.editButton.onClick.AddListener
                     (() => BeginCBodyEditing(currentCBody, listElement));
             }
             else
             {
-                listElement = _currentUIListElement;
+                listElementUI = _currentUIListElement.GetComponent<CBodyUIElement>();
             }
 
-            listElement.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = _systemData.GetCBodies()[_currentCBodyIndex].name;
-            listElement.transform.GetChild(2).GetComponent<Image>().color = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
+            listElementUI.bodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
+            listElementUI.image.color = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
+            SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
+            
             
             _currentCBodyIndex = -1;
             _currentUIListElement = null;
-            
-            SetButtonColor(cBodyColorButton, Color.white);
             
             ShowPanel(0);
         }

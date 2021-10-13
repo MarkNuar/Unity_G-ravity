@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 97c4d769e993a6c4a9986905a328eed3
   - enabled: 1
-    path: Assets/Scenes/SystemCreation.unity
+    path: Assets/Scenes/SystemEditing.unity
     guid: 74f315263fde374489e9973d333fb3ad
   - enabled: 1
     path: Assets/Scenes/SystemExploration.unity

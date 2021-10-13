@@ -9,7 +9,6 @@ namespace CBodies.Data
     [Serializable]
     public class AppearanceData
     {
-        public string name;
         public Color color;
 
         public void Init()

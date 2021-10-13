@@ -27,7 +27,7 @@ namespace UI.Menu.MainMenu
 
         public void LoadSystemCreationScene()
         {
-            SceneManager.LoadScene("Scenes/SystemCreation", LoadSceneMode.Single);
+            SceneManager.LoadScene("Scenes/SystemEditing", LoadSceneMode.Single);
         }
     }
 }
