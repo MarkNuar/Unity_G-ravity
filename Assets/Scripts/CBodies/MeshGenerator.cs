@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace Planets
+namespace CBodies
 {
     public class MeshGenerator : MonoBehaviour
     {

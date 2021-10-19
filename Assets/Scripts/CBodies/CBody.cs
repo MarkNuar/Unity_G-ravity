@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace Planets
+namespace CBodies
 {
     [RequireComponent (typeof (Rigidbody))]
     public class CBody : GravityObject

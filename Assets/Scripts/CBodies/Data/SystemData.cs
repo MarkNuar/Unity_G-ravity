@@ -20,7 +20,8 @@ namespace CBodies.Data
                 index = cBodies.Count
             };
             c.appearance.Init();
-            c.physics.Init();
+            var pos = new Vector3(0 - cBodies.Count * 25, 0, 0);
+            c.physics.Init(pos);
             c.Init();
             cBodies.Add(c);
             return c.index;

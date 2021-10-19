@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Planets
+namespace CBodies
 {
     // Start from a d8, and obtain a sphere, by increasing the resolution
     public class IcoSphereGenerator

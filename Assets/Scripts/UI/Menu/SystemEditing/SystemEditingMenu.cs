@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CBodies;
 using CBodies.Data;
 using HSVPicker;
 using TMPro;
@@ -11,17 +12,11 @@ namespace UI.Menu.SystemEditing
     {
         // For switching panels
         public List<GameObject> panels;
-        // Reference to the scrollable container
-        public RectTransform contentRef;
-        // Prefab of ui list element
-        public GameObject cBodyPrefab;
 
         private SystemData _systemData = null;
         //private readonly List<CBodyAppearanceSettings> _cBodyAppearanceList = new List<CBodyAppearanceSettings>();
         
         private int _currentCBodyIndex;
-        
-        private GameObject _currentUIListElement = null;
 
         [SerializeField] private TMP_InputField inputSystemName = null;
         
@@ -36,7 +31,7 @@ namespace UI.Menu.SystemEditing
         private void Start()
         {
             // load saved CBodies
-            var systemSettings = GameManager.Instance.LoadSystem("Varudia");
+            var systemSettings = GameManager.Instance.LoadSystem("varudia");
             if (systemSettings != null)
             {
                 _systemData = systemSettings;
@@ -44,7 +39,7 @@ namespace UI.Menu.SystemEditing
                 foreach (var cb in _systemData.GetCBodies())
                 {
                     _currentCBodyIndex = cb.index;
-                    CompleteCBodyCreation();
+                    CreateCBody(true);
                 }
             }
             else
@@ -62,29 +57,32 @@ namespace UI.Menu.SystemEditing
             Debug.Log(systemName);
         }
 
-        public void BeginCBodyCreation()
+        public void CreateCBody(bool loaded)
         {
-            if (_systemData.GetCBodies().Count < maxCBodyElements)
+            if (_systemData.GetCBodies().Count < maxCBodyElements + 1)
             {
-                ShowPanel(1);
-                // todo: show planet in the canvas
-                _currentCBodyIndex = _systemData.AddNewCBody();
-
-                inputCBodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
-                
-                colorPicker.CurrentColor = (_systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
-
-                SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
+                if (!loaded)
+                {
+                    _currentCBodyIndex = _systemData.AddNewCBody();
+                }
+                // todo CBodyDispatcher.GeneratePlanet(_systemData.GetCBodyAtIndex(_currentCBodyIndex));
+                // substitute with correct code
+                // todo
+                GameObject tempCube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                tempCube.transform.position = _systemData.GetCBodyAtIndex(_currentCBodyIndex).physics.initialPosition;
+                tempCube.GetComponent<MeshRenderer>().material.color = _systemData.GetCBodyAtIndex(_currentCBodyIndex).appearance.color;
+                // todo
             }
             else
             {
-                Debug.Log("Too many elements");
+                Debug.LogError("Too many elements");
             }
+            
         }
-
-        private void BeginCBodyEditing(CBodyData cBodyData, GameObject currentListEl)
+        
+        public void BeginCBodyEditing(CBodyData cBodyData)
         {
-            _currentUIListElement = currentListEl;
+            // move camera close to the selected planet
             ShowPanel(1);
 
             _currentCBodyIndex = cBodyData.index;
@@ -101,7 +99,7 @@ namespace UI.Menu.SystemEditing
             _systemData.GetCBodies()[_currentCBodyIndex].name = cbName;
         }
 
-        public void PickColor()
+        public void BeginPickColor()
         {
             colorPicker.CurrentColor = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
@@ -120,45 +118,9 @@ namespace UI.Menu.SystemEditing
             OverlayPanel(2, false);
         }
         
-        public void CancelCBodyCreationOrEditing()
+        public void EndCBodyEditing()
         {
-            _currentUIListElement = null;
             _currentCBodyIndex = -1;
-            ShowPanel(0);
-        }
-        
-        public void CompleteCBodyCreation()
-        {
-            GameObject listElement = null;
-            CBodyUIElement listElementUI = null;
-            if (_currentUIListElement == null)
-            {
-                listElement = Instantiate(cBodyPrefab, transform, true);
-                if (listElement.transform is RectTransform elRect)
-                {
-                    elRect.SetParent(contentRef);
-                    elRect.localScale = Vector3.one;
-                }
-                var currentCBody = _systemData.GetCBodies()[_currentCBodyIndex];
-                listElementUI = listElement.GetComponent<CBodyUIElement>();
-                listElementUI.deleteButton.onClick.AddListener
-                    (() => RemoveElement(currentCBody, listElement));
-                listElementUI.editButton.onClick.AddListener
-                    (() => BeginCBodyEditing(currentCBody, listElement));
-            }
-            else
-            {
-                listElementUI = _currentUIListElement.GetComponent<CBodyUIElement>();
-            }
-
-            listElementUI.bodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
-            listElementUI.image.color = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
-            SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
-            
-            
-            _currentCBodyIndex = -1;
-            _currentUIListElement = null;
-            
             ShowPanel(0);
         }
 

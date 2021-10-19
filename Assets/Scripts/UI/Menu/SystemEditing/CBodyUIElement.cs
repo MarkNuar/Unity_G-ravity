@@ -6,9 +6,12 @@ namespace UI.Menu.SystemEditing
 {
     public class CBodyUIElement : MonoBehaviour
     {
-        public Image image;
+        //public Image image;
         public TextMeshProUGUI bodyName;
         public Button editButton;
         public Button deleteButton;
+        // todo:
+        // vector reference  
+        // mass slider reference
     }
 }
