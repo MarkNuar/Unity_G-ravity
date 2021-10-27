@@ -15,13 +15,14 @@ namespace UI.Menu.SystemEditing
         // For switching panels
         public List<GameObject> panels;
 
+        // logical view of the planets
         private SystemData _systemData = null;
+        // actual view of the planets
         private List<CBodyUIHelper> _helpers = new List<CBodyUIHelper>();
         
         private int _currentCBodyIndex;
 
         [SerializeField] private TMP_InputField inputSystemName = null;
-        
         [SerializeField] private TMP_InputField inputCBodyName = null;
         [SerializeField] private ColorPicker colorPicker = null;
         [SerializeField] private Button cBodyColorButton = null;
@@ -30,19 +31,19 @@ namespace UI.Menu.SystemEditing
         
         public int maxCBodyElements = 10;
 
-        [SerializeField] private CameraController _cameraController;
+        [SerializeField] private CameraController cameraController;
         
         private void Start()
         {
             // load saved CBodies
-            var systemSettings = GameManager.Instance.LoadSystem("varudia");
+            SystemData systemSettings = GameManager.Instance.LoadSystem("varudia");
             if (systemSettings != null)
             {
                 _systemData = systemSettings;
                 inputSystemName.text = _systemData.systemName;
-                foreach (var cb in _systemData.GetCBodies())
+                foreach (CBodyData cb in _systemData.cBodies)
                 {
-                    _currentCBodyIndex = cb.index;
+                    _currentCBodyIndex = _systemData.cBodies.IndexOf(cb);
                     CreateCBody(true);
                 }
             }
@@ -63,10 +64,10 @@ namespace UI.Menu.SystemEditing
 
         public void CreateCBody(bool loaded)
         {
-            if (_systemData.GetCBodies().Count < maxCBodyElements + 1)
+            if (_systemData.cBodies.Count < maxCBodyElements + 1)
             {
                 if (!loaded)
-                {
+                { 
                     _currentCBodyIndex = _systemData.AddNewCBody();
                 }
                 // todo CBodyDispatcher.GeneratePlanet(_systemData.GetCBodyAtIndex(_currentCBodyIndex));
@@ -79,9 +80,9 @@ namespace UI.Menu.SystemEditing
                 cBodyPreview.transform.position = new Vector3(_currentCBodyIndex * 10, 0, 0);
                 
                 CBodyUIHelper helper = cBodyPreview.GetComponent<CBodyUIHelper>();
-                helper.bodyName.text = _systemData.GetCBodyAtIndex(_currentCBodyIndex).name;
-                var curCBodyData = _systemData.GetCBodies()[_currentCBodyIndex];
-                helper.selectButton.onClick.AddListener(() => OpenContextualMenu(curCBodyData.index));
+                helper.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
+                CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
+                helper.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
                 Debug.Log(_currentCBodyIndex);
                 
                 _helpers.Add(helper);
@@ -96,6 +97,7 @@ namespace UI.Menu.SystemEditing
 
         private void OpenContextualMenu(int currentCBodyIndex)
         {
+            Debug.Log("Opening contextual menu of index: " + currentCBodyIndex);
             _currentCBodyIndex = currentCBodyIndex;
             SelectCurrentCBody();
             ShowPanel(1);
@@ -103,39 +105,39 @@ namespace UI.Menu.SystemEditing
 
         public void OpenEditMenu()
         {
-            // Todo: disable camera movement, and place it near the planet
-            Vector3 pos = _helpers[_currentCBodyIndex].CBodyUIElement.transform.position;
+            Vector3 pos = _helpers[_currentCBodyIndex].cBodyUIElement.transform.position;
+            cameraController.LockCamAt(pos);
             
-            // var main = Camera.main;
-            // if (main is { })
-            // {
-            //     var transform1 = main.transform;
-            //     transform1.position = new Vector3(pos.x,transform1.position.y, transform1.position.z);
-            // }
-            _cameraController.LockCamAt(pos);
-            
-            // end todo
-            Debug.Log("Begin editing cbody n. " + _currentCBodyIndex);
-
             DisableCBodyButtons();
             
-            inputCBodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
+            inputCBodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
             
-            colorPicker.CurrentColor = (_systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
+            colorPicker.CurrentColor = (_systemData.cBodies[_currentCBodyIndex].appearance.color);
+            
+            SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].appearance.color);
 
-            SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
-            
-            DeselectCurrentCBody();
+            HideCurrentCBodySelectionMesh();
 
             ShowPanel(2);
         }
 
         public void CloseEditMenu()
         {
-            _cameraController.FreeCam();
+            cameraController.FreeCam();
+
             EnableCBodyButtons();
             SelectCurrentCBody();
             ShowPanel(1);
+        }
+
+        public void CloseAllMenu()
+        {
+            // Debug.Log("Closing");
+            cameraController.FreeCam();
+
+            EnableCBodyButtons();
+            DeselectCurrentCBody();
+            ShowPanel(0);
         }
 
         public void DeleteCBody()
@@ -144,43 +146,39 @@ namespace UI.Menu.SystemEditing
             _currentCBodyIndex = -1;
             ShowPanel(0);
         }
-        
-        public void CloseContextualMenu()
-        {
-            DeselectCurrentCBody();
-            _currentCBodyIndex = -1;
-            ShowPanel(0);
-        }
 
         public void SetCBodyName(string cbName)
         {
-            _systemData.GetCBodies()[_currentCBodyIndex].name = cbName;
+            // store the new data 
+            _systemData.cBodies[_currentCBodyIndex].name = cbName;
+            // apply it visually
+            _helpers[_currentCBodyIndex].bodyName.text = cbName;
         }
 
         public void BeginPickColor()
         {
-            colorPicker.CurrentColor = _systemData.GetCBodies()[_currentCBodyIndex].appearance.color;
+            colorPicker.CurrentColor = _systemData.cBodies[_currentCBodyIndex].appearance.color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
-            OverlayPanel(2,true);
+            OverlayPanel(3,true);
         }
 
         private void SetCBodyColor(Color color)
         {
-            _systemData.GetCBodies()[_currentCBodyIndex].appearance.color = color;
+            _systemData.cBodies[_currentCBodyIndex].appearance.color = color;
             SetButtonColor(cBodyColorButton, color);
         }
 
         public void EndPickColor()
         {
             colorPicker.onValueChanged.RemoveListener(SetCBodyColor);
-            OverlayPanel(2, false);
+            OverlayPanel(3, false);
         }
 
         private void DestroyCurrentCBody()
         {
-            Destroy(_helpers[_currentCBodyIndex].CBodyUIElement);
+            Destroy(_helpers[_currentCBodyIndex].cBodyUIElement);
             _helpers.RemoveAt(_currentCBodyIndex);
-            _systemData.RemoveCBodyAtIndex(_currentCBodyIndex);
+            _systemData.cBodies.RemoveAt(_currentCBodyIndex);
         }
         
         private void ShowPanel(int position)
@@ -216,7 +214,18 @@ namespace UI.Menu.SystemEditing
 
         private void DeselectCurrentCBody()
         {
-            _helpers[_currentCBodyIndex].HideSelectionMesh();
+            if (_currentCBodyIndex != -1)
+            {
+                _helpers[_currentCBodyIndex].DeselectCBody();
+            }
+        }
+
+        private void HideCurrentCBodySelectionMesh()
+        {
+            if (_currentCBodyIndex != -1)
+            {
+                _helpers[_currentCBodyIndex].HideSelectionMesh();
+            }
         }
 
         private void DisableCBodyButtons()

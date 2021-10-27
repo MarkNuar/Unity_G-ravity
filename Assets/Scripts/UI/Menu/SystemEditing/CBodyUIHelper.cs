@@ -6,22 +6,11 @@ namespace UI.Menu.SystemEditing
 {
     public class CBodyUIHelper : MonoBehaviour
     {
-        //public Image image;
-        public GameObject CBodyUIElement;
+        public GameObject cBodyUIElement;
+        public Canvas canvas;
         public TextMeshProUGUI bodyName;
         public Button selectButton;
         [SerializeField] private GameObject selectionMesh;
-
-        // public void HighLightCBody()
-        // {
-        //     selectionMesh.GetComponent<MeshRenderer>().material.color = Color.white;
-        //     selectionMesh.SetActive(true);
-        // }
-        //
-        // public void StopHighLight()
-        // {
-        //     selectionMesh.SetActive(false);
-        // }
 
         public void SelectCBody()
         {
@@ -29,16 +18,33 @@ namespace UI.Menu.SystemEditing
             color.a = 0.2f;
             selectionMesh.GetComponent<MeshRenderer>().material.color = color;
             selectionMesh.SetActive(true);
+            canvas.sortingOrder = 0;
         }
-
-        // public void StopSelect()
-        // {
-        //     selectionMesh.SetActive(false);
-        // }
 
         public void HideSelectionMesh()
         {
+            //canvas.sortingOrder = 1;
             selectionMesh.SetActive(false);
         }
+
+        public void DeselectCBody()
+        {
+            canvas.sortingOrder = 1;
+            selectionMesh.SetActive(false);
+        }
+
+        // public void HideName()
+        // {
+        //     _hiddenName = true;
+        //     _storedName = bodyName.text;
+        //     bodyName.text = "";
+        // }
+        //
+        // public void ShowName()
+        // {
+        //     if (!_hiddenName) return;
+        //     _hiddenName = false;
+        //     bodyName.text = _storedName;
+        // }
     }
 }

@@ -12,7 +12,6 @@ namespace CBodies.Data
         public string name;
         public AppearanceData appearance = new AppearanceData();
         public PhysicsData physics = new PhysicsData();
-        public int index = -1;
 
         public void Init()
         {

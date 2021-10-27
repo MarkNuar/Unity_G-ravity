@@ -9,19 +9,20 @@ namespace UI.Menu.SystemEditing
         
         public float maxScrollSpeed = 25;
         public float panSensitivity = 0.3f;
+
         public float minZoom = 1.5f;
         public float maxZoom = 60;
-
-        public float basePower = 1.1f;
+        public float zoomSpeed = 1.1f;
 
         private bool _enableControl = true;
         private bool _restoringControl = false;
-        private float _controlledCameraZoomSpeed = -1;
         private Vector3 _cinematicTarget;
         private Vector3 _initialCameraPosition;
         private float _initialCameraZoom;
+        public float cinematicPrecision = 0.1f;
         
         private Vector3 _dragOrigin;
+
 
         private void Start()
         {
@@ -36,9 +37,10 @@ namespace UI.Menu.SystemEditing
             {
                 Vector3 posDifference =  _initialCameraPosition - cam.transform.position;
                 var zoomDifference = cam.orthographicSize - _initialCameraZoom;
-                if (posDifference.magnitude < 1 && Mathf.Abs(zoomDifference) < 1 || Input.GetMouseButton(0) || Input.mouseScrollDelta.y != 0)
+                if (posDifference.magnitude < cinematicPrecision && Mathf.Abs(zoomDifference) < cinematicPrecision 
+                    || Input.GetMouseButton(1) || Input.mouseScrollDelta.y != 0) // stop the zoom out if the user presses a button
                 {
-                    Debug.Log("giving back control");
+                    // Debug.Log("giving back control");
                     _restoringControl = false;
                 }
                 else
@@ -49,17 +51,17 @@ namespace UI.Menu.SystemEditing
             // CAMERA CONTROLLED
             if (_enableControl) 
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(1))
                 {
                     _dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
                 }
-    
-                if (Input.GetMouseButton(0))
+                
+                if (Input.GetMouseButton(1))
                 {
                     Vector3 difference = _dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
                     MoveCamera(difference);
                 }
-                
+
                 var scrollDelta = Input.mouseScrollDelta.y;
                 if (scrollDelta == 0) return;
                 {
@@ -72,7 +74,10 @@ namespace UI.Menu.SystemEditing
                 Vector3 posDifference =  _cinematicTarget - cam.transform.position;
                 var targetZoom = minZoom; // todo: target zoom should depend on selected planet size! 
                 var zoomDifference = cam.orthographicSize - targetZoom;
-                CinematicZoom(posDifference/5, zoomDifference/2);
+                if (posDifference.magnitude > cinematicPrecision || Mathf.Abs(zoomDifference) > cinematicPrecision)
+                {
+                    CinematicZoom(posDifference/5, zoomDifference/4);
+                }
             }
         }
 
@@ -94,7 +99,7 @@ namespace UI.Menu.SystemEditing
             Vector3 difference = (cam.ScreenToWorldPoint(Input.mousePosition) - cam.transform.position);
             
             var zoomExpFactor = Mathf.Clamp(
-                (Mathf.Pow(basePower, 
+                (Mathf.Pow(zoomSpeed, 
                     Mathf.Min((orthographicSize - minZoom)*10,  difference.magnitude)) - 1), 0, maxScrollSpeed);
             
             difference.Normalize();
@@ -111,13 +116,12 @@ namespace UI.Menu.SystemEditing
             cam.transform.position = position;
             
             var orthographicSize = cam.orthographicSize;
-            // orthographicSize -= difference.magnitude * _controlledCameraZoomSpeed;
-            var increment = zoomDifference * _controlledCameraZoomSpeed;
-            orthographicSize = Mathf.Lerp(orthographicSize, orthographicSize - increment,
+            orthographicSize = Mathf.Lerp(orthographicSize, orthographicSize - zoomDifference,
                 panSensitivity * Time.deltaTime);
             cam.orthographicSize = Mathf.Clamp(orthographicSize, minZoom, maxZoom);
         }
 
+        // todo
         private bool CanCameraMove()
         {
             // todo check if at least one planet is in camera view
@@ -134,15 +138,13 @@ namespace UI.Menu.SystemEditing
                 _initialCameraPosition = camTransform.position;
                 _initialCameraZoom = cam.orthographicSize;
             }
-
             Vector3 position = camTransform.position;
             _cinematicTarget = new Vector3(pos.x, pos.y, position.z);
-            var initialCameraDistance = (_cinematicTarget - position).magnitude;
-            _controlledCameraZoomSpeed = 0.5f * (_initialCameraZoom - minZoom) / (initialCameraDistance - 0);
         }
 
         public void FreeCam()
         {
+            if (_enableControl != false) return;
             _enableControl = true;
             _restoringControl = true;
         }
