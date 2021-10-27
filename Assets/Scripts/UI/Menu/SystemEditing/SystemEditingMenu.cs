@@ -10,11 +10,13 @@ namespace UI.Menu.SystemEditing
 {
     public class SystemEditingMenu : MonoBehaviour
     {
+        public GameObject cBodyPreviewPrefab; 
+        
         // For switching panels
         public List<GameObject> panels;
 
         private SystemData _systemData = null;
-        //private readonly List<CBodyAppearanceSettings> _cBodyAppearanceList = new List<CBodyAppearanceSettings>();
+        private List<CBodyUIHelper> _helpers = new List<CBodyUIHelper>();
         
         private int _currentCBodyIndex;
 
@@ -27,6 +29,8 @@ namespace UI.Menu.SystemEditing
         [SerializeField] private RectTransform colorHandle = null;
         
         public int maxCBodyElements = 10;
+
+        [SerializeField] private CameraController _cameraController;
         
         private void Start()
         {
@@ -68,30 +72,84 @@ namespace UI.Menu.SystemEditing
                 // todo CBodyDispatcher.GeneratePlanet(_systemData.GetCBodyAtIndex(_currentCBodyIndex));
                 // substitute with correct code
                 // todo
-                GameObject tempCube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                tempCube.transform.position = _systemData.GetCBodyAtIndex(_currentCBodyIndex).physics.initialPosition;
-                tempCube.GetComponent<MeshRenderer>().material.color = _systemData.GetCBodyAtIndex(_currentCBodyIndex).appearance.color;
-                // todo
+                // GameObject tempCube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                // tempCube.transform.position = _systemData.GetCBodyAtIndex(_currentCBodyIndex).physics.initialPosition;
+                // tempCube.GetComponent<MeshRenderer>().material.color = _systemData.GetCBodyAtIndex(_currentCBodyIndex).appearance.color;
+                GameObject cBodyPreview = Instantiate(cBodyPreviewPrefab);
+                cBodyPreview.transform.position = new Vector3(_currentCBodyIndex * 10, 0, 0);
+                
+                CBodyUIHelper helper = cBodyPreview.GetComponent<CBodyUIHelper>();
+                helper.bodyName.text = _systemData.GetCBodyAtIndex(_currentCBodyIndex).name;
+                var curCBodyData = _systemData.GetCBodies()[_currentCBodyIndex];
+                helper.selectButton.onClick.AddListener(() => OpenContextualMenu(curCBodyData.index));
+                Debug.Log(_currentCBodyIndex);
+                
+                _helpers.Add(helper);
+                
+                DeselectCurrentCBody();
             }
             else
             {
                 Debug.LogError("Too many elements");
             }
-            
         }
-        
-        public void BeginCBodyEditing(CBodyData cBodyData)
+
+        private void OpenContextualMenu(int currentCBodyIndex)
         {
-            // move camera close to the selected planet
+            _currentCBodyIndex = currentCBodyIndex;
+            SelectCurrentCBody();
             ShowPanel(1);
+        }
 
-            _currentCBodyIndex = cBodyData.index;
+        public void OpenEditMenu()
+        {
+            // Todo: disable camera movement, and place it near the planet
+            Vector3 pos = _helpers[_currentCBodyIndex].CBodyUIElement.transform.position;
+            
+            // var main = Camera.main;
+            // if (main is { })
+            // {
+            //     var transform1 = main.transform;
+            //     transform1.position = new Vector3(pos.x,transform1.position.y, transform1.position.z);
+            // }
+            _cameraController.LookAt(pos);
+            
+            // end todo
+            Debug.Log("Begin editing cbody n. " + _currentCBodyIndex);
 
+            DisableCBodyButtons();
+            
             inputCBodyName.text = _systemData.GetCBodies()[_currentCBodyIndex].name;
             
             colorPicker.CurrentColor = (_systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
 
             SetButtonColor(cBodyColorButton, _systemData.GetCBodies()[_currentCBodyIndex].appearance.color);
+            
+            DeselectCurrentCBody();
+
+            ShowPanel(2);
+        }
+
+        public void CloseEditMenu()
+        {
+            _cameraController.FreeCam();
+            EnableCBodyButtons();
+            SelectCurrentCBody();
+            ShowPanel(1);
+        }
+
+        public void DeleteCBody()
+        {
+            DestroyCurrentCBody();
+            _currentCBodyIndex = -1;
+            ShowPanel(0);
+        }
+        
+        public void CloseContextualMenu()
+        {
+            DeselectCurrentCBody();
+            _currentCBodyIndex = -1;
+            ShowPanel(0);
         }
 
         public void SetCBodyName(string cbName)
@@ -117,17 +175,12 @@ namespace UI.Menu.SystemEditing
             colorPicker.onValueChanged.RemoveListener(SetCBodyColor);
             OverlayPanel(2, false);
         }
-        
-        public void EndCBodyEditing()
-        {
-            _currentCBodyIndex = -1;
-            ShowPanel(0);
-        }
 
-        private void RemoveElement(CBodyData cBodyData, GameObject element)
+        private void DestroyCurrentCBody()
         {
-            _systemData.RemoveCBodyAtIndex(cBodyData.index);
-            Destroy(element);
+            Destroy(_helpers[_currentCBodyIndex].CBodyUIElement);
+            _helpers.RemoveAt(_currentCBodyIndex);
+            _systemData.RemoveCBodyAtIndex(_currentCBodyIndex);
         }
         
         private void ShowPanel(int position)
@@ -148,6 +201,38 @@ namespace UI.Menu.SystemEditing
             var buttonColors = button.colors;
             buttonColors.normalColor = color;
             button.colors = buttonColors;
+        }
+
+        private void SelectCurrentCBody()
+        {
+            for (var i = 0; i < _helpers.Count; i++)
+            {
+                if (i == _currentCBodyIndex)
+                    _helpers[i].SelectCBody();
+                else
+                    _helpers[i].HideSelectionMesh();
+            }
+        }
+
+        private void DeselectCurrentCBody()
+        {
+            _helpers[_currentCBodyIndex].HideSelectionMesh();
+        }
+
+        private void DisableCBodyButtons()
+        {
+            foreach (var help in _helpers)
+            {
+                help.selectButton.enabled = false;
+            }
+        }
+        
+        private void EnableCBodyButtons()
+        {
+            foreach (var help in _helpers)
+            {
+                help.selectButton.enabled = true;
+            }
         }
         
         private void OnDestroy()

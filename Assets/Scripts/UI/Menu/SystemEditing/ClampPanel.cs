@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace UI.Menu.SystemEditing
@@ -10,8 +9,9 @@ namespace UI.Menu.SystemEditing
         private void Update()
         {
             if (Camera.main is null) return;
-            Debug.Log(transform.position);
-            Vector3 position = Camera.main.WorldToScreenPoint(this.transform.position);
+            Vector3 position1 = this.transform.position;
+            Debug.Log(position1);
+            Vector3 position = Camera.main.WorldToScreenPoint(position1);
             Debug.Log(position);
             panelTransform.position = position;
         }
