@@ -31,6 +31,21 @@ namespace UI.Menu.SystemEditing
 
         private void Update()
         {
+            // BRINGS BACK CAMERA TO ORIGINAL POSITION
+            if (_restoringControl)
+            {
+                Vector3 posDifference =  _initialCameraPosition - cam.transform.position;
+                var zoomDifference = cam.orthographicSize - _initialCameraZoom;
+                if (posDifference.magnitude < 1 && Mathf.Abs(zoomDifference) < 1 || Input.GetMouseButton(0) || Input.mouseScrollDelta.y != 0)
+                {
+                    Debug.Log("giving back control");
+                    _restoringControl = false;
+                }
+                else
+                {
+                    CinematicZoom(posDifference/5, zoomDifference/2);
+                }
+            }
             // CAMERA CONTROLLED
             if (_enableControl) 
             {
@@ -51,41 +66,19 @@ namespace UI.Menu.SystemEditing
                     ZoomCamera(scrollDelta);
                 }
             }
-            // CAMERA NOT CONTROLLED
-            else switch (_restoringControl)
+            // CAMERA NOT CONTROLLED, zooming into a planet
+            else
             {
-                // ZOOMING INTO A PLANET
-                case false:
-                {
-                    Vector3 posDifference =  _cinematicTarget - cam.transform.position;
-                    var zoomDifference = cam.orthographicSize - minZoom;
-                    CinematicZoom(posDifference/5, zoomDifference/2);
-                    break;
-                }
-                // LEAVING A PLANET
-                case true:
-                {
-                    Vector3 posDifference =  _initialCameraPosition - cam.transform.position;
-                    var zoomDifference = cam.orthographicSize - _initialCameraZoom;
-                    if (posDifference.magnitude < 1 && Mathf.Abs(zoomDifference) < 1)
-                    {
-                        Debug.Log("giving back control");
-                        _enableControl = true;
-                        _restoringControl = false;
-                    }
-                    else
-                    {
-                        CinematicZoom(posDifference/5, zoomDifference/2);
-                    }
-                    break;
-                }
-                   
+                Vector3 posDifference =  _cinematicTarget - cam.transform.position;
+                var targetZoom = minZoom; // todo: target zoom should depend on selected planet size! 
+                var zoomDifference = cam.orthographicSize - targetZoom;
+                CinematicZoom(posDifference/5, zoomDifference/2);
             }
-            // Debug.Log("ENABLING " +_enableControl + ", RESTORING " + _restoringControl);
         }
 
         private void MoveCamera(Vector3 difference)
         {
+            if (!CanCameraMove()) return;
             Vector3 position = cam.transform.position;
             position = Vector3.Lerp(position, position + difference,
                 panSensitivity * Time.deltaTime);
@@ -125,7 +118,13 @@ namespace UI.Menu.SystemEditing
             cam.orthographicSize = Mathf.Clamp(orthographicSize, minZoom, maxZoom);
         }
 
-        public void LookAt(Vector3 pos)
+        private bool CanCameraMove()
+        {
+            // todo check if at least one planet is in camera view
+            return true;
+        }
+        
+        public void LockCamAt(Vector3 pos)
         {
             _enableControl = false;
             _restoringControl = false; 
@@ -135,14 +134,16 @@ namespace UI.Menu.SystemEditing
                 _initialCameraPosition = camTransform.position;
                 _initialCameraZoom = cam.orthographicSize;
             }
-            _cinematicTarget = new Vector3(pos.x, pos.y, camTransform.position.z);
-            var initialCameraDistance = (_cinematicTarget - camTransform.position).magnitude;
+
+            Vector3 position = camTransform.position;
+            _cinematicTarget = new Vector3(pos.x, pos.y, position.z);
+            var initialCameraDistance = (_cinematicTarget - position).magnitude;
             _controlledCameraZoomSpeed = 0.5f * (_initialCameraZoom - minZoom) / (initialCameraDistance - 0);
         }
 
         public void FreeCam()
         {
-            // _enableControl = true;
+            _enableControl = true;
             _restoringControl = true;
         }
         

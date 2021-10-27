@@ -112,7 +112,7 @@ namespace UI.Menu.SystemEditing
             //     var transform1 = main.transform;
             //     transform1.position = new Vector3(pos.x,transform1.position.y, transform1.position.z);
             // }
-            _cameraController.LookAt(pos);
+            _cameraController.LockCamAt(pos);
             
             // end todo
             Debug.Log("Begin editing cbody n. " + _currentCBodyIndex);
