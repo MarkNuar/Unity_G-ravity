@@ -18,7 +18,7 @@ namespace UI.Menu.SystemEditing
         // logical view of the planets
         private SystemData _systemData = null;
         // actual view of the planets
-        private readonly List<CBodyUIHelper> _helpers = new List<CBodyUIHelper>();
+        private readonly List<CBodyPreview> _cBodyPreviews = new List<CBodyPreview>();
         
         // Index of the currently selected cbody
         private int _currentCBodyIndex;
@@ -66,7 +66,7 @@ namespace UI.Menu.SystemEditing
 
         public void CreateCBody(bool loaded)
         {
-            if (_helpers.Count < maxCBodyElements)
+            if (_cBodyPreviews.Count < maxCBodyElements)
             {
                 if (!loaded)
                 { 
@@ -85,13 +85,13 @@ namespace UI.Menu.SystemEditing
                 GameObject cBodyPreview = Instantiate(cBodyPreviewPrefab);
                 cBodyPreview.transform.position = new Vector3(_currentCBodyIndex * 10, 0, 0);
                 
-                CBodyUIHelper helper = cBodyPreview.GetComponent<CBodyUIHelper>();
-                helper.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
+                CBodyPreview preview = cBodyPreview.GetComponent<CBodyPreview>();
+                preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
                 CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
-                helper.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
+                preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
                 Debug.Log(_currentCBodyIndex);
                 
-                _helpers.Add(helper);
+                _cBodyPreviews.Add(preview);
                 
                 // DeselectCurrentCBody();
                 if (!loaded)
@@ -118,7 +118,7 @@ namespace UI.Menu.SystemEditing
 
         public void OpenEditMenu()
         {
-            Vector3 pos = _helpers[_currentCBodyIndex].cBodyUIElement.transform.position;
+            Vector3 pos = _cBodyPreviews[_currentCBodyIndex].gameObject.transform.position;
             cameraController.LockCamAt(pos);
             
             DisableCBodyButtons();
@@ -153,7 +153,7 @@ namespace UI.Menu.SystemEditing
             // store the new data 
             _systemData.cBodies[_currentCBodyIndex].name = cbName;
             // apply it visually
-            _helpers[_currentCBodyIndex].bodyName.text = cbName;
+            _cBodyPreviews[_currentCBodyIndex].bodyName.text = cbName;
         }
 
         public void BeginPickColor()
@@ -177,8 +177,8 @@ namespace UI.Menu.SystemEditing
 
         private void DestroyCurrentCBody()
         {
-            Destroy(_helpers[_currentCBodyIndex].cBodyUIElement);
-            _helpers.RemoveAt(_currentCBodyIndex);
+            Destroy(_cBodyPreviews[_currentCBodyIndex].gameObject);
+            _cBodyPreviews.RemoveAt(_currentCBodyIndex);
             _systemData.cBodies.RemoveAt(_currentCBodyIndex);
         }
         
@@ -204,12 +204,12 @@ namespace UI.Menu.SystemEditing
 
         private void SelectCurrentCBody()
         {
-            for (var i = 0; i < _helpers.Count; i++)
+            for (var i = 0; i < _cBodyPreviews.Count; i++)
             {
                 if (i == _currentCBodyIndex)
-                    _helpers[i].SelectCBody();
+                    _cBodyPreviews[i].SelectCBody();
                 else
-                    _helpers[i].DeselectCBody();
+                    _cBodyPreviews[i].DeselectCBody();
             }
         }
 
@@ -217,7 +217,7 @@ namespace UI.Menu.SystemEditing
         {
             if (_currentCBodyIndex != -1)
             {
-                _helpers[_currentCBodyIndex].DeselectCBody();
+                _cBodyPreviews[_currentCBodyIndex].DeselectCBody();
             }
         }
 
@@ -225,13 +225,13 @@ namespace UI.Menu.SystemEditing
         {
             if (_currentCBodyIndex != -1)
             {
-                _helpers[_currentCBodyIndex].HideSelectionMesh();
+                _cBodyPreviews[_currentCBodyIndex].HideSelectionMesh();
             }
         }
 
         private void DisableCBodyButtons()
         {
-            foreach (CBodyUIHelper help in _helpers)
+            foreach (CBodyPreview help in _cBodyPreviews)
             {
                 help.selectButton.enabled = false;
             }
@@ -239,7 +239,7 @@ namespace UI.Menu.SystemEditing
         
         private void EnableCBodyButtons()
         {
-            foreach (CBodyUIHelper help in _helpers)
+            foreach (CBodyPreview help in _cBodyPreviews)
             {
                 help.selectButton.enabled = true;
             }

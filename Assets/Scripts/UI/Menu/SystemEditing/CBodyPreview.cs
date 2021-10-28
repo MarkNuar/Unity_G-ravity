@@ -1,17 +1,20 @@
+using CBodies;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Menu.SystemEditing
 {
-    public class CBodyUIHelper : MonoBehaviour
+    public class CBodyPreview : MonoBehaviour
     {
-        public GameObject cBodyUIElement;
         public Canvas canvas;
         public TextMeshProUGUI bodyName;
         public Button selectButton;
+        
         [SerializeField] private GameObject selectionMesh;
 
+        private CBody cBody;
+        
         public void SelectCBody()
         {
             Color color = Color.cyan;
@@ -33,19 +36,9 @@ namespace UI.Menu.SystemEditing
             canvas.sortingOrder = 1;
             selectionMesh.SetActive(false);
         }
+        
+        
+        
 
-        // public void HideName()
-        // {
-        //     _hiddenName = true;
-        //     _storedName = bodyName.text;
-        //     bodyName.text = "";
-        // }
-        //
-        // public void ShowName()
-        // {
-        //     if (!_hiddenName) return;
-        //     _hiddenName = false;
-        //     bodyName.text = _storedName;
-        // }
     }
 }

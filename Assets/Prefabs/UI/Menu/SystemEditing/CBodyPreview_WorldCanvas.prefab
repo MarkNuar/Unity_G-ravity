@@ -483,7 +483,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6aa92dd080dbe4fbf85e3857af0b39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cBodyUIElement: {fileID: 4932631801748688305}
   canvas: {fileID: 4932631801321231705}
   bodyName: {fileID: 235423033273759405}
   selectButton: {fileID: 2508042552702048869}

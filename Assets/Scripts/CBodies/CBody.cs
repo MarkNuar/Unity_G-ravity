@@ -15,7 +15,7 @@ namespace CBodies
         public Vector3 Velocity { get; private set; }
         public float Mass { get; private set; }
         private Rigidbody _rb;
-
+        
         private void Awake () {
             _rb = GetComponent<Rigidbody> ();
         }
