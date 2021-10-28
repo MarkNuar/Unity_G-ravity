@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 namespace HSVPicker
 {
     public class ColorPicker : MonoBehaviour
@@ -37,7 +38,7 @@ namespace HSVPicker
             }
         }
 
-        private void OnEnable()
+        public void OnEnable()
         {
             SendChangedEvent();
         }
@@ -239,12 +240,7 @@ namespace HSVPicker
                     break;
             }
         }
-
-        public void AssignColor(Color color)
-        {
-            CurrentColor = color;
-        }
-
+        
         public float GetValue(ColorValues type)
         {
             switch (type)

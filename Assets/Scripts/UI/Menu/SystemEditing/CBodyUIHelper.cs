@@ -18,17 +18,18 @@ namespace UI.Menu.SystemEditing
             color.a = 0.2f;
             selectionMesh.GetComponent<MeshRenderer>().material.color = color;
             selectionMesh.SetActive(true);
+            // Make it not clickable
             canvas.sortingOrder = 0;
         }
 
         public void HideSelectionMesh()
         {
-            //canvas.sortingOrder = 1;
             selectionMesh.SetActive(false);
         }
 
         public void DeselectCBody()
         {
+            // Make it clickable
             canvas.sortingOrder = 1;
             selectionMesh.SetActive(false);
         }

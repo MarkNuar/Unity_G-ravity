@@ -18,10 +18,13 @@ namespace UI.Menu.SystemEditing
         // logical view of the planets
         private SystemData _systemData = null;
         // actual view of the planets
-        private List<CBodyUIHelper> _helpers = new List<CBodyUIHelper>();
+        private readonly List<CBodyUIHelper> _helpers = new List<CBodyUIHelper>();
         
+        // Index of the currently selected cbody
         private int _currentCBodyIndex;
 
+        public int maxCBodyElements = 10;
+        
         [SerializeField] private TMP_InputField inputSystemName = null;
         [SerializeField] private TMP_InputField inputCBodyName = null;
         [SerializeField] private ColorPicker colorPicker = null;
@@ -29,8 +32,6 @@ namespace UI.Menu.SystemEditing
 
         [SerializeField] private RectTransform colorHandle = null;
         
-        public int maxCBodyElements = 10;
-
         [SerializeField] private CameraController cameraController;
         
         private void Start()
@@ -40,6 +41,7 @@ namespace UI.Menu.SystemEditing
             if (systemSettings != null)
             {
                 _systemData = systemSettings;
+                Debug.Log(_systemData.cBodies.Count);
                 inputSystemName.text = _systemData.systemName;
                 foreach (CBodyData cb in _systemData.cBodies)
                 {
@@ -64,11 +66,15 @@ namespace UI.Menu.SystemEditing
 
         public void CreateCBody(bool loaded)
         {
-            if (_systemData.cBodies.Count < maxCBodyElements + 1)
+            if (_helpers.Count < maxCBodyElements)
             {
                 if (!loaded)
                 { 
                     _currentCBodyIndex = _systemData.AddNewCBody();
+                }
+                else
+                {
+                    // cBody index set by the deserializer
                 }
                 // todo CBodyDispatcher.GeneratePlanet(_systemData.GetCBodyAtIndex(_currentCBodyIndex));
                 // substitute with correct code
@@ -87,14 +93,21 @@ namespace UI.Menu.SystemEditing
                 
                 _helpers.Add(helper);
                 
-                DeselectCurrentCBody();
+                // DeselectCurrentCBody();
+                if (!loaded)
+                {
+                    SelectCurrentCBody();
+                    OpenEditMenu();
+                }
             }
             else
             {
+                // todo make a visual message
                 Debug.LogError("Too many elements");
             }
         }
 
+        // This method sets the current cBody index
         private void OpenContextualMenu(int currentCBodyIndex)
         {
             Debug.Log("Opening contextual menu of index: " + currentCBodyIndex);
@@ -111,28 +124,16 @@ namespace UI.Menu.SystemEditing
             DisableCBodyButtons();
             
             inputCBodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-            
-            colorPicker.CurrentColor = (_systemData.cBodies[_currentCBodyIndex].appearance.color);
-            
+            //colorPicker.CurrentColor = (_systemData.cBodies[_currentCBodyIndex].appearance.color);
             SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].appearance.color);
 
             HideCurrentCBodySelectionMesh();
 
             ShowPanel(2);
         }
-
-        public void CloseEditMenu()
-        {
-            cameraController.FreeCam();
-
-            EnableCBodyButtons();
-            SelectCurrentCBody();
-            ShowPanel(1);
-        }
-
+        
         public void CloseAllMenu()
         {
-            // Debug.Log("Closing");
             cameraController.FreeCam();
 
             EnableCBodyButtons();
@@ -157,9 +158,9 @@ namespace UI.Menu.SystemEditing
 
         public void BeginPickColor()
         {
+            OverlayPanel(3,true);
             colorPicker.CurrentColor = _systemData.cBodies[_currentCBodyIndex].appearance.color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
-            OverlayPanel(3,true);
         }
 
         private void SetCBodyColor(Color color)
@@ -194,9 +195,9 @@ namespace UI.Menu.SystemEditing
             panels[position].SetActive(overlay);
         }
 
-        private void SetButtonColor(Button button, Color color)
+        private static void SetButtonColor(Button button, Color color)
         {
-            var buttonColors = button.colors;
+            ColorBlock buttonColors = button.colors;
             buttonColors.normalColor = color;
             button.colors = buttonColors;
         }
@@ -208,7 +209,7 @@ namespace UI.Menu.SystemEditing
                 if (i == _currentCBodyIndex)
                     _helpers[i].SelectCBody();
                 else
-                    _helpers[i].HideSelectionMesh();
+                    _helpers[i].DeselectCBody();
             }
         }
 
@@ -230,7 +231,7 @@ namespace UI.Menu.SystemEditing
 
         private void DisableCBodyButtons()
         {
-            foreach (var help in _helpers)
+            foreach (CBodyUIHelper help in _helpers)
             {
                 help.selectButton.enabled = false;
             }
@@ -238,7 +239,7 @@ namespace UI.Menu.SystemEditing
         
         private void EnableCBodyButtons()
         {
-            foreach (var help in _helpers)
+            foreach (CBodyUIHelper help in _helpers)
             {
                 help.selectButton.enabled = true;
             }
