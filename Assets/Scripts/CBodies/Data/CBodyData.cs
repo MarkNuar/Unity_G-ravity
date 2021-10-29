@@ -18,5 +18,17 @@ namespace CBodies.Data
             name = BaseNames[Random.Range(0, BaseNames.Length)];
             //
         }
+
+        public void Subscribe(CBody observer)
+        {
+            appearance.Subscribe(observer);
+            physics.Subscribe(observer);
+        }
+
+        public void Unsubscribe()
+        {
+            appearance.Unsubscribe();
+            physics.Unsubscribe();
+        }
     }
 }

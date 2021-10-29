@@ -16,6 +16,7 @@ namespace UI.Menu.SystemEditing
 
         private bool _enableControl = true;
         private bool _restoringControl = false;
+        private float _cinematicMinZoo = 0;
         private Vector3 _cinematicTarget;
         private Vector3 _initialCameraPosition;
         private float _initialCameraZoom;
@@ -23,7 +24,7 @@ namespace UI.Menu.SystemEditing
         
         private Vector3 _dragOrigin;
 
-
+        public bool isDragging = false;
         private void Start()
         {
             _initialCameraPosition = cam.transform.position;
@@ -38,7 +39,7 @@ namespace UI.Menu.SystemEditing
                 Vector3 posDifference =  _initialCameraPosition - cam.transform.position;
                 var zoomDifference = cam.orthographicSize - _initialCameraZoom;
                 if (posDifference.magnitude < cinematicPrecision && Mathf.Abs(zoomDifference) < cinematicPrecision 
-                    || Input.GetMouseButton(1) || Input.mouseScrollDelta.y != 0) // stop the zoom out if the user presses a button
+                    || Input.GetMouseButton(0) || Input.mouseScrollDelta.y != 0) // stop the zoom out if the user presses a button
                 {
                     // Debug.Log("giving back control");
                     _restoringControl = false;
@@ -51,15 +52,24 @@ namespace UI.Menu.SystemEditing
             // CAMERA CONTROLLED
             if (_enableControl) 
             {
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(0))
                 {
                     _dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
                 }
                 
-                if (Input.GetMouseButton(1))
+                if (Input.GetMouseButton(0))
                 {
                     Vector3 difference = _dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
+                    if (difference.magnitude > 10*Mathf.Epsilon)
+                    {
+                        isDragging = true;
+                    }
                     MoveCamera(difference);
+                }
+
+                if (Input.GetMouseButtonUp(0) && isDragging)
+                {
+                    isDragging = false;
                 }
 
                 var scrollDelta = Input.mouseScrollDelta.y;
@@ -72,8 +82,7 @@ namespace UI.Menu.SystemEditing
             else
             {
                 Vector3 posDifference =  _cinematicTarget - cam.transform.position;
-                var targetZoom = minZoom; // todo: target zoom should depend on selected planet size! 
-                var zoomDifference = cam.orthographicSize - targetZoom;
+                var zoomDifference = cam.orthographicSize - _cinematicMinZoo;
                 if (posDifference.magnitude > cinematicPrecision || Mathf.Abs(zoomDifference) > cinematicPrecision)
                 {
                     CinematicZoom(posDifference/5, zoomDifference/4);
@@ -128,8 +137,9 @@ namespace UI.Menu.SystemEditing
             return true;
         }
         
-        public void LockCamAt(Vector3 pos)
+        public void LockCamAt(Vector3 pos, float cBodyRadius, bool fromCreation)
         {
+            _cinematicMinZoo = cBodyRadius;
             _enableControl = false;
             _restoringControl = false; 
             Transform camTransform = cam.transform;
@@ -140,6 +150,10 @@ namespace UI.Menu.SystemEditing
             }
             Vector3 position = camTransform.position;
             _cinematicTarget = new Vector3(pos.x, pos.y, position.z);
+            if (fromCreation)
+            {
+                _initialCameraPosition = _cinematicTarget; // when zooming out, remain on the created planet
+            }
         }
 
         public void FreeCam()

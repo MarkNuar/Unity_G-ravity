@@ -15,7 +15,7 @@ namespace CBodies
 
         void FixedUpdate () {
             for (int i = 0; i < bodies.Length; i++) {
-                Vector3 acceleration = CalculateAcceleration (bodies[i].Position, bodies[i]);
+                Vector3 acceleration = CalculateAcceleration (bodies[i].position, bodies[i]);
                 bodies[i].UpdateVelocity (acceleration, Constants.PhysicsTimeStep);
                 //bodies[i].UpdateVelocity (bodies, Constants.PhysicsTimeStep);
             }
@@ -30,9 +30,9 @@ namespace CBodies
             Vector3 acceleration = Vector3.zero;
             foreach (var body in Instance.bodies) {
                 if (body != ignoreBody) {
-                    float sqrDst = (body.Position - point).sqrMagnitude;
-                    Vector3 forceDir = (body.Position - point).normalized;
-                    acceleration += forceDir * Constants.GravitationalConstant * body.Mass / sqrDst;
+                    float sqrDst = (body.position - point).sqrMagnitude;
+                    Vector3 forceDir = (body.position - point).normalized;
+                    acceleration += forceDir * Constants.GravitationalConstant * body.mass / sqrDst;
                 }
             }
 

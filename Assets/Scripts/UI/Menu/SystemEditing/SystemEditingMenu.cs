@@ -10,8 +10,9 @@ namespace UI.Menu.SystemEditing
 {
     public class SystemEditingMenu : MonoBehaviour
     {
-        public GameObject cBodyPreviewPrefab; 
-        
+        public GameObject cBodyPreviewPrefab;
+
+        public Shader cBodyPreviewShader;
         // For switching panels
         public List<GameObject> panels;
 
@@ -41,7 +42,7 @@ namespace UI.Menu.SystemEditing
             if (systemSettings != null)
             {
                 _systemData = systemSettings;
-                Debug.Log(_systemData.cBodies.Count);
+                // Debug.Log(_systemData.cBodies.Count);
                 inputSystemName.text = _systemData.systemName;
                 foreach (CBodyData cb in _systemData.cBodies)
                 {
@@ -76,29 +77,12 @@ namespace UI.Menu.SystemEditing
                 {
                     // cBody index set by the deserializer
                 }
-                // todo CBodyDispatcher.GeneratePlanet(_systemData.GetCBodyAtIndex(_currentCBodyIndex));
-                // substitute with correct code
-                // todo
-                // GameObject tempCube = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                // tempCube.transform.position = _systemData.GetCBodyAtIndex(_currentCBodyIndex).physics.initialPosition;
-                // tempCube.GetComponent<MeshRenderer>().material.color = _systemData.GetCBodyAtIndex(_currentCBodyIndex).appearance.color;
-                GameObject cBodyPreview = Instantiate(cBodyPreviewPrefab);
-                cBodyPreview.transform.position = new Vector3(_currentCBodyIndex * 10, 0, 0);
-                
-                CBodyPreview preview = cBodyPreview.GetComponent<CBodyPreview>();
-                preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-                CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
-                preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
-                Debug.Log(_currentCBodyIndex);
-                
-                _cBodyPreviews.Add(preview);
+                InitializeCBodyPreview();
                 
                 // DeselectCurrentCBody();
-                if (!loaded)
-                {
-                    SelectCurrentCBody();
-                    OpenEditMenu();
-                }
+                if (loaded) return;
+                SelectCurrentCBody();
+                OpenEditMenu(true);
             }
             else
             {
@@ -107,19 +91,40 @@ namespace UI.Menu.SystemEditing
             }
         }
 
+        private void InitializeCBodyPreview()
+        {
+            GameObject cBodyPreview = Instantiate(cBodyPreviewPrefab);
+            CBodyPreview preview = cBodyPreview.GetComponent<CBodyPreview>();
+            preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
+            CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
+            Debug.Log(curCBodyData.physics.initialPosition);
+            cBodyPreview.transform.position = curCBodyData.physics.initialPosition;
+            preview.cBody.transform.localScale = Vector3.one * curCBodyData.physics.radius;
+            preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
+            
+            // Initialize the cBody
+            preview.cBody.InitializeCBody(curCBodyData, cBodyPreviewShader);
+            // CBody will be updated when values in cBodyData will change
+            curCBodyData.Subscribe(preview.cBody); 
+            
+            _cBodyPreviews.Add(preview);
+        }
+
         // This method sets the current cBody index
         private void OpenContextualMenu(int currentCBodyIndex)
         {
-            Debug.Log("Opening contextual menu of index: " + currentCBodyIndex);
+            // avoid unwanted clicks
+            if (cameraController.isDragging) return;
             _currentCBodyIndex = currentCBodyIndex;
             SelectCurrentCBody();
             ShowPanel(1);
         }
 
-        public void OpenEditMenu()
+        public void OpenEditMenu(bool fromCreation)
         {
             Vector3 pos = _cBodyPreviews[_currentCBodyIndex].gameObject.transform.position;
-            cameraController.LockCamAt(pos);
+            var cBodyRadius = _systemData.cBodies[_currentCBodyIndex].physics.radius;
+            cameraController.LockCamAt(pos, cBodyRadius, fromCreation);
             
             DisableCBodyButtons();
             
@@ -177,6 +182,7 @@ namespace UI.Menu.SystemEditing
 
         private void DestroyCurrentCBody()
         {
+            _systemData.cBodies[_currentCBodyIndex].Unsubscribe();
             Destroy(_cBodyPreviews[_currentCBodyIndex].gameObject);
             _cBodyPreviews.RemoveAt(_currentCBodyIndex);
             _systemData.cBodies.RemoveAt(_currentCBodyIndex);

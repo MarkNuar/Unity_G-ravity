@@ -4,16 +4,11 @@ namespace CBodies
 {
     public class MeshGenerator : MonoBehaviour
     {
-        public int terrainResolution = 10; // todo import from general settings 
+        // public int terrainResolution = 10; // todo import from general settings 
         public Material material;
         private Mesh _mesh;
 
-        private void Start()
-        {
-            GenerateMesh();
-        }
-
-        public void GenerateMesh()
+        public GameObject GenerateMesh(int resolution)
         {
             if (_mesh == null) {
                 _mesh = new Mesh ();
@@ -23,7 +18,7 @@ namespace CBodies
             }
 
             var s = new IcoSphereGenerator ();
-            s.Generate (terrainResolution);
+            s.Generate (resolution);
             _mesh.vertices = s.Vertices;
             _mesh.triangles = s.Triangles;
             _mesh.RecalculateBounds ();
@@ -34,6 +29,8 @@ namespace CBodies
                 g.AddComponent<MeshCollider> ();
             }
             g.GetComponent<MeshCollider> ().sharedMesh = _mesh;
+
+            return g;
         }
 
         private GameObject GetOrCreateMeshObject (string name, Mesh mesh, Material material) {
@@ -44,7 +41,7 @@ namespace CBodies
                 child.parent = transform;
                 child.localPosition = Vector3.zero;
                 child.localRotation = Quaternion.identity;
-                child.localScale = Vector3.one * 100;
+                child.localScale = Vector3.one/2;
                 child.gameObject.layer = gameObject.layer;
             }
 

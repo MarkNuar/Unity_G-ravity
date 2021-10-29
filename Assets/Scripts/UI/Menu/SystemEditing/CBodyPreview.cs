@@ -1,4 +1,6 @@
+using System;
 using CBodies;
+using CBodies.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,9 +14,15 @@ namespace UI.Menu.SystemEditing
         public Button selectButton;
         
         [SerializeField] private GameObject selectionMesh;
-
-        private CBody cBody;
+        [SerializeField] private GameObject cBodyGameObject;
         
+        public CBody cBody;
+
+        private void Awake()
+        {
+            cBody = cBodyGameObject.AddComponent<CBody>();
+        }
+
         public void SelectCBody()
         {
             Color color = Color.cyan;
@@ -37,8 +45,5 @@ namespace UI.Menu.SystemEditing
             selectionMesh.SetActive(false);
         }
         
-        
-        
-
     }
 }

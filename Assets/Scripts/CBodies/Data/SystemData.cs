@@ -18,31 +18,20 @@ namespace CBodies.Data
                 appearance = new AppearanceData(),
                 physics = new PhysicsData(),
             };
-            c.appearance.Init();
-            Vector3 pos = new Vector3(0 - cBodies.Count * 25, 0, 0);
+            
+            // todo: position according to the type of planet
+            var count = cBodies.Count;
+            Vector3 pos = new Vector3( count * 25, 0, 0);
             c.physics.Init(pos);
+            
+            // todo: update resolution in the editing menu according to camera distance from planets
+            var res = 6;
+            c.appearance.Init(res);
+
             c.Init();
+            
             cBodies.Add(c);
             return cBodies.Count - 1;
         }
-
-        // public CBodyData GetCBodyAtIndex(int index)
-        // {
-        //     return cBodies[index];
-        // }
-
-        // public List<CBodyData> GetCBodies()
-        // {
-        //     return cBodies;
-        // }
-
-        // public void RemoveCBodyAtIndex(int index)
-        // {
-        //     cBodies.RemoveAt(index);
-        //     for (var i = index; i < cBodies.Count; i++)
-        //     {
-        //         cBodies[i].index--;
-        //     }
-        // }
     }
 }
