@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using UI.Menu.SystemEditing;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -68,7 +69,7 @@ namespace CBodies.Data
             currentRadius = Random.Range(0.5f, 10);
             currentSurfaceGravity = Random.Range(5, 20);
             currentInitialPosition = pos;
-            currentInitialVelocity = Vector3.up; // TODO MULTIPLY BY INITIAL VELOCITY RANDOM SCALE
+            currentInitialVelocity = Vector3.up * ParameterValues.minVelocity; // TODO MULTIPLY BY INITIAL VELOCITY RANDOM SCALE
         }
         
         public void Subscribe(CBody observer)

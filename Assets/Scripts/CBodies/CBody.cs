@@ -1,5 +1,6 @@
 using System;
 using CBodies.Data;
+using UI.Menu.SystemEditing;
 using UnityEngine;
 
 namespace CBodies
@@ -31,7 +32,7 @@ namespace CBodies
             _meshGenerator.material = new Material(shader);
             
             _meshObject = _meshGenerator.GenerateMesh(initialCBodyData.appearance.resolution);
-            
+
             OnAppearanceUpdate(initialCBodyData.appearance, AppearanceUpdateType.All);
             OnPhysicsUpdate(initialCBodyData.physics);
         }

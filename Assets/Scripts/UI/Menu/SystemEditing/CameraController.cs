@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace UI.Menu.SystemEditing
 {
@@ -7,12 +11,11 @@ namespace UI.Menu.SystemEditing
     {
         public Camera cam;
         
-        public float maxScrollSpeed = 25;
         public float panSensitivity = 0.3f;
 
         public float minZoom = 1.5f;
         public float maxZoom = 60;
-        public float zoomSpeed = 1.1f;
+        public float zoomSpeed = 5f;
 
         private bool _enableControl = true;
         private bool _restoringControl = false;
@@ -25,6 +28,10 @@ namespace UI.Menu.SystemEditing
         private Vector3 _dragOrigin;
 
         public bool isDragging = false;
+
+        public UnityEvent onCameraZoom; 
+        public UnityEvent onCameraDrag; 
+
         private void Start()
         {
             _initialCameraPosition = cam.transform.position;
@@ -39,7 +46,7 @@ namespace UI.Menu.SystemEditing
                 Vector3 posDifference =  _initialCameraPosition - cam.transform.position;
                 var zoomDifference = cam.orthographicSize - _initialCameraZoom;
                 if (posDifference.magnitude < cinematicPrecision && Mathf.Abs(zoomDifference) < cinematicPrecision 
-                    || Input.GetMouseButton(0) || Input.mouseScrollDelta.y != 0) // stop the zoom out if the user presses a button
+                    || Input.GetMouseButton(1) || Input.mouseScrollDelta.y != 0) // stop the zoom out if the user presses a button
                 {
                     // Debug.Log("giving back control");
                     _restoringControl = false;
@@ -49,33 +56,38 @@ namespace UI.Menu.SystemEditing
                     CinematicZoom(posDifference/5, zoomDifference/2);
                 }
             }
+
             // CAMERA CONTROLLED
-            if (_enableControl) 
+            if (_enableControl ) 
             {
-                if (Input.GetMouseButtonDown(0))
+                // do not move the camera is the mouse is over the editing menu
+                //if (!IsPointerOverUIElement() && !Input.GetMouseButton(0))
                 {
-                    _dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
-                }
-                
-                if (Input.GetMouseButton(0))
-                {
-                    Vector3 difference = _dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
-                    if (difference.magnitude > 10*Mathf.Epsilon)
+                    if (Input.GetMouseButtonDown(1))
                     {
-                        isDragging = true;
+                        _dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
                     }
-                    MoveCamera(difference);
-                }
+                
+                    if (Input.GetMouseButton(1))
+                    {
+                        Vector3 difference = _dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
+                        if (difference.magnitude > 10*Mathf.Epsilon)
+                        {
+                            isDragging = true;
+                        }
+                        MoveCamera(difference);
+                    }
 
-                if (Input.GetMouseButtonUp(0) && isDragging)
-                {
-                    isDragging = false;
-                }
+                    if (Input.GetMouseButtonUp(1) && isDragging)
+                    {
+                        isDragging = false;
+                    }
 
-                var scrollDelta = Input.mouseScrollDelta.y;
-                if (scrollDelta == 0) return;
-                {
-                    ZoomCamera(scrollDelta);
+                    var scrollDelta = Input.mouseScrollDelta.y;
+                    if (scrollDelta == 0) return;
+                    {
+                        ZoomCamera(scrollDelta);
+                    }
                 }
             }
             // CAMERA NOT CONTROLLED, zooming into a planet
@@ -97,24 +109,27 @@ namespace UI.Menu.SystemEditing
             position = Vector3.Lerp(position, position + difference,
                 panSensitivity * Time.deltaTime);
             cam.transform.position = position;
+            
+            onCameraDrag?.Invoke();
         }
 
         private void ZoomCamera(float scrollDelta)
         {
             var orthographicSize = cam.orthographicSize;
-            orthographicSize -= scrollDelta;
-            cam.orthographicSize = Mathf.Clamp(orthographicSize, minZoom, maxZoom);
-            orthographicSize = cam.orthographicSize;
-            Vector3 difference = (cam.ScreenToWorldPoint(Input.mousePosition) - cam.transform.position);
             
-            var zoomExpFactor = Mathf.Clamp(
-                (Mathf.Pow(zoomSpeed, 
-                    Mathf.Min((orthographicSize - minZoom)*10,  difference.magnitude)) - 1), 0, maxScrollSpeed);
-            
-            difference.Normalize();
-            difference *= Mathf.Sign(scrollDelta);
+            var amount = scrollDelta > 0 ? zoomSpeed : -zoomSpeed;
 
-            MoveCamera(difference * zoomExpFactor);
+            if (Mathf.Abs(orthographicSize - minZoom) > Mathf.Epsilon
+                && Mathf.Abs(maxZoom - orthographicSize) > Mathf.Epsilon)
+            {
+                float multiplier = (1.0f / orthographicSize * amount);
+                cam.transform.position += (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position) * multiplier; 
+            }
+            orthographicSize -= amount;
+            
+            cam.orthographicSize = Mathf.Clamp(orthographicSize, minZoom, maxZoom);
+            
+            onCameraZoom?.Invoke();
         }
         
         private void CinematicZoom(Vector3 posDifference, float zoomDifference)
@@ -162,6 +177,6 @@ namespace UI.Menu.SystemEditing
             _enableControl = true;
             _restoringControl = true;
         }
-        
+
     }
 }

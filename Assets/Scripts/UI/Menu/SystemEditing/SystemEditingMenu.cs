@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using CBodies;
 using CBodies.Data;
 using HSVPicker;
 using TMPro;
+using UI.Menu.SystemEditing.Preview;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +27,12 @@ namespace UI.Menu.SystemEditing
         private int _currentCBodyIndex;
 
         public int maxCBodyElements = 10;
+        
+        // PHYSICS
+        [SerializeField] private Slider radiusSlider = null;
+        [SerializeField] private Slider gravitySlider = null;
+        
+        
         
         [SerializeField] private TMP_InputField inputSystemName = null;
         [SerializeField] private TMP_InputField inputCBodyName = null;
@@ -59,6 +67,15 @@ namespace UI.Menu.SystemEditing
             colorHandle.anchoredPosition = new Vector2(0, 0);
         }
 
+        private void Update()
+        {
+            if (_currentCBodyIndex >= 0 && _currentCBodyIndex < _cBodyPreviews.Count)
+            {
+                Debug.Log(_systemData.cBodies[_currentCBodyIndex].physics.initialPosition);
+                Debug.Log(_systemData.cBodies[_currentCBodyIndex].physics.initialVelocity);
+            }
+        }
+
         public void SetSystemName(string systemName)
         {
             _systemData.systemName = systemName;
@@ -77,12 +94,13 @@ namespace UI.Menu.SystemEditing
                 {
                     // cBody index set by the deserializer
                 }
-                InitializeCBodyPreview();
+                CreateCBodyPreview();
                 
                 // DeselectCurrentCBody();
                 if (loaded) return;
-                SelectCurrentCBody();
+                SelectCurrentCBody(); 
                 OpenEditMenu(true);
+
             }
             else
             {
@@ -91,22 +109,29 @@ namespace UI.Menu.SystemEditing
             }
         }
 
-        private void InitializeCBodyPreview()
+        private void CreateCBodyPreview()
         {
             GameObject cBodyPreview = Instantiate(cBodyPreviewPrefab);
+            
             CBodyPreview preview = cBodyPreview.GetComponent<CBodyPreview>();
-            preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
+            
+            //preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
             CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
-            Debug.Log(curCBodyData.physics.initialPosition);
+            //Debug.Log(curCBodyData.physics.initialPosition);
             cBodyPreview.transform.position = curCBodyData.physics.initialPosition;
             preview.cBody.transform.localScale = Vector3.one * curCBodyData.physics.radius;
+            
             preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
+            preview.velocityArrow.onDrag.AddListener((d, p) => curCBodyData.physics.initialVelocity = 
+                d *((ParameterValues.maxVelocity - ParameterValues.minVelocity)*p + ParameterValues.minVelocity));
+            preview.onDrag.AddListener(v => curCBodyData.physics.initialPosition = v);
+            
             
             // Initialize the cBody
             preview.cBody.InitializeCBody(curCBodyData, cBodyPreviewShader);
             // CBody will be updated when values in cBodyData will change
-            curCBodyData.Subscribe(preview.cBody); 
-            
+            curCBodyData.Subscribe(preview.cBody);
+
             _cBodyPreviews.Add(preview);
         }
 
@@ -117,6 +142,10 @@ namespace UI.Menu.SystemEditing
             if (cameraController.isDragging) return;
             _currentCBodyIndex = currentCBodyIndex;
             SelectCurrentCBody();
+            SetArrowHeadPosition();
+            
+            // todo set gravity and radius
+            
             ShowPanel(1);
         }
 
@@ -129,7 +158,6 @@ namespace UI.Menu.SystemEditing
             DisableCBodyButtons();
             
             inputCBodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-            //colorPicker.CurrentColor = (_systemData.cBodies[_currentCBodyIndex].appearance.color);
             SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].appearance.color);
 
             HideCurrentCBodySelectionMesh();
@@ -157,8 +185,6 @@ namespace UI.Menu.SystemEditing
         {
             // store the new data 
             _systemData.cBodies[_currentCBodyIndex].name = cbName;
-            // apply it visually
-            _cBodyPreviews[_currentCBodyIndex].bodyName.text = cbName;
         }
 
         public void BeginPickColor()
@@ -250,10 +276,50 @@ namespace UI.Menu.SystemEditing
                 help.selectButton.enabled = true;
             }
         }
-        
+
+        private void SetArrowHeadPosition()
+        {
+            // _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
+            //     _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity + 
+            //     _systemData.cBodies[_currentCBodyIndex].physics.initialPosition);
+            var percent = 
+                (_systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.magnitude - ParameterValues.minVelocity) /
+                          (ParameterValues.maxVelocity - ParameterValues.minVelocity);
+            _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
+                _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.normalized,percent);
+            //Debug.Log("Percent: " + percent + ", magnitude: " + _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.magnitude);
+        }
+
         private void OnDestroy()
         {
             GameManager.Instance.SaveSystem(_systemData);
         }
+        
+        
+        
+        // [System.Serializable]
+        // public struct Vector {
+        //     public Image line;
+        //     public Image head;
+        //
+        //     public void Update (float angle, Vector2 pos, float magnitude, float arrowHeadSize, float thickness) {
+        //         line.rectTransform.pivot = new Vector2 (0, 0.5f);
+        //         line.rectTransform.eulerAngles = Vector3.forward * angle;
+        //         line.rectTransform.localPosition = pos;
+        //         line.rectTransform.sizeDelta = new Vector2 (magnitude, thickness);
+        //         line.material.SetVector ("_Size", line.rectTransform.sizeDelta);
+        //         head.material.SetVector ("_Size", line.rectTransform.sizeDelta);
+        //
+        //         head.rectTransform.localPosition = pos + (Vector2) line.rectTransform.right * magnitude;
+        //         head.rectTransform.eulerAngles = Vector3.forward * angle;
+        //
+        //         head.rectTransform.localScale = Vector3.one * arrowHeadSize;
+        //     }
+        //
+        //     public void SetActive (bool active) {
+        //         line.gameObject.SetActive (active);
+        //         head.gameObject.SetActive (active);
+        //     }
+        // }
     }
 }

@@ -51,4 +51,9 @@ public class GameManager : MonoBehaviour
         Debug.LogError("No saved system data found");
         return null;
     }
+
+    public Camera GetMainCamera()
+    {
+        return Camera.main;
+    }
 }
