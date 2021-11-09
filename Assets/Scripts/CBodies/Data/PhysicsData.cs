@@ -66,10 +66,11 @@ namespace CBodies.Data
         
         public void Init(Vector3 pos)
         {
-            currentRadius = Random.Range(0.5f, 10);
-            currentSurfaceGravity = Random.Range(5, 20);
+            //currentRadius = Random.Range(1f, ParameterValues.maxRadius);
+            currentRadius = ParameterValues.minRadius; // Min radius?
+            currentSurfaceGravity = ParameterValues.minGravity;
             currentInitialPosition = pos;
-            currentInitialVelocity = Vector3.up * ParameterValues.minVelocity; // TODO MULTIPLY BY INITIAL VELOCITY RANDOM SCALE
+            currentInitialVelocity = Vector3.up * ParameterValues.minVelocity;
         }
         
         public void Subscribe(CBody observer)

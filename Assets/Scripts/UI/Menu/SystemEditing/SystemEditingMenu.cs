@@ -24,7 +24,7 @@ namespace UI.Menu.SystemEditing
         private readonly List<CBodyPreview> _cBodyPreviews = new List<CBodyPreview>();
         
         // Index of the currently selected cbody
-        private int _currentCBodyIndex;
+        private int _currentCBodyIndex = -1;
 
         public int maxCBodyElements = 10;
         
@@ -67,15 +67,6 @@ namespace UI.Menu.SystemEditing
             colorHandle.anchoredPosition = new Vector2(0, 0);
         }
 
-        private void Update()
-        {
-            if (_currentCBodyIndex >= 0 && _currentCBodyIndex < _cBodyPreviews.Count)
-            {
-                Debug.Log(_systemData.cBodies[_currentCBodyIndex].physics.initialPosition);
-                Debug.Log(_systemData.cBodies[_currentCBodyIndex].physics.initialVelocity);
-            }
-        }
-
         public void SetSystemName(string systemName)
         {
             _systemData.systemName = systemName;
@@ -94,6 +85,8 @@ namespace UI.Menu.SystemEditing
                 {
                     // cBody index set by the deserializer
                 }
+                Debug.Log(_systemData.cBodies[_currentCBodyIndex].physics.radius);
+                
                 CreateCBodyPreview();
                 
                 // DeselectCurrentCBody();
@@ -117,18 +110,20 @@ namespace UI.Menu.SystemEditing
             
             //preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
             CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
-            //Debug.Log(curCBodyData.physics.initialPosition);
-            cBodyPreview.transform.position = curCBodyData.physics.initialPosition;
-            preview.cBody.transform.localScale = Vector3.one * curCBodyData.physics.radius;
+            
             
             preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
             preview.velocityArrow.onDrag.AddListener((d, p) => curCBodyData.physics.initialVelocity = 
                 d *((ParameterValues.maxVelocity - ParameterValues.minVelocity)*p + ParameterValues.minVelocity));
-            preview.onDrag.AddListener(v => curCBodyData.physics.initialPosition = v);
+            preview.positionDrag.onDrag.AddListener(v => curCBodyData.physics.initialPosition = v);
             
             
             // Initialize the cBody
             preview.cBody.InitializeCBody(curCBodyData, cBodyPreviewShader);
+            
+            preview.positionDrag.UpdateHandlePosition();
+            preview.velocityArrow.UpdateArrowOrigin();
+            
             // CBody will be updated when values in cBodyData will change
             curCBodyData.Subscribe(preview.cBody);
 
@@ -143,16 +138,35 @@ namespace UI.Menu.SystemEditing
             _currentCBodyIndex = currentCBodyIndex;
             SelectCurrentCBody();
             SetArrowHeadPosition();
-            
-            // todo set gravity and radius
+
+            // set gravity and radius
+            UpdateContextualSliders();
             
             ShowPanel(1);
+            
         }
 
+        public void SetCBodyRadius()
+        {
+            //Debug.Log(radiusSlider.value);
+            // todo test
+            _systemData.cBodies[_currentCBodyIndex].physics.radius = 
+                radiusSlider.value * (ParameterValues.maxRadius - ParameterValues.minRadius) + ParameterValues.minRadius;
+        }
+
+        public void SetCBodyGravity()
+        {
+            //Debug.Log(gravitySlider.value);
+            // todo test
+            _systemData.cBodies[_currentCBodyIndex].physics.surfaceGravity = 
+                gravitySlider.value * (ParameterValues.maxGravity - ParameterValues.minGravity) + ParameterValues.minGravity;
+        }
+        
         public void OpenEditMenu(bool fromCreation)
         {
-            Vector3 pos = _cBodyPreviews[_currentCBodyIndex].gameObject.transform.position;
+            Vector3 pos = _cBodyPreviews[_currentCBodyIndex].cBody.transform.position;
             var cBodyRadius = _systemData.cBodies[_currentCBodyIndex].physics.radius;
+            
             cameraController.LockCamAt(pos, cBodyRadius, fromCreation);
             
             DisableCBodyButtons();
@@ -250,6 +264,7 @@ namespace UI.Menu.SystemEditing
             if (_currentCBodyIndex != -1)
             {
                 _cBodyPreviews[_currentCBodyIndex].DeselectCBody();
+                _currentCBodyIndex = -1;
             }
         }
 
@@ -290,36 +305,22 @@ namespace UI.Menu.SystemEditing
             //Debug.Log("Percent: " + percent + ", magnitude: " + _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.magnitude);
         }
 
+        private void UpdateContextualSliders()
+        {
+            var r = (_systemData.cBodies[_currentCBodyIndex].physics.radius - ParameterValues.minRadius) /
+                    (ParameterValues.maxRadius - ParameterValues.minRadius);
+            var g = (_systemData.cBodies[_currentCBodyIndex].physics.surfaceGravity - ParameterValues.minGravity) /
+                    (ParameterValues.maxGravity - ParameterValues.minGravity);
+            
+            radiusSlider.value = r;
+            radiusSlider.onValueChanged.Invoke(r);
+            gravitySlider.value = g;
+            gravitySlider.onValueChanged.Invoke(g);
+        }
+
         private void OnDestroy()
         {
             GameManager.Instance.SaveSystem(_systemData);
         }
-        
-        
-        
-        // [System.Serializable]
-        // public struct Vector {
-        //     public Image line;
-        //     public Image head;
-        //
-        //     public void Update (float angle, Vector2 pos, float magnitude, float arrowHeadSize, float thickness) {
-        //         line.rectTransform.pivot = new Vector2 (0, 0.5f);
-        //         line.rectTransform.eulerAngles = Vector3.forward * angle;
-        //         line.rectTransform.localPosition = pos;
-        //         line.rectTransform.sizeDelta = new Vector2 (magnitude, thickness);
-        //         line.material.SetVector ("_Size", line.rectTransform.sizeDelta);
-        //         head.material.SetVector ("_Size", line.rectTransform.sizeDelta);
-        //
-        //         head.rectTransform.localPosition = pos + (Vector2) line.rectTransform.right * magnitude;
-        //         head.rectTransform.eulerAngles = Vector3.forward * angle;
-        //
-        //         head.rectTransform.localScale = Vector3.one * arrowHeadSize;
-        //     }
-        //
-        //     public void SetActive (bool active) {
-        //         line.gameObject.SetActive (active);
-        //         head.gameObject.SetActive (active);
-        //     }
-        // }
     }
 }

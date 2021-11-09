@@ -74,6 +74,10 @@ namespace CBodies
         public void OnPhysicsUpdate(PhysicsData pd)
         {
             // big todo
+            Transform tr = transform;
+            tr.position = pd.initialPosition;
+            tr.localScale = Vector3.one * pd.radius;
+            
             mass = pd.surfaceGravity * pd.radius * pd.radius / Constants.GravitationalConstant;
             // _meshObject.transform.localScale = Vector3.one * pd.radius;
         }

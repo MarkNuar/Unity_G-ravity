@@ -22,17 +22,17 @@ namespace UI.Menu.SystemEditing.Preview
         
         public UnityEvent<Vector3, float> onDrag;
 
-        private float _minArrowLen = 10f;
-        private float _maxArrowLen;
+        public float minArrowLen = 10f;
+        public float maxArrowLen;
         // 0 -> use minArrowY
         // 1 -> use maxArrowY
 
-        private void Start()
+        private void Awake()
         {
-            _maxArrowLen = Mathf.Min(Screen.width, Screen.height) * 0.4f;
+            maxArrowLen = Mathf.Min(Screen.width, Screen.height) * 0.4f;
             
-            Debug.Log("Starting Arrow");
-            Debug.Log(arrowHead.rectTransform.position);
+            // Debug.Log("Starting Arrow");
+            // Debug.Log(arrowHead.rectTransform.position);
             _cam = GameManager.Instance.GetMainCamera();
             _cameraController = _cam.GetComponent<CameraController>();
             
@@ -59,7 +59,7 @@ namespace UI.Menu.SystemEditing.Preview
             UpdateArrow(true, data.position - targetPos);
             
             var magnitude = _diff.magnitude;
-            var percent = (magnitude - _minArrowLen) / (_maxArrowLen - _minArrowLen);
+            var percent = (magnitude - minArrowLen) / (maxArrowLen - minArrowLen);
             onDrag?.Invoke(_diff.normalized,percent);
         }
         
@@ -71,7 +71,7 @@ namespace UI.Menu.SystemEditing.Preview
         // Percent tells the percentage of the vector lenght between min and max velocity
         public void SetArrowHeadPosition(Vector3 direction, float percent)
         {
-            var len = (_maxArrowLen - _minArrowLen) * percent + _minArrowLen;
+            var len = (maxArrowLen - minArrowLen) * percent + minArrowLen;
             UpdateArrow(true, direction * len);
             //Debug.Log("Len: " + len + ", Position: " + arrowHead.rectTransform.position);
         }
@@ -92,14 +92,14 @@ namespace UI.Menu.SystemEditing.Preview
 
         private Vector2 CorrectDiff(Vector2 diff)
         {
-            if (diff.magnitude < _minArrowLen)
-                diff = diff.normalized * _minArrowLen;
-            else if (diff.magnitude > _maxArrowLen)
-                diff = diff.normalized * _maxArrowLen;
+            if (diff.magnitude < minArrowLen)
+                diff = diff.normalized * minArrowLen;
+            else if (diff.magnitude > maxArrowLen)
+                diff = diff.normalized * maxArrowLen;
 
             diff.x = 0;
-            if (diff.y < _minArrowLen)
-                diff.y = _minArrowLen;
+            if (diff.y < minArrowLen)
+                diff.y = minArrowLen;
 
             //Vector3.Project(diff, Vector3.up);
             
