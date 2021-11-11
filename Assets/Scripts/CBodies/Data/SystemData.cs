@@ -25,7 +25,7 @@ namespace CBodies.Data
             c.physics.Init(pos);
             
             // todo: update resolution in the editing menu according to camera distance from planets
-            var res = 6;
+            var res = 10;
             c.appearance.Init(res);
 
             c.Init();

@@ -120,10 +120,7 @@ namespace UI.Menu.SystemEditing
             
             // Initialize the cBody
             preview.cBody.InitializeCBody(curCBodyData, cBodyPreviewShader);
-            
-            preview.positionDrag.UpdateHandlePosition();
-            preview.velocityArrow.UpdateArrowOrigin();
-            
+
             // CBody will be updated when values in cBodyData will change
             curCBodyData.Subscribe(preview.cBody);
 
@@ -135,15 +132,17 @@ namespace UI.Menu.SystemEditing
         {
             // avoid unwanted clicks
             if (cameraController.isDragging) return;
+            
             _currentCBodyIndex = currentCBodyIndex;
             SelectCurrentCBody();
+
+            SetDragHandlePosition();
             SetArrowHeadPosition();
 
             // set gravity and radius
             UpdateContextualSliders();
             
             ShowPanel(1);
-            
         }
 
         public void SetCBodyRadius()
@@ -174,7 +173,7 @@ namespace UI.Menu.SystemEditing
             inputCBodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
             SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].appearance.color);
 
-            HideCurrentCBodySelectionMesh();
+            HideCurrentCBodySelectionHUD();
 
             ShowPanel(2);
         }
@@ -268,11 +267,11 @@ namespace UI.Menu.SystemEditing
             }
         }
 
-        private void HideCurrentCBodySelectionMesh()
+        private void HideCurrentCBodySelectionHUD()
         {
             if (_currentCBodyIndex != -1)
             {
-                _cBodyPreviews[_currentCBodyIndex].HideSelectionMesh();
+                _cBodyPreviews[_currentCBodyIndex].HideSelectionHUD();
             }
         }
 
@@ -294,15 +293,16 @@ namespace UI.Menu.SystemEditing
 
         private void SetArrowHeadPosition()
         {
-            // _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
-            //     _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity + 
-            //     _systemData.cBodies[_currentCBodyIndex].physics.initialPosition);
             var percent = 
                 (_systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.magnitude - ParameterValues.minVelocity) /
                           (ParameterValues.maxVelocity - ParameterValues.minVelocity);
             _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
                 _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.normalized,percent);
-            //Debug.Log("Percent: " + percent + ", magnitude: " + _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.magnitude);
+        }
+
+        private void SetDragHandlePosition()
+        {
+            _cBodyPreviews[_currentCBodyIndex].positionDrag.ResetDragHandlePosition();
         }
 
         private void UpdateContextualSliders()

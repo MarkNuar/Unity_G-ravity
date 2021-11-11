@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 192, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7738546904020870372
 CanvasRenderer:
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 48b50f59a75a64643b8069d041aea93b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7145528036259806244}
-  - component: {fileID: 6658645109937055204}
+  - component: {fileID: 3537158682048850353}
   m_Layer: 0
   m_Name: VelocityHandle
   m_TagString: Untagged
@@ -108,7 +108,7 @@ Transform:
   m_Father: {fileID: 6938345742560040162}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6658645109937055204
+--- !u!114 &3537158682048850353
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,7 +126,7 @@ MonoBehaviour:
   onDrag:
     m_PersistentCalls:
       m_Calls: []
-  minArrowLen: 10
+  minArrowLen: 20
   maxArrowLen: 0
 --- !u!1 &1077698533588247897
 GameObject:
@@ -635,7 +635,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonCanvas: {fileID: 4932631801321231705}
   selectButton: {fileID: 2508042552702048869}
-  velocityArrow: {fileID: 6658645109937055204}
+  velocityArrow: {fileID: 3537158682048850353}
   positionDrag: {fileID: 255106661827717679}
   selectionMesh: {fileID: 1077698533588247897}
   cBodyGameObject: {fileID: 4932631801691308820}
@@ -675,7 +675,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 8, y: 109.2}
+  m_SizeDelta: {x: 12, y: 54.3}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7501642205967670603
 CanvasRenderer:
@@ -698,14 +698,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9607843, g: 0.9647059, b: 0.98039216, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -750,7 +750,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 7.5}
-  m_SizeDelta: {x: 15, y: 15}
+  m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2136647710667601058
 CanvasRenderer:
@@ -773,14 +773,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9607843, g: 0.9647059, b: 0.98039216, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 3e37337f69d7002469ad608904dada33, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -835,9 +835,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragHandle: {fileID: 1955407514270827931}
-  handleOffset: 40
-  objDragged: {fileID: 4932631801691308820}
-  velocityArrow: {fileID: 6658645109937055204}
+  objToDrag: {fileID: 4932631801691308820}
+  velocityArrow: {fileID: 3537158682048850353}
   onDrag:
     m_PersistentCalls:
       m_Calls: []

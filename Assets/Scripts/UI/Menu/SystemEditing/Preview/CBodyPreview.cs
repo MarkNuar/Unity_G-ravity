@@ -12,7 +12,7 @@ namespace UI.Menu.SystemEditing.Preview
         public Canvas buttonCanvas;
         public Button selectButton;
         
-        public Arrow velocityArrow;
+        public CBodyArrow velocityArrow;
         public CBodyDrag positionDrag;
         
         [SerializeField] private GameObject selectionMesh;
@@ -43,7 +43,7 @@ namespace UI.Menu.SystemEditing.Preview
             buttonCanvas.sortingOrder = 0;
         }
 
-        public void HideSelectionMesh()
+        public void HideSelectionHUD()
         {
             velocityArrow.arrowHead.enabled = false;
             velocityArrow.arrowBody.enabled = false;

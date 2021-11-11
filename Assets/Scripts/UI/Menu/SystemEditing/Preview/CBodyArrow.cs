@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI.Menu.SystemEditing.Preview
 {
-    public class Arrow :  MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class CBodyArrow :  MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public Image arrowHead;
         public Image arrowBody;
@@ -23,7 +23,7 @@ namespace UI.Menu.SystemEditing.Preview
         public UnityEvent<Vector3, float> onDrag;
 
         public float minArrowLen = 10f;
-        public float maxArrowLen;
+        [HideInInspector] public float maxArrowLen;
         // 0 -> use minArrowY
         // 1 -> use maxArrowY
 
