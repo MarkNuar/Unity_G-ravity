@@ -84,8 +84,7 @@ namespace UI.Menu.SystemEditing
                 {
                     // cBody index set by the deserializer
                 }
-                Debug.Log(_systemData.cBodies[_currentCBodyIndex].physics.radius);
-                
+
                 CreateCBodyPreview();
                 
                 // DeselectCurrentCBody();
@@ -108,20 +107,20 @@ namespace UI.Menu.SystemEditing
             CBodyPreview preview = cBodyPreview.GetComponent<CBodyPreview>();
             
             //preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-            CBodyData curCBodyData = _systemData.cBodies[_currentCBodyIndex];
+            CBodyData cBodyData = _systemData.cBodies[_currentCBodyIndex];
             
             
-            preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(curCBodyData)));
-            preview.velocityArrow.onDrag.AddListener((d, p) => curCBodyData.physics.initialVelocity = 
+            preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemData.cBodies.IndexOf(cBodyData)));
+            preview.velocityArrow.onDrag.AddListener((d, p) => cBodyData.physicsData.initialVelocity = 
                 d *((ParameterValues.maxVelocity - ParameterValues.minVelocity)*p + ParameterValues.minVelocity));
-            preview.positionDrag.onDrag.AddListener(v => curCBodyData.physics.initialPosition = v);
+            preview.positionDrag.onDrag.AddListener(v => cBodyData.physicsData.initialPosition = v);
             
             
-            // Initialize the cBody
-            preview.cBody.InitializeCBody(curCBodyData);
+            // Generate the CBody
+            preview.cBody.GenerateCBody(cBodyData);
 
             // CBody will be updated when values in cBodyData will change
-            curCBodyData.Subscribe(preview.cBody);
+            cBodyData.Subscribe(preview.cBody);
 
             _cBodyPreviews.Add(preview);
         }
@@ -148,7 +147,7 @@ namespace UI.Menu.SystemEditing
         {
             //Debug.Log(radiusSlider.value);
             // todo test
-            _systemData.cBodies[_currentCBodyIndex].physics.radius = 
+            _systemData.cBodies[_currentCBodyIndex].physicsData.radius = 
                 radiusSlider.value * (ParameterValues.maxRadius - ParameterValues.minRadius) + ParameterValues.minRadius;
         }
 
@@ -156,21 +155,21 @@ namespace UI.Menu.SystemEditing
         {
             //Debug.Log(gravitySlider.value);
             // todo test
-            _systemData.cBodies[_currentCBodyIndex].physics.surfaceGravity = 
+            _systemData.cBodies[_currentCBodyIndex].physicsData.surfaceGravity = 
                 gravitySlider.value * (ParameterValues.maxGravity - ParameterValues.minGravity) + ParameterValues.minGravity;
         }
         
         public void OpenEditMenu(bool fromCreation)
         {
             Vector3 pos = _cBodyPreviews[_currentCBodyIndex].cBody.transform.position;
-            var cBodyRadius = _systemData.cBodies[_currentCBodyIndex].physics.radius;
+            var cBodyRadius = _systemData.cBodies[_currentCBodyIndex].physicsData.radius;
             
             cameraController.LockCamAt(pos, cBodyRadius, fromCreation);
             
             DisableCBodyButtons();
             
             inputCBodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-            SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].appearance.color);
+            SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].materialData.color);
 
             HideCurrentCBodySelectionHUD();
 
@@ -202,13 +201,13 @@ namespace UI.Menu.SystemEditing
         public void BeginPickColor()
         {
             OverlayPanel(3,true);
-            colorPicker.CurrentColor = _systemData.cBodies[_currentCBodyIndex].appearance.color;
+            colorPicker.CurrentColor = _systemData.cBodies[_currentCBodyIndex].materialData.color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
         }
 
         private void SetCBodyColor(Color color)
         {
-            _systemData.cBodies[_currentCBodyIndex].appearance.color = color;
+            _systemData.cBodies[_currentCBodyIndex].materialData.color = color;
             SetButtonColor(cBodyColorButton, color);
         }
 
@@ -293,10 +292,10 @@ namespace UI.Menu.SystemEditing
         private void SetArrowHeadPosition()
         {
             var percent = 
-                (_systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.magnitude - ParameterValues.minVelocity) /
+                (_systemData.cBodies[_currentCBodyIndex].physicsData.initialVelocity.magnitude - ParameterValues.minVelocity) /
                           (ParameterValues.maxVelocity - ParameterValues.minVelocity);
             _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
-                _systemData.cBodies[_currentCBodyIndex].physics.initialVelocity.normalized,percent);
+                _systemData.cBodies[_currentCBodyIndex].physicsData.initialVelocity.normalized,percent);
         }
 
         private void SetDragHandlePosition()
@@ -306,9 +305,9 @@ namespace UI.Menu.SystemEditing
 
         private void UpdateContextualSliders()
         {
-            var r = (_systemData.cBodies[_currentCBodyIndex].physics.radius - ParameterValues.minRadius) /
+            var r = (_systemData.cBodies[_currentCBodyIndex].physicsData.radius - ParameterValues.minRadius) /
                     (ParameterValues.maxRadius - ParameterValues.minRadius);
-            var g = (_systemData.cBodies[_currentCBodyIndex].physics.surfaceGravity - ParameterValues.minGravity) /
+            var g = (_systemData.cBodies[_currentCBodyIndex].physicsData.surfaceGravity - ParameterValues.minGravity) /
                     (ParameterValues.maxGravity - ParameterValues.minGravity);
             
             radiusSlider.value = r;

@@ -24,14 +24,7 @@ namespace UI.Menu.SystemEditing.Preview
             velocityArrow.arrowHead.enabled = true;
             velocityArrow.arrowBody.enabled = true;
 
-            positionDrag.dragHandle.enabled = true;
-            //positionDrag.UpdateHandlePosition();
-
-            // Color color = Color.cyan;
-            // color.a = 0.2f;
-            // selectionMesh.GetComponent<MeshRenderer>().material.color = color;
-            //
-            // selectionMesh.SetActive(true);
+            positionDrag.dragHandle.enabled = true; 
 
             // Make it not clickable
             buttonCanvas.sortingOrder = 0;
@@ -43,8 +36,6 @@ namespace UI.Menu.SystemEditing.Preview
             velocityArrow.arrowBody.enabled = false;
 
             positionDrag.dragHandle.enabled = false;
-
-            // selectionMesh.SetActive(false);
         }
 
         public void DeselectCBody()
@@ -56,9 +47,6 @@ namespace UI.Menu.SystemEditing.Preview
 
             // Make it clickable
             buttonCanvas.sortingOrder = 1;
-            
-            // selectionMesh.SetActive(false);
         }
-        
     }
 }

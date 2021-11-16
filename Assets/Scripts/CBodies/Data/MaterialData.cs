@@ -1,20 +1,17 @@
 using System;
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace CBodies.Data
 {
     [Serializable]
-    public class AppearanceData
+    public class MaterialData
     {
         [CanBeNull] private CBody _observer;
 
         [SerializeField] private Color currentColor;
-        [SerializeField] private int currentResolution;
-        
+
         public Color color
         {
             get => currentColor;
@@ -25,28 +22,14 @@ namespace CBodies.Data
                 currentColor = value;
 
                 if(_observer)
-                    _observer.OnAppearanceUpdate(this, AppearanceUpdateType.Material);
+                    _observer.OnMaterialUpdate();
             }
         }
+        
 
-        public int resolution
-        {
-            get => currentResolution;
-            set
-            {
-                if(currentResolution == value)
-                    return;
-                currentResolution = value;
-
-                if(_observer)
-                    _observer.OnAppearanceUpdate(this, AppearanceUpdateType.Mesh);
-            }
-        }
-
-        public void Init(int res)
+        public void Init()
         {
             currentColor = Random.ColorHSV();
-            currentResolution = res;
             // ...
         }
 
@@ -58,6 +41,12 @@ namespace CBodies.Data
         public void Unsubscribe()
         {
             _observer = null;
+        }
+        
+        public enum MaterialUpdateType
+        {
+            Material, // color
+            All // ?
         }
     }
 }

@@ -95,7 +95,7 @@ namespace UI.Menu.SystemEditing.Preview
 
             handleTargetPos.z = 0; //handlePos.z;
             handlePos = handleTargetPos;
-            Debug.Log("Handle target screen pos fixed: "+ handlePos);
+            //Debug.Log("Handle target screen pos fixed: "+ handlePos);
             _dragHandleTransform.position = handlePos;
         }
 
@@ -103,6 +103,7 @@ namespace UI.Menu.SystemEditing.Preview
         {
             Vector3 targetPosition = _cam.WorldToScreenPoint(objToDrag.transform.position);
             //targetPosition.x -= handleOffset;
+            targetPosition.z = 0;
             _dragHandleTransform.position = targetPosition;
         }
     }

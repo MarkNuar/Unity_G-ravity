@@ -10,7 +10,7 @@ namespace CBodies.Data
     public class PhysicsData
     {
         [CanBeNull] private CBody _observer;
-        
+
         [SerializeField] private float currentRadius;
         [SerializeField] private float currentSurfaceGravity;
         [SerializeField] private Vector3 currentInitialPosition; 
@@ -24,7 +24,7 @@ namespace CBodies.Data
                 if(Math.Abs(currentRadius - value) < Mathf.Epsilon)
                     return;
                 currentRadius = value;
-                if(_observer) _observer.OnPhysicsUpdate(this);
+                if(_observer) _observer.OnPhysicsUpdate();
             }
         }
 
@@ -36,7 +36,7 @@ namespace CBodies.Data
                 if(Math.Abs(currentSurfaceGravity - value) < Mathf.Epsilon)
                     return;
                 currentSurfaceGravity = value;
-                if(_observer) _observer.OnPhysicsUpdate(this);
+                if(_observer) _observer.OnPhysicsUpdate();
             }
         }
 
@@ -48,7 +48,7 @@ namespace CBodies.Data
                 if ((currentInitialPosition - value).magnitude < Mathf.Epsilon)
                     return;
                 currentInitialPosition = value;
-                if(_observer) _observer.OnPhysicsUpdate(this);
+                if(_observer) _observer.OnPhysicsUpdate();
             }
         }
         
@@ -60,7 +60,7 @@ namespace CBodies.Data
                 if ((currentInitialVelocity - value).magnitude < Mathf.Epsilon)
                     return;
                 currentInitialVelocity = value;
-                if(_observer) _observer.OnPhysicsUpdate(this);
+                if(_observer) _observer.OnPhysicsUpdate();
             }
         }
         

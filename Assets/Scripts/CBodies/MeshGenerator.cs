@@ -1,3 +1,5 @@
+using CBodies.Data;
+using CBodies.Noise;
 using UnityEngine;
 
 namespace CBodies
@@ -5,9 +7,18 @@ namespace CBodies
     public class MeshGenerator
     {
         // public int terrainResolution = 10; // todo import from general settings 
-        public Material material;
+        public Material Material;
         private Mesh _mesh;
 
+        private MeshData _meshData;
+        private INoiseFilter[] _noiseFilters;
+
+        public void UpdateData(CBodyData cbd)
+        {
+            _meshData = cbd.meshData;
+            _noiseFilters = DataToNoise.Convert(cbd.meshData, cbd.cBodyType);
+        }
+        
         public GameObject GenerateMesh(int resolution, Transform transform, GameObject gameObject)
         {
             if (_mesh == null) {
@@ -24,7 +35,7 @@ namespace CBodies
             _mesh.RecalculateBounds ();
             _mesh.RecalculateNormals ();
 
-            GameObject g = GetOrCreateMeshObject ("Mesh", _mesh, material, transform, gameObject);
+            GameObject g = GetOrCreateMeshObject ("Mesh", _mesh, Material, transform, gameObject);
             if (!g.GetComponent<MeshCollider> ()) {
                 g.AddComponent<MeshCollider> ();
             }

@@ -18,12 +18,12 @@ namespace CBodies
         
         private Rigidbody _rb;
         
-
         private GameObject _meshObject;
-        
         
         private MeshGenerator _meshGenerator;
         private MaterialGenerator _materialGenerator;
+
+        private CBodyData _cBodyData;
         
         private void Awake () {
             _rb = gameObject.AddComponent<Rigidbody> ();
@@ -31,62 +31,68 @@ namespace CBodies
             
             _meshGenerator = new MeshGenerator
             {
-                material = new Material(shader)
+                Material = new Material(shader)
             };
             _materialGenerator = new MaterialGenerator();
-            
         }
 
-        public void InitializeCBody(CBodyData currentCBodyData)
+        public void GenerateCBody(CBodyData cbd)
         {
-            
-            
-            OnAppearanceUpdate(currentCBodyData.appearance, AppearanceUpdateType.All);
-            OnPhysicsUpdate(currentCBodyData.physics);
+            _cBodyData = cbd;
+            InitializeCBody();
+            GenerateMesh();
+            GenerateMaterial();
+            GeneratePhysics();
+        }
+
+        private void InitializeCBody()
+        {
+            _meshGenerator.UpdateData(_cBodyData);
+            _materialGenerator.UpdateData(_cBodyData);
+        }
+
+        public void OnMeshUpdate()
+        {
+            InitializeCBody();
+            GenerateMesh();
+        }
+
+        public void OnMaterialUpdate()
+        {
+            InitializeCBody();
+            GenerateMaterial();
         }
         
-        public void OnAppearanceUpdate(AppearanceData ad, AppearanceUpdateType updateType)
+        public void OnPhysicsUpdate()
         {
-            switch (updateType)
-            {
-                case AppearanceUpdateType.Material:
-                    RegenerateMaterial(ad);
-                    break;
-                case AppearanceUpdateType.Mesh:
-                    RegenerateMesh(ad);
-                    break;
-                case AppearanceUpdateType.All:
-                    RegenerateMaterial(ad);
-                    RegenerateMesh(ad);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(updateType), updateType, null);
-            }
-            
+            InitializeCBody();
+            GeneratePhysics();
+        }
+        
+        private void GenerateMesh()
+        {
+            // TODO
+            MeshData md = _cBodyData.meshData;
+            _meshObject = _meshGenerator.GenerateMesh(md.resolution, transform, gameObject);
         }
 
-        public void OnPhysicsUpdate(PhysicsData pd)
+        private void GenerateMaterial()
         {
-            // big todo
+            // TODO
+            MaterialData md = _cBodyData.materialData;
+            _meshGenerator.Material.color = md.color;
+        }
+
+        private void GeneratePhysics()
+        {
+            // TODO
+            PhysicsData pd = _cBodyData.physicsData;
             Transform tr = transform;
             tr.position = pd.initialPosition;
             tr.localScale = Vector3.one * pd.radius;
-            
+
             mass = pd.surfaceGravity * pd.radius * pd.radius / Constants.GravitationalConstant;
-            // _meshObject.transform.localScale = Vector3.one * pd.radius;
         }
-        
-        private void RegenerateMesh(AppearanceData ad)
-        {
-            _meshObject = _meshGenerator.GenerateMesh(ad.resolution, transform, gameObject);
-        }
-
-        private void RegenerateMaterial(AppearanceData ad)
-        {
-            Debug.Log("Edited color");
-            _meshGenerator.material.color = ad.color;
-        }
-
         
         public void UpdateVelocity (Vector3 acceleration, float timeStep) {
             velocity += acceleration * timeStep;

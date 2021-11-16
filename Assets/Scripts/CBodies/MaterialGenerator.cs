@@ -1,19 +1,18 @@
+using CBodies.Data;
+using CBodies.Noise;
 using UnityEngine;
 
 namespace CBodies
 {
     public class MaterialGenerator
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+        private MaterialData _materialData;
+        private INoiseFilter[] _noiseFilters;
 
-        // Update is called once per frame
-        void Update()
+        public void UpdateData(CBodyData cbd)
         {
-        
+            _materialData = cbd.materialData;
+            _noiseFilters = DataToNoise.Convert(cbd.materialData, cbd.cBodyType);
         }
     }
 }
