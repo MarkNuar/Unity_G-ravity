@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace CBodies
 {
-    public class MeshGenerator : MonoBehaviour
+    public class MeshGenerator
     {
         // public int terrainResolution = 10; // todo import from general settings 
         public Material material;
         private Mesh _mesh;
 
-        public GameObject GenerateMesh(int resolution)
+        public GameObject GenerateMesh(int resolution, Transform transform, GameObject gameObject)
         {
             if (_mesh == null) {
                 _mesh = new Mesh ();
@@ -17,14 +17,14 @@ namespace CBodies
                 _mesh.Clear();
             }
 
-            var s = new IcoSphereGenerator ();
+            IcoSphereGenerator s = new IcoSphereGenerator ();
             s.Generate (resolution);
             _mesh.vertices = s.Vertices;
             _mesh.triangles = s.Triangles;
             _mesh.RecalculateBounds ();
             _mesh.RecalculateNormals ();
 
-            var g = GetOrCreateMeshObject ("Mesh", _mesh, material);
+            GameObject g = GetOrCreateMeshObject ("Mesh", _mesh, material, transform, gameObject);
             if (!g.GetComponent<MeshCollider> ()) {
                 g.AddComponent<MeshCollider> ();
             }
@@ -33,7 +33,7 @@ namespace CBodies
             return g;
         }
 
-        private GameObject GetOrCreateMeshObject (string name, Mesh mesh, Material material) {
+        private GameObject GetOrCreateMeshObject (string name, Mesh mesh, Material material, Transform transform, GameObject gameObject) {
             // Find/create object
             var child = transform.Find (name);
             if (!child) {

@@ -14,7 +14,6 @@ namespace UI.Menu.SystemEditing
     {
         public GameObject cBodyPreviewPrefab;
 
-        public Shader cBodyPreviewShader;
         // For switching panels
         public List<GameObject> panels;
 
@@ -119,7 +118,7 @@ namespace UI.Menu.SystemEditing
             
             
             // Initialize the cBody
-            preview.cBody.InitializeCBody(curCBodyData, cBodyPreviewShader);
+            preview.cBody.InitializeCBody(curCBodyData);
 
             // CBody will be updated when values in cBodyData will change
             curCBodyData.Subscribe(preview.cBody);

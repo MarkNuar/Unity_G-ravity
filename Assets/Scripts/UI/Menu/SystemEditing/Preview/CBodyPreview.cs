@@ -16,15 +16,9 @@ namespace UI.Menu.SystemEditing.Preview
         public CBodyDrag positionDrag;
         
         [SerializeField] private GameObject selectionMesh;
-        [SerializeField] private GameObject cBodyGameObject;
-        
+
         public CBody cBody;
-        
-        private void Awake()
-        {
-            cBody = cBodyGameObject.AddComponent<CBody>();
-        }
-        
+
         public void SelectCBody()
         {
             velocityArrow.arrowHead.enabled = true;

@@ -565,6 +565,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4932631801691308816}
+  - component: {fileID: 3503594601842755883}
   m_Layer: 0
   m_Name: cBody
   m_TagString: Untagged
@@ -588,6 +589,19 @@ Transform:
   m_Father: {fileID: 4932631801748688318}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3503594601842755883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4932631801691308820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf52826efc52d074cbddae57177f34ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
 --- !u!1 &4932631801748688305
 GameObject:
   m_ObjectHideFlags: 0
@@ -638,8 +652,7 @@ MonoBehaviour:
   velocityArrow: {fileID: 3537158682048850353}
   positionDrag: {fileID: 255106661827717679}
   selectionMesh: {fileID: 1077698533588247897}
-  cBodyGameObject: {fileID: 4932631801691308820}
-  cBody: {fileID: 0}
+  cBody: {fileID: 3503594601842755883}
 --- !u!1 &6846253806894353666
 GameObject:
   m_ObjectHideFlags: 0

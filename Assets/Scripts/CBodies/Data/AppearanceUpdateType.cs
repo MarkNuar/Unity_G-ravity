@@ -2,8 +2,8 @@
 {
     public enum AppearanceUpdateType
     {
-        Mesh,
-        Material, 
+        Mesh, // shape
+        Material, // color
         All
     }
 }

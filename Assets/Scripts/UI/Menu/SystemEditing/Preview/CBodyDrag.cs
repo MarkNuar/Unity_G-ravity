@@ -92,9 +92,10 @@ namespace UI.Menu.SystemEditing.Preview
             {
                 handleTargetPos.y = handlePos.y;
             }
-            handleTargetPos.z = handlePos.z;
+
+            handleTargetPos.z = 0; //handlePos.z;
             handlePos = handleTargetPos;
-            //Debug.Log("Handle target screen pos fixed: "+ handlePos);
+            Debug.Log("Handle target screen pos fixed: "+ handlePos);
             _dragHandleTransform.position = handlePos;
         }
 
