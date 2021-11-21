@@ -12,8 +12,8 @@ namespace CBodies.Data
         public string name;
 
         //public AppearanceData appearance = new AppearanceData();
-        public MeshData meshData = new MeshData();
-        public MaterialData materialData = new MaterialData();
+        public ShapeData shapeData = new ShapeData();
+        public ShadingData shadingData = new ShadingData();
         public PhysicsData physicsData = new PhysicsData();
         public CBodyType cBodyType;
 
@@ -28,15 +28,15 @@ namespace CBodies.Data
 
         public void Subscribe(CBody observer)
         {
-            meshData.Subscribe(observer);
-            materialData.Subscribe(observer);
+            shapeData.Subscribe(observer);
+            shadingData.Subscribe(observer);
             physicsData.Subscribe(observer);
         }
 
         public void Unsubscribe()
         {
-            meshData.Unsubscribe();
-            materialData.Unsubscribe();
+            shapeData.Unsubscribe();
+            shadingData.Unsubscribe();
             physicsData.Unsubscribe();
         }
 

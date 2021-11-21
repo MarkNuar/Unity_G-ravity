@@ -15,8 +15,8 @@ namespace CBodies.Data
         {
             CBodyData cbd = new CBodyData
             {
-                meshData = new MeshData(),
-                materialData = new MaterialData(),
+                shapeData = new ShapeData(),
+                shadingData = new ShadingData(),
                 physicsData = new PhysicsData(),
             };
             
@@ -27,9 +27,9 @@ namespace CBodies.Data
             
             // todo: update resolution in the editing menu according to camera distance from planets
             var res = 10;
-            cbd.meshData.Init(res);
+            cbd.shapeData.Init(res);
             
-            cbd.materialData.Init();
+            cbd.shadingData.Init();
 
             cbd.Init();
             

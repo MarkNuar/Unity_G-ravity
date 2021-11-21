@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 namespace CBodies.Data
 {
     [Serializable]
-    public class MaterialData
+    public class ShadingData
     {
         [CanBeNull] private CBody _observer;
 

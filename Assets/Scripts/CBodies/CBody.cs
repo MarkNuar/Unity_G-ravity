@@ -72,14 +72,14 @@ namespace CBodies
         private void GenerateMesh()
         {
             // TODO
-            MeshData md = _cBodyData.meshData;
+            ShapeData md = _cBodyData.shapeData;
             _meshObject = _meshGenerator.GenerateMesh(md.resolution, transform, gameObject);
         }
 
         private void GenerateMaterial()
         {
             // TODO
-            MaterialData md = _cBodyData.materialData;
+            ShadingData md = _cBodyData.shadingData;
             _meshGenerator.Material.color = md.color;
         }
 

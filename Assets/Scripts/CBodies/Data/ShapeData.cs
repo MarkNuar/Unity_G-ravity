@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace CBodies.Data
 {
     [Serializable]
-    public class MeshData
+    public class ShapeData
     {
         [CanBeNull] private CBody _observer;
 

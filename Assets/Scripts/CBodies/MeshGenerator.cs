@@ -10,13 +10,13 @@ namespace CBodies
         public Material Material;
         private Mesh _mesh;
 
-        private MeshData _meshData;
+        private ShapeData _shapeData;
         private INoiseFilter[] _noiseFilters;
 
         public void UpdateData(CBodyData cbd)
         {
-            _meshData = cbd.meshData;
-            _noiseFilters = DataToNoise.Convert(cbd.meshData, cbd.cBodyType);
+            _shapeData = cbd.shapeData;
+            _noiseFilters = DataToNoise.Convert(cbd.shapeData, cbd.cBodyType);
         }
         
         public GameObject GenerateMesh(int resolution, Transform transform, GameObject gameObject)

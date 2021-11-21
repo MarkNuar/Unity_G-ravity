@@ -169,7 +169,7 @@ namespace UI.Menu.SystemEditing
             DisableCBodyButtons();
             
             inputCBodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-            SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].materialData.color);
+            SetButtonColor(cBodyColorButton, _systemData.cBodies[_currentCBodyIndex].shadingData.color);
 
             HideCurrentCBodySelectionHUD();
 
@@ -201,13 +201,13 @@ namespace UI.Menu.SystemEditing
         public void BeginPickColor()
         {
             OverlayPanel(3,true);
-            colorPicker.CurrentColor = _systemData.cBodies[_currentCBodyIndex].materialData.color;
+            colorPicker.CurrentColor = _systemData.cBodies[_currentCBodyIndex].shadingData.color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
         }
 
         private void SetCBodyColor(Color color)
         {
-            _systemData.cBodies[_currentCBodyIndex].materialData.color = color;
+            _systemData.cBodies[_currentCBodyIndex].shadingData.color = color;
             SetButtonColor(cBodyColorButton, color);
         }
 
