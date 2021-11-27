@@ -1,12 +1,15 @@
 using System.IO;
-using CBodies.Data;
+using CBodies.CBodySettings;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
     public string storePath = null;
+    
+    public enum GameMode {Menu, Editing, Explore, Unknown}
 
     private void Awake()
     {
@@ -19,17 +22,17 @@ public class GameManager : MonoBehaviour
         QualitySettings.vSyncCount = 1;
     }
 
-    public void SaveSystem(SystemData systemData)
+    public void SaveSystem(SystemSettings systemSettings)
     {
         if (storePath == null) return;
-        var path = storePath + systemData.systemName;
+        var path = storePath + systemSettings.systemName;
         var writer = new StreamWriter(path, false);
-        var res = JsonUtility.ToJson(systemData);
+        var res = JsonUtility.ToJson(systemSettings);
         writer.WriteLine(res);
         writer.Close();
     }
 
-    public SystemData LoadSystem(string systemName)
+    public SystemSettings LoadSystem(string systemName)
     {
         var path = storePath + systemName;
         Debug.Log(path);
@@ -37,7 +40,7 @@ public class GameManager : MonoBehaviour
         {
             // There exists already a previous saved state
             var reader = new StreamReader(path);
-            var loadedSettings = JsonUtility.FromJson<SystemData>(reader.ReadToEnd());
+            var loadedSettings = JsonUtility.FromJson<SystemSettings>(reader.ReadToEnd());
             if (loadedSettings != null)
             {
                 return loadedSettings;
@@ -55,5 +58,16 @@ public class GameManager : MonoBehaviour
     public Camera GetMainCamera()
     {
         return Camera.main;
+    }
+
+    public GameMode GetGameMode()
+    {
+        if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(0).name)
+            return GameMode.Menu;
+        if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(1).name)
+            return GameMode.Editing;
+        if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(2).name)
+            return GameMode.Explore;
+        return GameMode.Unknown;
     }
 }

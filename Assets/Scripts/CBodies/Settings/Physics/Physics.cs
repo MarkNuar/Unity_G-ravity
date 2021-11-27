@@ -2,14 +2,13 @@ using System;
 using JetBrains.Annotations;
 using UI.Menu.SystemEditing;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace CBodies.Data
+namespace CBodies.Settings.Physics
 {
     [Serializable]
-    public class PhysicsData
+    public class Physics
     {
-        [CanBeNull] private CBody _observer;
+        [CanBeNull] private CBodyGenerator _observer;
 
         [SerializeField] private float currentRadius;
         [SerializeField] private float currentSurfaceGravity;
@@ -73,7 +72,7 @@ namespace CBodies.Data
             currentInitialVelocity = Vector3.up * ParameterValues.minVelocity;
         }
         
-        public void Subscribe(CBody observer)
+        public void Subscribe(CBodyGenerator observer)
         {
             _observer = observer;
         }

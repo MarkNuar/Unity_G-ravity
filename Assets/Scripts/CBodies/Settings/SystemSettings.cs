@@ -1,35 +1,37 @@
 using System;
 using System.Collections.Generic;
+using CBodies.Settings.Shading;
+using CBodies.Settings.Shape;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Physics = CBodies.Settings.Physics.Physics;
 
-namespace CBodies.Data
+namespace CBodies.CBodySettings
 {
     [Serializable]
-    public class SystemData
+    public class SystemSettings
     {
         public string systemName;
-        public List<CBodyData> cBodies = new List<CBodyData>();
+        public List<CBodies.CBodySettings.CBodySettings> cBodies = new List<CBodies.CBodySettings.CBodySettings>();
 
         public int AddNewCBody()
         {
-            CBodyData cbd = new CBodyData
+            CBodies.CBodySettings.CBodySettings cbd = new CBodies.CBodySettings.CBodySettings
             {
-                shapeData = new ShapeData(),
-                shadingData = new ShadingData(),
-                physicsData = new PhysicsData(),
+                shape = new Shape(),
+                shading = new Shading(),
+                physics = new Physics(),
             };
             
             // todo: position according to the type of planet
             var count = cBodies.Count;
             Vector3 pos = new Vector3( count * 25, 0, 0);
-            cbd.physicsData.Init(pos);
+            cbd.physics.Init(pos);
             
             // todo: update resolution in the editing menu according to camera distance from planets
             var res = 10;
-            cbd.shapeData.Init(res);
+            cbd.shape.Init(res);
             
-            cbd.shadingData.Init();
+            cbd.shading.Init();
 
             cbd.Init();
             

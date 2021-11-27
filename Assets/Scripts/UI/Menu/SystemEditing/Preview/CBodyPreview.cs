@@ -14,8 +14,6 @@ namespace UI.Menu.SystemEditing.Preview
         
         public CBodyArrow velocityArrow;
         public CBodyDrag positionDrag;
-        
-        [SerializeField] private GameObject selectionMesh;
 
         public CBody cBody;
 
