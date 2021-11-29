@@ -6,7 +6,7 @@ using UnityEngine;
 namespace CBodies.Settings.Physics
 {
     [Serializable]
-    public class Physics
+    public class Physics : ScriptableObject
     {
         [CanBeNull] private CBodyGenerator _observer;
 

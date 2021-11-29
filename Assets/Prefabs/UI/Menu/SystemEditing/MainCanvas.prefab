@@ -2979,7 +2979,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cBodyPreviewPrefab: {fileID: 4932631801748688305, guid: b2b87cf245327964bbf10ea4231c9170, type: 3}
-  cBodyPreviewShader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   panels:
   - {fileID: 3532850523592960524}
   - {fileID: 8546499352445009786}

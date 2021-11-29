@@ -1,5 +1,4 @@
 using System.IO;
-using CBodies.CBodySettings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,8 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public string storePath = null;
-    
+    private string _systemToLoad;
+
     public enum GameMode {Menu, Editing, Explore, Unknown}
 
     private void Awake()
@@ -16,43 +15,10 @@ public class GameManager : MonoBehaviour
         if (Instance != null) return;
         Instance = this;
         DontDestroyOnLoad(Instance);
-        storePath = Application.persistentDataPath + Path.DirectorySeparatorChar;
+
         
         // apply some quality settings 
         QualitySettings.vSyncCount = 1;
-    }
-
-    public void SaveSystem(SystemSettings systemSettings)
-    {
-        if (storePath == null) return;
-        var path = storePath + systemSettings.systemName;
-        var writer = new StreamWriter(path, false);
-        var res = JsonUtility.ToJson(systemSettings);
-        writer.WriteLine(res);
-        writer.Close();
-    }
-
-    public SystemSettings LoadSystem(string systemName)
-    {
-        var path = storePath + systemName;
-        Debug.Log(path);
-        if (File.Exists(path))
-        {
-            // There exists already a previous saved state
-            var reader = new StreamReader(path);
-            var loadedSettings = JsonUtility.FromJson<SystemSettings>(reader.ReadToEnd());
-            if (loadedSettings != null)
-            {
-                return loadedSettings;
-            }
-            else
-            {
-                Debug.LogError("System not correctly loaded");
-                return null;
-            }
-        }
-        Debug.LogError("No saved system data found");
-        return null;
     }
 
     public Camera GetMainCamera()
@@ -69,5 +35,17 @@ public class GameManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(2).name)
             return GameMode.Explore;
         return GameMode.Unknown;
+    }
+
+    public void SetSystemToLoad(string systemName)
+    {
+        _systemToLoad = systemName;
+    }
+
+    public string GetSystemToLoad()
+    {
+        var temp = _systemToLoad;
+        _systemToLoad = null;
+        return temp;
     }
 }

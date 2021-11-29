@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 namespace CBodies.Settings.Shading
 {
     [Serializable]
-    public class Shading
+    public class Shading : ScriptableObject
     {
         [CanBeNull] private CBodyGenerator _observer;
 

@@ -1,29 +1,27 @@
 using System;
 using System.Collections.Generic;
-using CBodies.Settings.Shading;
-using CBodies.Settings.Shape;
 using UnityEngine;
-using Physics = CBodies.Settings.Physics.Physics;
 
-namespace CBodies.CBodySettings
+namespace CBodies.Settings
 {
     [Serializable]
     public class SystemSettings
     {
         public string systemName;
-        public List<CBodies.CBodySettings.CBodySettings> cBodies = new List<CBodies.CBodySettings.CBodySettings>();
+        public List<CBodySettings> cBodiesSettings;
 
         public int AddNewCBody()
         {
-            CBodies.CBodySettings.CBodySettings cbd = new CBodies.CBodySettings.CBodySettings
+            CBodySettings cbd = new CBodySettings
             {
-                shape = new Shape(),
-                shading = new Shading(),
-                physics = new Physics(),
+                // todo: load the correct cbody type from the serializer
+                shape = new Shape.Shape(),
+                shading = new Shading.Shading(),
+                physics = new Physics.Physics(),
             };
             
             // todo: position according to the type of planet
-            var count = cBodies.Count;
+            var count = cBodiesSettings.Count;
             Vector3 pos = new Vector3( count * 25, 0, 0);
             cbd.physics.Init(pos);
             
@@ -35,8 +33,8 @@ namespace CBodies.CBodySettings
 
             cbd.Init();
             
-            cBodies.Add(cbd);
-            return cBodies.Count - 1;
+            cBodiesSettings.Add(cbd);
+            return cBodiesSettings.Count - 1;
         }
     }
 }

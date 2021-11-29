@@ -1,27 +1,27 @@
 using System;
-using CBodies.Settings.Physics;
-using CBodies.Settings.Shading;
-using CBodies.Settings.Shape;
 using Random = UnityEngine.Random;
 
-namespace CBodies.CBodySettings
+namespace CBodies.Settings
 {
     [Serializable]
     public class CBodySettings
     {
         private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia"};
 
-        public string name;
+        public string cBodyName;
+        public CBodyType cBodyType;
 
         //public AppearanceData appearance = new AppearanceData();
-        public Shape shape = new Shape();
-        public Shading shading = new Shading();
-        public Physics physics = new Physics();
+        public Shape.Shape shape;
+        public Shading.Shading shading;
+        public Physics.Physics physics;
 
         public void Init()
         {
-            name = BaseNames[Random.Range(0, BaseNames.Length)];
-            //
+            cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
+            (Shape.Shape sp, Shading.Shading sd) = SystemUtils.Instance.GetShapeAndShading(cBodyType);
+            shape = sp;
+            shading = sd;
         }
 
         public void Subscribe(CBodyGenerator observer)
@@ -37,6 +37,14 @@ namespace CBodies.CBodySettings
             shape.Unsubscribe();
             shading.Unsubscribe();
             physics.Unsubscribe();
+        }
+
+        public enum CBodyType
+        {
+            Base,
+            Rocky,
+            Gaseous,
+            Star
         }
     }
 }
