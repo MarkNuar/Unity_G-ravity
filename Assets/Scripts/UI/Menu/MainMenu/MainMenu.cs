@@ -102,7 +102,8 @@ namespace UI.Menu.MainMenu
             _editLoadedSystems.Clear();
             _exploreLoadedSystems.Clear();
             GameManager.Instance.SetSystemToLoad(systemName, isNew);
-            SceneManager.LoadScene("Scenes/SystemEditing", LoadSceneMode.Single);
+            //SceneManager.LoadScene("Scenes/SystemEditing", LoadSceneMode.Single);
+            GameManager.Instance.LoadScene(1);
         }
         
         private void LoadSystemExplorationScene(string systemName)
@@ -111,7 +112,8 @@ namespace UI.Menu.MainMenu
             _editLoadedSystems.Clear();
             _exploreLoadedSystems.Clear();
             GameManager.Instance.SetSystemToLoad(systemName, false);
-            SceneManager.LoadScene("Scenes/SystemExploration", LoadSceneMode.Single);
+            //SceneManager.LoadScene("Scenes/SystemExploration", LoadSceneMode.Single);
+            GameManager.Instance.LoadScene(2);
         }
         
         private void ShowPanel(int position)

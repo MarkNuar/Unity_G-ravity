@@ -478,7 +478,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5302480220706715120}
         m_TargetAssemblyTypeName: UI.Menu.SystemEditing.SystemEditingMenu, Assembly-CSharp
-        m_MethodName: CreateCBody
+        m_MethodName: BeginCBodyCreation
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

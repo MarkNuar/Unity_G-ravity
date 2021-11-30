@@ -50,21 +50,21 @@ public class SystemUtils : MonoBehaviour
     
     public void SaveSystem(SystemSettings systemSettings)
     {
-        Debug.Log("Saving system: " + systemSettings.systemName);
-        
         if (_storePath == null) return;
 
         // Add the newly created system name to the system names list
         var systemNamesPath = _storePath + "names_of_systems";
-        SavedSysNames savedNames = new SavedSysNames();
+        SavedSystemsNames savedNames = new SavedSystemsNames();
         if (File.Exists(systemNamesPath))
         {
             StreamReader namesReader = new StreamReader(systemNamesPath);
-            savedNames = JsonUtility.FromJson<SavedSysNames>(namesReader.ReadToEnd());
+            savedNames = JsonUtility.FromJson<SavedSystemsNames>(namesReader.ReadToEnd());
             namesReader.Close();
         }
-        savedNames.savedSysNames.Add(systemSettings.systemName);
-        Debug.Log(savedNames.savedSysNames[0]);
+        if (!savedNames.savedSysNames.Contains(systemSettings.systemName))
+        {
+            savedNames.savedSysNames.Add(systemSettings.systemName);
+        }
         StreamWriter namesWriter = new StreamWriter(systemNamesPath, false);
         var namesJson = JsonUtility.ToJson(savedNames);
         namesWriter.WriteLine(namesJson);
@@ -72,63 +72,78 @@ public class SystemUtils : MonoBehaviour
         
         
         // Stores the types of the newly created system cbodies
-        SystemTypes systemTypes = new SystemTypes
+        CBodiesTypes cBodiesTypes = new CBodiesTypes
         {
             types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
         };
         for (var i = 0; i < systemSettings.cBodiesSettings.Count; i++)
         {
-            systemTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
+            cBodiesTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
         }
-        var systemTypesPath = _storePath + systemSettings.systemName + "_types";
-        StreamWriter typesWriter = new StreamWriter(systemTypesPath, false);
-        var typesJson = JsonUtility.ToJson(systemTypes);
+        var cBodiesTypesPath = _storePath + systemSettings.systemName + "_cBodies_types";
+        StreamWriter typesWriter = new StreamWriter(cBodiesTypesPath, false);
+        var typesJson = JsonUtility.ToJson(cBodiesTypes);
         typesWriter.WriteLine(typesJson);
         typesWriter.Close();
+
+
+        // Stores cBody settings for each cBody
+        CBodiesSettings cBodiesSettings = new CBodiesSettings();
+        foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
+        {
+            cBodiesSettings.shapeSettingsList.Add(cBodySettings.shape.GetSettings());
+            cBodiesSettings.shadingSettingsList.Add(cBodySettings.shading.GetSettings());
+            cBodiesSettings.physicsSettingsList.Add(cBodySettings.physics.GetSettings());
+        }
+        var cBodiesSettingsPath = _storePath + systemSettings.systemName + "_cBodies_settings";
+        StreamWriter settingsWriter = new StreamWriter(cBodiesSettingsPath, false);
+        var settingsJson = JsonUtility.ToJson(cBodiesSettings);
+        settingsWriter.WriteLine(settingsJson);
+        settingsWriter.Close();
         
         
         // Stores the system settings
-        var systemSettingsPath = _storePath + systemSettings.systemName + "_settings";
-        StreamWriter settingsWriter = new StreamWriter(systemSettingsPath, false);
-        var settingsJson = JsonUtility.ToJson(systemSettings);
-        settingsWriter.WriteLine(settingsJson);
-        settingsWriter.Close();
+        var systemPath = _storePath + systemSettings.systemName + "_system_settings";
+        StreamWriter systemWriter = new StreamWriter(systemPath, false);
+        var systemJson = JsonUtility.ToJson(systemSettings);
+        systemWriter.WriteLine(systemJson);
+        systemWriter.Close();
     }
 
     public SystemSettings LoadSystem(string systemName)
     {
-        var systemTypesPath = _storePath + systemName + "_types";
-        var systemSettingsPath = _storePath + systemName + "_settings";
+        var cBodiesTypesPath = _storePath + systemName + "_cBodies_types";
+        var cBodiesSettingsPath = _storePath + systemName + "_cBodies_settings";
+        var systemPath = _storePath + systemName + "_system_settings";
         
-        if (File.Exists(systemSettingsPath) && File.Exists(systemTypesPath))
+        if (File.Exists(systemPath) && File.Exists(cBodiesTypesPath) && File.Exists(cBodiesSettingsPath))
         {
             // There exists already a previous saved state
-            StreamReader typesReader = new StreamReader(systemTypesPath);
-            SystemTypes loadedTypes = JsonUtility.FromJson<SystemTypes>(typesReader.ReadToEnd());
+            StreamReader cBodiesTypesReader = new StreamReader(cBodiesTypesPath);
+            CBodiesTypes loadedCBodiesTypes = 
+                JsonUtility.FromJson<CBodiesTypes>(cBodiesTypesReader.ReadToEnd());
 
-            if (loadedTypes != null)
+            StreamReader cBodiesSettingsReader = new StreamReader(cBodiesSettingsPath);
+            CBodiesSettings loadedCBodiesSettings =
+                JsonUtility.FromJson<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd());
+
+            StreamReader systemSettingsReader = new StreamReader(systemPath);
+            SystemSettings systemSettings = JsonUtility.FromJson<SystemSettings>(systemSettingsReader.ReadToEnd());
+
+            if (loadedCBodiesTypes != null && loadedCBodiesSettings != null && systemSettings != null)
             {
-                Debug.Log(loadedTypes.types);
-                
-                SystemSettings systemSettings = new SystemSettings
+                for (int i = 0; i < loadedCBodiesTypes.types.Length; i ++)
                 {
-                    cBodiesSettings = new List<CBodySettings>()
-                };
-                foreach (CBodySettings.CBodyType type in loadedTypes.types)
-                {
-                    CBodySettings cBodySettings = new CBodySettings();
-
-                    (Shape shape, Shading shading, Physics physics) = GetShapeShadingPhysics(type);
-                    cBodySettings.shape = shape;
-                    cBodySettings.shading = shading;
-                    cBodySettings.physics = physics;
+                    (Shape shape, Shading shading, Physics physics) = GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
+                    shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
+                    systemSettings.cBodiesSettings[i].shape = shape;
                     
-                    systemSettings.cBodiesSettings.Add(cBodySettings);
+                    shading.SetSettings(loadedCBodiesSettings.shadingSettingsList[i]);
+                    systemSettings.cBodiesSettings[i].shading = shading;
+                    
+                    physics.SetSettings(loadedCBodiesSettings.physicsSettingsList[i]);
+                    systemSettings.cBodiesSettings[i].physics = physics;
                 }
-                
-                StreamReader settingsReader = new StreamReader(systemSettingsPath);
-                JsonUtility.FromJsonOverwrite(settingsReader.ReadToEnd(), systemSettings);
-
                 return systemSettings;
             }
             else
@@ -180,23 +195,31 @@ public class SystemUtils : MonoBehaviour
     public List<string> GetSystemNames()
     {
         var systemNamesPath = _storePath + "names_of_systems";
-        SavedSysNames savedNames = new SavedSysNames();
+        SavedSystemsNames savedNames = new SavedSystemsNames();
         if (!File.Exists(systemNamesPath)) return savedNames.savedSysNames;
         StreamReader reader = new StreamReader(systemNamesPath);
-        savedNames = JsonUtility.FromJson<SavedSysNames>(reader.ReadToEnd());
+        savedNames = JsonUtility.FromJson<SavedSystemsNames>(reader.ReadToEnd());
         return savedNames.savedSysNames;
     }
     
     // Utility class for serializing system cBodies types
     [Serializable]
-    private class SystemTypes
+    private class CBodiesTypes
     {
         public CBodySettings.CBodyType[] types; 
     }
 
+    [Serializable]
+    private class CBodiesSettings
+    {
+        public List<Shape.ShapeSettings> shapeSettingsList = new List<Shape.ShapeSettings>();
+        public List<Shading.ShadingSettings> shadingSettingsList = new List<Shading.ShadingSettings>();
+        public List<Physics.PhysicsSettings> physicsSettingsList = new List<Physics.PhysicsSettings>();
+    }
+
     // Utility class for serializing systems names
     [Serializable]
-    private class SavedSysNames
+    private class SavedSystemsNames
     {
         public List<string> savedSysNames = new List<string>();
     }

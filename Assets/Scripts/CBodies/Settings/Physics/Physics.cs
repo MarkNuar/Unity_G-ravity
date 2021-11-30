@@ -8,70 +8,13 @@ namespace CBodies.Settings.Physics
     [Serializable][CreateAssetMenu]
     public class Physics : ScriptableObject
     {
+        // OBSERVER
         [CanBeNull] private CBodyGenerator _observer;
-
-        [SerializeField] private float currentRadius;
-        [SerializeField] private float currentSurfaceGravity;
-        [SerializeField] private Vector3 currentInitialPosition; 
-        [SerializeField] private Vector3 currentInitialVelocity;
-
-        public float radius
-        {
-            get => currentRadius;
-            set
-            {
-                if(Math.Abs(currentRadius - value) < Mathf.Epsilon)
-                    return;
-                currentRadius = value;
-                if(_observer) _observer.OnPhysicsUpdate();
-            }
-        }
-
-        public float surfaceGravity
-        {
-            get => currentSurfaceGravity;
-            set
-            {
-                if(Math.Abs(currentSurfaceGravity - value) < Mathf.Epsilon)
-                    return;
-                currentSurfaceGravity = value;
-                if(_observer) _observer.OnPhysicsUpdate();
-            }
-        }
-
-        public Vector3 initialPosition
-        {
-            get => currentInitialPosition;
-            set
-            {
-                if ((currentInitialPosition - value).magnitude < Mathf.Epsilon)
-                    return;
-                currentInitialPosition = value;
-                if(_observer) _observer.OnPhysicsUpdate();
-            }
-        }
+        // MEMENTO
+        private PhysicsSettings _physicsSettings;
         
-        public Vector3 initialVelocity
-        {
-            get => currentInitialVelocity;
-            set
-            {
-                if ((currentInitialVelocity - value).magnitude < Mathf.Epsilon)
-                    return;
-                currentInitialVelocity = value;
-                if(_observer) _observer.OnPhysicsUpdate();
-            }
-        }
         
-        public void Init(Vector3 pos)
-        {
-            //currentRadius = Random.Range(1f, ParameterValues.maxRadius);
-            currentRadius = ParameterValues.minRadius; // Min radius?
-            currentSurfaceGravity = ParameterValues.minGravity;
-            currentInitialPosition = pos;
-            currentInitialVelocity = Vector3.up * ParameterValues.minVelocity;
-        }
-        
+        // OBSERVER PATTERN
         public void Subscribe(CBodyGenerator observer)
         {
             _observer = observer;
@@ -80,6 +23,43 @@ namespace CBodies.Settings.Physics
         public void Unsubscribe()
         {
             _observer = null;
+        }
+        
+        // MEMENTO PATTERN
+        public PhysicsSettings GetSettings()
+        {
+            return _physicsSettings;
+        }
+
+        public void SetSettings(PhysicsSettings ps)
+        {
+            _physicsSettings = ps;
+            if(_observer)
+                _observer.OnPhysicsUpdate();
+        }
+
+
+        public void RandomInitialize(Vector3 pos)
+        {
+            _physicsSettings = new PhysicsSettings
+            {
+                radius = ParameterValues.minRadius,
+                surfaceGravity = ParameterValues.minGravity,
+                initialPosition = pos,
+                initialVelocity = Vector3.up * ParameterValues.minVelocity
+                // ...
+            };
+            if (_observer)
+                _observer.OnPhysicsUpdate();
+        }
+
+        [Serializable]
+        public class PhysicsSettings
+        {
+            public float radius;
+            public float surfaceGravity;
+            public Vector3 initialPosition; 
+            public Vector3 initialVelocity;
         }
     }
 }

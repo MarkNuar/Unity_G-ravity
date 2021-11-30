@@ -1,7 +1,4 @@
-using System;
-using UI.Menu.SystemEditing;
 using UnityEngine;
-using Physics = CBodies.Settings.Physics.Physics;
 
 namespace CBodies
 {
@@ -24,7 +21,6 @@ namespace CBodies
 
             cBodyGenerator = gameObject.AddComponent<CBodyGenerator>();
             cBodyGenerator.cBody = this;
-            //cBodyGenerator.GeneratePhysics(); // update mass of the planet
         }
 
         public void UpdateVelocity (Vector3 acceleration, float timeStep) {

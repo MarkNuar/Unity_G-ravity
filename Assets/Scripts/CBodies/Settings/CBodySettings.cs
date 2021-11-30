@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace CBodies.Settings
@@ -6,16 +7,17 @@ namespace CBodies.Settings
     [Serializable]
     public class CBodySettings
     {
-        private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia"};
-
-        public string cBodyName;
+        // ***** SERIALIZED
+        public string cBodyName; 
         public CBodyType cBodyType;
-
-        //public AppearanceData appearance = new AppearanceData();
+        // ***** END
+        
         public Shape.Shape shape;
         public Shading.Shading shading;
         public Physics.Physics physics;
-
+        
+        private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia"};
+        
         public void Init(CBodyType type)
         {
             cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
@@ -41,6 +43,7 @@ namespace CBodies.Settings
             physics.Unsubscribe();
         }
 
+        [Serializable]
         public enum CBodyType
         {
             Base,

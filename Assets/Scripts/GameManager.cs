@@ -11,14 +11,15 @@ public class GameManager : MonoBehaviour
     private bool _isNew;
 
     public enum GameMode {Menu, Editing, Explore, Unknown}
-
+    public GameMode gameMode; 
+    
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(Instance);
-            
+
             // apply some quality settings 
             QualitySettings.vSyncCount = 1;
         }
@@ -31,17 +32,6 @@ public class GameManager : MonoBehaviour
     public Camera GetMainCamera()
     {
         return Camera.main;
-    }
-
-    public GameMode GetGameMode()
-    {
-        if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(0).name)
-            return GameMode.Menu;
-        if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(1).name)
-            return GameMode.Editing;
-        if (SceneManager.GetActiveScene().name == SceneManager.GetSceneAt(2).name)
-            return GameMode.Explore;
-        return GameMode.Unknown;
     }
 
     public void SetSystemToLoad(string systemName, bool isNew)
@@ -57,5 +47,17 @@ public class GameManager : MonoBehaviour
         _systemToLoad = null;
         _isNew = false;
         return (temp, temp2);
+    }
+
+    public void LoadScene(int index)
+    {
+        gameMode = index switch
+        {
+            0 => GameMode.Menu,
+            1 => GameMode.Editing,
+            2 => GameMode.Explore,
+            _ => GameMode.Unknown
+        };
+        SceneManager.LoadScene(index, LoadSceneMode.Single);
     }
 }

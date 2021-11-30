@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CBodies.Settings;
+using CBodies.Settings.Shape;
 using UnityEngine;
 using Utilities;
 using Physics = CBodies.Settings.Physics.Physics;
@@ -12,16 +13,16 @@ namespace CBodies
         public CBody cBody;
         
         public enum PreviewMode { LOD0, LOD1, LOD2, CollisionRes }
-        public ResolutionSettings resolutionSettings;
-        public PreviewMode previewMode;
+        public ResolutionSettings resolutionSettings = new ResolutionSettings();
+        public PreviewMode previewMode = PreviewMode.LOD0;
         
         // CBodySettings
         public CBodySettings cBodySettings;
         
         // Private variables
-        private Mesh previewMesh;
-        private Mesh collisionMesh;
-        private Mesh[] lodMeshes;
+        private Mesh _previewMesh;
+        private Mesh _collisionMesh;
+        private Mesh[] _lodMeshes;
         
         // Buffer for storing vertices sent to the GPU 
         private ComputeBuffer _vertexBuffer;
@@ -30,26 +31,29 @@ namespace CBodies
         private bool _shadingUpdated;
         private bool _physicsUpdated;
 	
-        private Camera cam;
+        private Camera _cam;
 
-        private Vector2 heightMinMax;
+        private Vector2 _heightMinMax;
 
         // Game mode data 
         private int _activeLODIndex = -1;
-        private MeshFilter terrainMeshFilter;
-        private Material terrainMatInstance;
+        private MeshFilter _terrainMeshFilter;
+        private Material _terrainMatInstance;
 
-        static Dictionary<int, SphereMesh> _sphereGenerators;
+        private static Dictionary<int, SphereMesh> _sphereGenerators;
 
         private void Start()
         {
-            cam = GameManager.Instance.GetMainCamera();
-            if (GameManager.Instance.GetGameMode() == GameManager.GameMode.Explore)
+	        _cam = GameManager.Instance.GetMainCamera();
+	        
+            if (GameManager.Instance.gameMode == GameManager.GameMode.Explore)
             {
+	            // Todo : are the setting ready? 
                 HandleExploreModeGeneration();
             }
-            else if (GameManager.Instance.GetGameMode() == GameManager.GameMode.Editing)
+            else if (GameManager.Instance.gameMode == GameManager.GameMode.Editing)
             {
+	            Debug.Log("initial update");
                 _shapeUpdated = true;
                 _shadingUpdated = true;
                 _physicsUpdated = true;
@@ -61,12 +65,12 @@ namespace CBodies
         private void HandleExploreModeGeneration()
         {
 	        // Generate LOD meshes
-	        lodMeshes = new Mesh[ResolutionSettings.NumLODLevels];
-	        for (int i = 0; i < lodMeshes.Length; i++) {
-		        Vector2 lodTerrainHeightMinMax = GenerateTerrainMesh (ref lodMeshes[i], resolutionSettings.GetLODResolution (i));
+	        _lodMeshes = new Mesh[ResolutionSettings.NumLODLevels];
+	        for (int i = 0; i < _lodMeshes.Length; i++) {
+		        Vector2 lodTerrainHeightMinMax = GenerateTerrainMesh (ref _lodMeshes[i], resolutionSettings.GetLODResolution (i));
 		        // Use min/max height of first (most detailed) LOD
 		        if (i == 0) {
-			        heightMinMax = lodTerrainHeightMinMax;
+			        _heightMinMax = lodTerrainHeightMinMax;
 		        }
 	        }
 	        
@@ -98,36 +102,40 @@ namespace CBodies
         {
             if (_shapeUpdated)
             {
+	            Debug.Log("Shape and Shading Update");
                 _shapeUpdated = false;
                 _shadingUpdated = false;
                 
-                heightMinMax = GenerateTerrainMesh (ref previewMesh, PickTerrainRes ());
+                // _heightMinMax = GenerateTerrainMesh (ref _previewMesh, PickTerrainRes ());
             }
             // If only shading noise has changed, update it separately from shape to save time
             else if (_shadingUpdated)
             {
+	            Debug.Log("Shading Update");
                 _shadingUpdated = false;
                 
-                ComputeHelper.CreateStructuredBuffer<Vector3> (ref _vertexBuffer, previewMesh.vertices);
-                cBodySettings.shading.Initialize (cBodySettings.shape); 
-                Vector4[] shadingData = cBodySettings.shading.GenerateShadingData (_vertexBuffer);
-                previewMesh.SetUVs (0, shadingData);
+                // ComputeHelper.CreateStructuredBuffer<Vector3> (ref _vertexBuffer, _previewMesh.vertices);
+                // cBodySettings.shading.Initialize (cBodySettings.shape); 
+                // Vector4[] shadingData = cBodySettings.shading.GenerateShadingData (_vertexBuffer);
+                // _previewMesh.SetUVs (0, shadingData);
                 
             }
             if (_physicsUpdated)
             {
+	            Debug.Log("Physics Update");
                 _physicsUpdated = false;
-                GeneratePhysics();
+                
+                // GeneratePhysics();
             }
         
             if (cBodySettings.shading != null)
             {
-                // Set material properties
-                cBodySettings.shading.Initialize (cBodySettings.shape);
-                cBodySettings.shading.SetTerrainProperties (cBodySettings.shading.terrainMaterial, heightMinMax, cBodySettings.physics.radius);
+                // // Set material properties
+                // cBodySettings.shading.Initialize (cBodySettings.shape);
+                // cBodySettings.shading.SetTerrainProperties (cBodySettings.shading.terrainMaterial, _heightMinMax, cBodySettings.physics.GetSettings().radius);
             }
             
-            ReleaseAllBuffers();
+            //ReleaseAllBuffers();
         }
         
 	    // Generates terrain mesh based on heights generated by the Shape object
@@ -142,14 +150,15 @@ namespace CBodies
 			// Set heights
 			float[] heights = cBodySettings.shape.CalculateHeights (_vertexBuffer);
 
+			Shape.ShapeSettings ss = cBodySettings.shape.GetSettings();
 			// Perturb vertices to give terrain a less perfectly smooth appearance
-			if (cBodySettings.shape.perturbVertices && cBodySettings.shape.perturbCompute) {
+			if (ss.perturbVertices && cBodySettings.shape.perturbCompute) {
 				ComputeShader perturbShader = cBodySettings.shape.perturbCompute;
-				float maxperturbStrength = cBodySettings.shape.perturbStrength * edgeLength / 2;
+				float maxPerturbStrength = ss.perturbStrength * edgeLength / 2;
 
 				perturbShader.SetBuffer (0, "points", _vertexBuffer);
 				perturbShader.SetInt ("numPoints", vertices.Length);
-				perturbShader.SetFloat ("maxStrength", maxperturbStrength);
+				perturbShader.SetFloat ("maxStrength", maxPerturbStrength);
 
 				ComputeHelper.Run (perturbShader, vertices.Length);
 				Vector3[] pertData = new Vector3[vertices.Length];
@@ -237,7 +246,7 @@ namespace CBodies
         private void GeneratePhysics()
         {
             // TODO update physics of current mesh!
-            Physics pd = cBodySettings.physics;
+            Physics.PhysicsSettings pd = cBodySettings.physics.GetSettings();
             Transform tr = transform;
             tr.position = pd.initialPosition;
             tr.localScale = Vector3.one * pd.radius;
@@ -248,6 +257,7 @@ namespace CBodies
         public void OnShapeUpdate()
         {
             _shapeUpdated = true;
+            // todo : check if it is better to check in the update instead of direct call
             HandleEditModeGeneration();
         }
 
@@ -265,7 +275,10 @@ namespace CBodies
 
         public int PickTerrainRes()
         {
-            return previewMode switch
+	        Debug.Log(this);
+	        Debug.Log(previewMode);
+	        Debug.Log(resolutionSettings);
+	        return previewMode switch
             {
                 PreviewMode.LOD0 => resolutionSettings.lod0,
                 PreviewMode.LOD1 => resolutionSettings.lod1,

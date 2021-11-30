@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using CBodies;
 using CBodies.Settings;
+using CBodies.Settings.Shading;
+using CBodies.Settings.Shape;
 using HSVPicker;
 using TMPro;
 using UI.Menu.SystemEditing.Preview;
 using UnityEngine;
 using UnityEngine.UI;
+using Physics = CBodies.Settings.Physics.Physics;
 
 namespace UI.Menu.SystemEditing
 {
@@ -62,7 +65,7 @@ namespace UI.Menu.SystemEditing
                     SetSystemName(systemToLoad);
                     // Start by adding always a star to the system
                     _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Star);
-                    CreateCBodyPreview();
+                    CreateCBodyAndPreview();
                 }
                 else
                 {
@@ -76,7 +79,7 @@ namespace UI.Menu.SystemEditing
                         foreach (CBodySettings cb in _systemSettings.cBodiesSettings)
                         {
                             _currentCBodyIndex = _systemSettings.cBodiesSettings.IndexOf(cb);
-                            CreateCBody(true);
+                            BeginCBodyCreation(true);
                         }
                         SetSystemName(systemToLoad);
                     }
@@ -97,14 +100,14 @@ namespace UI.Menu.SystemEditing
             systemName.text = sysName;
         }
 
-        public void CreateCBody(bool loaded)
+        public void BeginCBodyCreation(bool loaded)
         {
             if (_cBodyPreviews.Count < maxCBodyElements)
             {
                 // If CBody loaded from file, no initialization needed
                 if (loaded)
-                { 
-                    CreateCBodyPreview();
+                {
+                    CreateCBodyAndPreview();
                 }
                 // If not loaded from file, ask the user for the type of cbody he/she wants to create
                 else
@@ -126,35 +129,44 @@ namespace UI.Menu.SystemEditing
 
         public void CreateCBodyOfType(string type)
         {
-            CBodySettings.CBodyType cBodyType =
+            CBodySettings.CBodyType enumType =
                 (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type);
-            _currentCBodyIndex = _systemSettings.AddNewCBody(cBodyType);
+            _currentCBodyIndex = _systemSettings.AddNewCBody(enumType);
             
-            CreateCBodyPreview();
+            CreateCBodyAndPreview();
 
             SelectCurrentCBody(); 
             OpenEditMenu(true);
         }
 
-        private void CreateCBodyPreview()
+        private void CreateCBodyAndPreview()
         {
-            Debug.Log("Creating cBody preview");
-            
-            //preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
-            CBodySettings cBodySettings = _systemSettings.cBodiesSettings[_currentCBodyIndex];
-            
             GameObject cBodyPreview = Instantiate(cBodyPreviewPrefab);
-            
             CBodyPreview preview = cBodyPreview.GetComponent<CBodyPreview>();
-            // anchors the cbody to the settings 
+            
+            CBodySettings cBodySettings = GetCurrentCBodySettings();
             cBodySettings.Subscribe(preview.cBody.cBodyGenerator);
             
             preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemSettings.cBodiesSettings.IndexOf(cBodySettings)));
-            preview.velocityArrow.onDrag.AddListener((d, p) => cBodySettings.physics.initialVelocity = 
-                d *((ParameterValues.maxVelocity - ParameterValues.minVelocity)*p + ParameterValues.minVelocity));
-            preview.positionDrag.onDrag.AddListener(v => cBodySettings.physics.initialPosition = v);
+            preview.velocityArrow.onDrag.AddListener(UpdateInitialVelocity);
+            preview.positionDrag.onDrag.AddListener(UpdateInitialPosition);
             
             _cBodyPreviews.Add(preview);
+        }
+
+        private void UpdateInitialVelocity(Vector3 d, float p)
+        {
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
+            ps.initialVelocity =
+                d * ((ParameterValues.maxVelocity - ParameterValues.minVelocity) * p + ParameterValues.minVelocity);
+            SetCurrentPhysicsSettings(ps);
+        }
+
+        private void UpdateInitialPosition(Vector3 p)
+        {
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
+            ps.initialPosition = p;
+            SetCurrentPhysicsSettings(ps);
         }
 
         // This method sets the current cBody index
@@ -177,31 +189,29 @@ namespace UI.Menu.SystemEditing
 
         public void SetCBodyRadius()
         {
-            //Debug.Log(radiusSlider.value);
-            // todo test
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.radius = 
-                radiusSlider.value * (ParameterValues.maxRadius - ParameterValues.minRadius) + ParameterValues.minRadius;
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
+            ps.radius = radiusSlider.value * (ParameterValues.maxRadius - ParameterValues.minRadius) + ParameterValues.minRadius;
+            SetCurrentPhysicsSettings(ps);
         }
 
         public void SetCBodyGravity()
         {
-            //Debug.Log(gravitySlider.value);
-            // todo test
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.surfaceGravity = 
-                gravitySlider.value * (ParameterValues.maxGravity - ParameterValues.minGravity) + ParameterValues.minGravity;
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
+            ps.surfaceGravity = gravitySlider.value * (ParameterValues.maxGravity - ParameterValues.minGravity) + ParameterValues.minGravity;
+            SetCurrentPhysicsSettings(ps);
         }
         
         public void OpenEditMenu(bool fromCreation)
         {
             Vector3 pos = _cBodyPreviews[_currentCBodyIndex].cBody.transform.position;
-            var cBodyRadius = _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.radius;
+            var cBodyRadius = GetCurrentPhysicsSettings().radius;
             
             cameraController.LockCamAt(pos, cBodyRadius, fromCreation);
             
             DisableCBodyButtons();
             
-            inputCBodyName.text = _systemSettings.cBodiesSettings[_currentCBodyIndex].cBodyName;
-            SetButtonColor(cBodyColorButton, _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.color);
+            inputCBodyName.text = GetCurrentCBodySettings().cBodyName;
+            SetButtonColor(cBodyColorButton, GetCurrentShadingSettings().color);
 
             HideCurrentCBodySelectionHUD();
 
@@ -227,19 +237,22 @@ namespace UI.Menu.SystemEditing
         public void SetCBodyName(string cbName)
         {
             // store the new data 
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].cBodyName = cbName;
+            GetCurrentCBodySettings().cBodyName = cbName;
         }
 
         public void BeginPickColor()
         {
             OverlayPanel(3,true);
-            colorPicker.CurrentColor = _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.color;
+            colorPicker.CurrentColor = GetCurrentShadingSettings().color;
             colorPicker.onValueChanged.AddListener(SetCBodyColor);
         }
 
         private void SetCBodyColor(Color color)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.color = color;
+            Shading.ShadingSettings ss = GetCurrentShadingSettings();
+            ss.color = color;
+            SetCurrentShadingSettings(ss);
+            
             SetButtonColor(cBodyColorButton, color);
         }
 
@@ -251,7 +264,7 @@ namespace UI.Menu.SystemEditing
 
         private void DestroyCurrentCBody()
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].Unsubscribe();
+            GetCurrentCBodySettings().Unsubscribe();
             Destroy(_cBodyPreviews[_currentCBodyIndex].gameObject);
             _cBodyPreviews.RemoveAt(_currentCBodyIndex);
             _systemSettings.cBodiesSettings.RemoveAt(_currentCBodyIndex);
@@ -323,11 +336,12 @@ namespace UI.Menu.SystemEditing
 
         private void SetArrowHeadPosition()
         {
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
             var percent = 
-                (_systemSettings.cBodiesSettings[_currentCBodyIndex].physics.initialVelocity.magnitude - ParameterValues.minVelocity) /
+                (ps.initialVelocity.magnitude - ParameterValues.minVelocity) /
                           (ParameterValues.maxVelocity - ParameterValues.minVelocity);
             _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
-                _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.initialVelocity.normalized,percent);
+                ps.initialVelocity.normalized,percent);
         }
 
         private void SetDragHandlePosition()
@@ -337,15 +351,51 @@ namespace UI.Menu.SystemEditing
 
         private void UpdateContextualSliders()
         {
-            var r = (_systemSettings.cBodiesSettings[_currentCBodyIndex].physics.radius - ParameterValues.minRadius) /
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
+            var r = (ps.radius - ParameterValues.minRadius) /
                     (ParameterValues.maxRadius - ParameterValues.minRadius);
-            var g = (_systemSettings.cBodiesSettings[_currentCBodyIndex].physics.surfaceGravity - ParameterValues.minGravity) /
+            var g = (ps.surfaceGravity - ParameterValues.minGravity) /
                     (ParameterValues.maxGravity - ParameterValues.minGravity);
             
             radiusSlider.value = r;
             radiusSlider.onValueChanged.Invoke(r);
             gravitySlider.value = g;
             gravitySlider.onValueChanged.Invoke(g);
+        }
+
+        private Shape.ShapeSettings GetCurrentShapeSettings()
+        {
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.GetSettings();
+        }
+
+        private void SetCurrentShapeSettings(Shape.ShapeSettings ss)
+        {
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.SetSettings(ss);
+        }
+        
+        private Shading.ShadingSettings GetCurrentShadingSettings()
+        {
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.GetSettings();
+        }
+
+        private void SetCurrentShadingSettings(Shading.ShadingSettings ss)
+        {
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.SetSettings(ss);
+        }
+        
+        private Physics.PhysicsSettings GetCurrentPhysicsSettings()
+        {
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.GetSettings();
+        }
+
+        private void SetCurrentPhysicsSettings(Physics.PhysicsSettings ps)
+        {
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.SetSettings(ps);
+        }
+
+        private CBodySettings GetCurrentCBodySettings()
+        {
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex];
         }
 
         private void OnDestroy()
