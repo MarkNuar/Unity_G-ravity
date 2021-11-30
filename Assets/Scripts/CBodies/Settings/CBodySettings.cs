@@ -16,12 +16,14 @@ namespace CBodies.Settings
         public Shading.Shading shading;
         public Physics.Physics physics;
 
-        public void Init()
+        public void Init(CBodyType type)
         {
             cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
-            (Shape.Shape sp, Shading.Shading sd) = SystemUtils.Instance.GetShapeAndShading(cBodyType);
+            cBodyType = type;
+            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
             shape = sp;
             shading = sd;
+            physics = ph;
         }
 
         public void Subscribe(CBodyGenerator observer)

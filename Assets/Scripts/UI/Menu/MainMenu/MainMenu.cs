@@ -17,9 +17,11 @@ namespace UI.Menu.MainMenu
         public TMP_InputField systemNameInput;
         public TMP_Text systemNameError;
 
-        private List<string> _cachedNames;
-        
-        
+        private readonly List<string> _cachedNames = new List<string>();
+        private readonly List<string> _editLoadedSystems = new List<string>();
+        private readonly List<string> _exploreLoadedSystems = new List<string>();
+
+
         public void QuitGame()
         {
             Application.Quit();
@@ -33,10 +35,15 @@ namespace UI.Menu.MainMenu
 
             foreach (var systemName in savedSystems)
             {
-                GameObject el = Instantiate(scrollViewElementPrefab, editScrollView, true);
-                ListElementHelper helper = el.GetComponent<ListElementHelper>();
-                helper.text.text = systemName;
-                helper.button.onClick.AddListener(() => LoadSystemEditingScene(systemName));
+                if (!_editLoadedSystems.Contains(systemName))
+                {
+                    GameObject el = Instantiate(scrollViewElementPrefab, editScrollView, true);
+                    el.transform.localScale = Vector3.one;
+                    ListElementHelper helper = el.GetComponent<ListElementHelper>();
+                    helper.text.text = systemName;
+                    helper.button.onClick.AddListener(() => LoadSystemEditingScene(systemName, false));
+                    _editLoadedSystems.Add(systemName);
+                }
             }
         }
 
@@ -45,13 +52,19 @@ namespace UI.Menu.MainMenu
             ShowPanel(2);
             
             List<string> savedSystems = SystemUtils.Instance.GetSystemNames();
-
+            
             foreach (var systemName in savedSystems)
             {
-                GameObject el = Instantiate(scrollViewElementPrefab, exploreScrollView, true);
-                ListElementHelper helper = el.GetComponent<ListElementHelper>();
-                helper.text.text = systemName;
-                helper.button.onClick.AddListener(() => LoadSystemExplorationScene(systemName));
+                if (!_exploreLoadedSystems.Contains(systemName))
+                {
+                    GameObject el = Instantiate(scrollViewElementPrefab, exploreScrollView, true);
+                    el.transform.localScale = Vector3.one;
+                    ListElementHelper helper = el.GetComponent<ListElementHelper>();
+                    helper.text.text = systemName;
+                    helper.button.onClick.AddListener(() => LoadSystemExplorationScene(systemName));
+                    _exploreLoadedSystems.Add(systemName);
+                }
+                
             }
         }
         
@@ -64,7 +77,7 @@ namespace UI.Menu.MainMenu
         {
             ShowPanel(3);
             
-            _cachedNames = SystemUtils.Instance.GetSystemNames();
+            _cachedNames.AddRange(SystemUtils.Instance.GetSystemNames());
         }
 
         public void ValidateName()
@@ -79,19 +92,25 @@ namespace UI.Menu.MainMenu
             }
             else
             {
-                LoadSystemEditingScene(systemNameInput.text);
+                LoadSystemEditingScene(systemNameInput.text, true);
             }
         }
         
-        private void LoadSystemEditingScene(string systemName)
+        private void LoadSystemEditingScene(string systemName, bool isNew)
         {
-            GameManager.Instance.SetSystemToLoad(systemName);
+            _cachedNames.Clear();
+            _editLoadedSystems.Clear();
+            _exploreLoadedSystems.Clear();
+            GameManager.Instance.SetSystemToLoad(systemName, isNew);
             SceneManager.LoadScene("Scenes/SystemEditing", LoadSceneMode.Single);
         }
         
         private void LoadSystemExplorationScene(string systemName)
         {
-            GameManager.Instance.SetSystemToLoad(systemName);
+            _cachedNames.Clear();
+            _editLoadedSystems.Clear();
+            _exploreLoadedSystems.Clear();
+            GameManager.Instance.SetSystemToLoad(systemName, false);
             SceneManager.LoadScene("Scenes/SystemExploration", LoadSceneMode.Single);
         }
         

@@ -15,43 +15,56 @@ public class SystemUtils : MonoBehaviour
     private string _storePath = null;
     
     // SHAPES 
-    [InspectorName("Shapes")]
+    [Header("Shapes")]
     public Shape baseShape;
     public RockShape rockShape;
     public GaseousShape gaseousShape;
+    public StarShape starShape;
     
     // SHADING 
-    [InspectorName("Shading")]
+    [Header("Shading")]
     public Shading baseShading;
     public RockShading rockShading;
     public GaseousShading gaseousShading;
+    public StarShading starShading;
     
     // PHYSICS
-    [InspectorName("Physics")]
+    [Header("Physics")]
     public Physics basePhysics;
-    // ... ? blackhole? 
-    
+
     private void Awake()
     {
-        if (Instance != null) return;
-        Instance = this;
-        
-        _storePath = Application.persistentDataPath + Path.DirectorySeparatorChar;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+            
+            // Save the store path
+            _storePath = Application.persistentDataPath + Path.DirectorySeparatorChar;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
     
     public void SaveSystem(SystemSettings systemSettings)
     {
+        Debug.Log("Saving system: " + systemSettings.systemName);
+        
         if (_storePath == null) return;
 
         // Add the newly created system name to the system names list
-        var systemNamesPath = _storePath + "_names";
-        List<string> savedNames = new List<string>();
+        var systemNamesPath = _storePath + "names_of_systems";
+        SavedSysNames savedNames = new SavedSysNames();
         if (File.Exists(systemNamesPath))
         {
-            StreamReader reader = new StreamReader(systemNamesPath);
-            savedNames = JsonUtility.FromJson<List<string>>(reader.ReadToEnd());
+            StreamReader namesReader = new StreamReader(systemNamesPath);
+            savedNames = JsonUtility.FromJson<SavedSysNames>(namesReader.ReadToEnd());
+            namesReader.Close();
         }
-        savedNames.Add(systemSettings.systemName);
+        savedNames.savedSysNames.Add(systemSettings.systemName);
+        Debug.Log(savedNames.savedSysNames[0]);
         StreamWriter namesWriter = new StreamWriter(systemNamesPath, false);
         var namesJson = JsonUtility.ToJson(savedNames);
         namesWriter.WriteLine(namesJson);
@@ -61,11 +74,11 @@ public class SystemUtils : MonoBehaviour
         // Stores the types of the newly created system cbodies
         SystemTypes systemTypes = new SystemTypes
         {
-            Types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
+            types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
         };
         for (var i = 0; i < systemSettings.cBodiesSettings.Count; i++)
         {
-            systemTypes.Types[i] = systemSettings.cBodiesSettings[i].cBodyType;
+            systemTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
         }
         var systemTypesPath = _storePath + systemSettings.systemName + "_types";
         StreamWriter typesWriter = new StreamWriter(systemTypesPath, false);
@@ -95,18 +108,20 @@ public class SystemUtils : MonoBehaviour
 
             if (loadedTypes != null)
             {
+                Debug.Log(loadedTypes.types);
+                
                 SystemSettings systemSettings = new SystemSettings
                 {
                     cBodiesSettings = new List<CBodySettings>()
                 };
-                foreach (CBodySettings.CBodyType type in loadedTypes.Types)
+                foreach (CBodySettings.CBodyType type in loadedTypes.types)
                 {
                     CBodySettings cBodySettings = new CBodySettings();
 
-                    var (shape, shading) = GetShapeAndShading(type);
+                    (Shape shape, Shading shading, Physics physics) = GetShapeShadingPhysics(type);
                     cBodySettings.shape = shape;
                     cBodySettings.shading = shading;
-                    cBodySettings.physics = Instantiate(basePhysics);
+                    cBodySettings.physics = physics;
                     
                     systemSettings.cBodiesSettings.Add(cBodySettings);
                 }
@@ -133,10 +148,11 @@ public class SystemUtils : MonoBehaviour
         // delete the files containing system types and system settings 
     }
 
-    public (Shape shape, Shading shading) GetShapeAndShading(CBodySettings.CBodyType type)
+    public (Shape shape, Shading shading, Physics physics) GetShapeShadingPhysics(CBodySettings.CBodyType type)
     {
         Shape shape = null;
         Shading shading = null;
+        Physics physics = Instantiate(basePhysics);
         switch (type)
         {
             case CBodySettings.CBodyType.Base:
@@ -152,25 +168,36 @@ public class SystemUtils : MonoBehaviour
                 shading = Instantiate(gaseousShading);
                 break;
             case CBodySettings.CBodyType.Star:
+                shape = Instantiate(starShape);
+                shading = Instantiate(starShading);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        return (shape, shading);
+        return (shape, shading, physics);
     }
 
     public List<string> GetSystemNames()
     {
-        var systemNamesPath = _storePath + "_names";
-        List<string> savedNames = new List<string>();
-        if (!File.Exists(systemNamesPath)) return savedNames;
+        var systemNamesPath = _storePath + "names_of_systems";
+        SavedSysNames savedNames = new SavedSysNames();
+        if (!File.Exists(systemNamesPath)) return savedNames.savedSysNames;
         StreamReader reader = new StreamReader(systemNamesPath);
-        savedNames = JsonUtility.FromJson<List<string>>(reader.ReadToEnd());
-        return savedNames;
+        savedNames = JsonUtility.FromJson<SavedSysNames>(reader.ReadToEnd());
+        return savedNames.savedSysNames;
     }
     
+    // Utility class for serializing system cBodies types
+    [Serializable]
     private class SystemTypes
     {
-        public CBodySettings.CBodyType[] Types; 
+        public CBodySettings.CBodyType[] types; 
+    }
+
+    // Utility class for serializing systems names
+    [Serializable]
+    private class SavedSysNames
+    {
+        public List<string> savedSysNames = new List<string>();
     }
 }

@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace CBodies.Settings.Shape
 {
-    [Serializable]
+    [Serializable][CreateAssetMenu]
     public class Shape : ScriptableObject
     {
         [CanBeNull] private CBodyGenerator _observer;

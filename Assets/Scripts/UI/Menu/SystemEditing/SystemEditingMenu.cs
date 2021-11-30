@@ -31,9 +31,8 @@ namespace UI.Menu.SystemEditing
         [SerializeField] private Slider radiusSlider = null;
         [SerializeField] private Slider gravitySlider = null;
         
-        
-        
-        [SerializeField] private TMP_InputField inputSystemName = null;
+        // SHAPE & SHADING
+        [SerializeField] private TMP_Text systemName = null;
         [SerializeField] private TMP_InputField inputCBodyName = null;
         [SerializeField] private ColorPicker colorPicker = null;
         [SerializeField] private Button cBodyColorButton = null;
@@ -45,53 +44,73 @@ namespace UI.Menu.SystemEditing
         private void Start()
         {
             // load saved CBodies
-            SystemSettings systemSettings = SystemUtils.Instance.LoadSystem("varudia");
-            if (systemSettings != null)
+            
+            var (systemToLoad, isNew) = GameManager.Instance.GetSystemToLoad();
+            // todo: REMOVE FROM BUILD
+            if (systemToLoad == null)
             {
-                _systemSettings = systemSettings;
-                // Debug.Log(_systemData.cBodies.Count);
-                inputSystemName.text = _systemSettings.systemName;
-                foreach (CBodySettings cb in _systemSettings.cBodiesSettings)
+                systemToLoad = "Varudia";
+                isNew = true;
+            }
+
+            if (systemToLoad != null)
+            {
+                if (isNew)
                 {
-                    _currentCBodyIndex = _systemSettings.cBodiesSettings.IndexOf(cb);
-                    CreateCBody(true);
+                    Debug.Log("New system");
+                    _systemSettings = new SystemSettings();
+                    SetSystemName(systemToLoad);
+                    // Start by adding always a star to the system
+                    _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Star);
+                    CreateCBodyPreview();
+                }
+                else
+                {
+                    Debug.Log("Loading " + systemToLoad);
+                    SystemSettings systemSettings = SystemUtils.Instance.LoadSystem(systemToLoad);
+                    if (systemSettings != null)
+                    {
+                        _systemSettings = systemSettings;
+                        // Debug.Log(_systemData.cBodies.Count);
+                        systemName.text = _systemSettings.systemName;
+                        foreach (CBodySettings cb in _systemSettings.cBodiesSettings)
+                        {
+                            _currentCBodyIndex = _systemSettings.cBodiesSettings.IndexOf(cb);
+                            CreateCBody(true);
+                        }
+                        SetSystemName(systemToLoad);
+                    }
+                    else
+                    {
+                        Debug.LogError("System not loaded correctly");
+                    }
                 }
             }
-            else
-            {
-                _systemSettings = new SystemSettings();
-            }
-            
+
             // sometimes the color handle is spawned in the wrong position
             colorHandle.anchoredPosition = new Vector2(0, 0);
         }
 
-        public void SetSystemName(string systemName)
+        private void SetSystemName(string sysName)
         {
-            _systemSettings.systemName = systemName;
-            Debug.Log(systemName);
+            _systemSettings.systemName = sysName;
+            systemName.text = sysName;
         }
 
         public void CreateCBody(bool loaded)
         {
             if (_cBodyPreviews.Count < maxCBodyElements)
             {
-                if (!loaded)
+                // If CBody loaded from file, no initialization needed
+                if (loaded)
                 { 
-                    _currentCBodyIndex = _systemSettings.AddNewCBody();
+                    CreateCBodyPreview();
                 }
+                // If not loaded from file, ask the user for the type of cbody he/she wants to create
                 else
                 {
-                    // cBody index set by the deserializer
+                    OpenCBodyTypeSelection();
                 }
-
-                CreateCBodyPreview();
-                
-                // DeselectCurrentCBody();
-                if (loaded) return;
-                SelectCurrentCBody(); 
-                OpenEditMenu(true);
-
             }
             else
             {
@@ -100,8 +119,27 @@ namespace UI.Menu.SystemEditing
             }
         }
 
+        private void OpenCBodyTypeSelection()
+        {
+            OverlayPanel(4, true);
+        }
+
+        public void CreateCBodyOfType(string type)
+        {
+            CBodySettings.CBodyType cBodyType =
+                (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type);
+            _currentCBodyIndex = _systemSettings.AddNewCBody(cBodyType);
+            
+            CreateCBodyPreview();
+
+            SelectCurrentCBody(); 
+            OpenEditMenu(true);
+        }
+
         private void CreateCBodyPreview()
         {
+            Debug.Log("Creating cBody preview");
+            
             //preview.bodyName.text = _systemData.cBodies[_currentCBodyIndex].name;
             CBodySettings cBodySettings = _systemSettings.cBodiesSettings[_currentCBodyIndex];
             

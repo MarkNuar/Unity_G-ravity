@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace CBodies.Settings.Shape
 {
+    [Serializable][CreateAssetMenu]
     public class RockShape : Shape
     {
         

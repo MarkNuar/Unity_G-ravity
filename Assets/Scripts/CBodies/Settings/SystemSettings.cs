@@ -8,17 +8,12 @@ namespace CBodies.Settings
     public class SystemSettings
     {
         public string systemName;
-        public List<CBodySettings> cBodiesSettings;
+        public List<CBodySettings> cBodiesSettings = new List<CBodySettings>();
 
-        public int AddNewCBody()
+        public int AddNewCBody(CBodySettings.CBodyType type)
         {
-            CBodySettings cbd = new CBodySettings
-            {
-                // todo: load the correct cbody type from the serializer
-                shape = new Shape.Shape(),
-                shading = new Shading.Shading(),
-                physics = new Physics.Physics(),
-            };
+            CBodySettings cbd = new CBodySettings();
+            cbd.Init(type);
             
             // todo: position according to the type of planet
             var count = cBodiesSettings.Count;
@@ -31,7 +26,7 @@ namespace CBodies.Settings
             
             cbd.shading.Init();
 
-            cbd.Init();
+            
             
             cBodiesSettings.Add(cbd);
             return cBodiesSettings.Count - 1;
