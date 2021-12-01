@@ -16,14 +16,12 @@ public class SystemUtils : MonoBehaviour
     
     // SHAPES 
     [Header("Shapes")]
-    public Shape baseShape;
     public RockShape rockShape;
     public GaseousShape gaseousShape;
     public StarShape starShape;
     
     // SHADING 
     [Header("Shading")]
-    public Shading baseShading;
     public RockShading rockShading;
     public GaseousShading gaseousShading;
     public StarShading starShading;
@@ -91,9 +89,9 @@ public class SystemUtils : MonoBehaviour
         CBodiesSettings cBodiesSettings = new CBodiesSettings();
         foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
         {
-            cBodiesSettings.shapeSettingsList.Add(cBodySettings.shape.GetSettings());
-            cBodiesSettings.shadingSettingsList.Add(cBodySettings.shading.GetSettings());
-            cBodiesSettings.physicsSettingsList.Add(cBodySettings.physics.GetSettings());
+            cBodiesSettings.shapeSettingsList.Add(cBodySettings.Shape.GetSettings());
+            cBodiesSettings.shadingSettingsList.Add(cBodySettings.Shading.GetSettings());
+            cBodiesSettings.physicsSettingsList.Add(cBodySettings.Physics.GetSettings());
         }
         var cBodiesSettingsPath = _storePath + systemSettings.systemName + "_cBodies_settings";
         StreamWriter settingsWriter = new StreamWriter(cBodiesSettingsPath, false);
@@ -136,13 +134,13 @@ public class SystemUtils : MonoBehaviour
                 {
                     (Shape shape, Shading shading, Physics physics) = GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
                     shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
-                    systemSettings.cBodiesSettings[i].shape = shape;
+                    systemSettings.cBodiesSettings[i].Shape = shape;
                     
                     shading.SetSettings(loadedCBodiesSettings.shadingSettingsList[i]);
-                    systemSettings.cBodiesSettings[i].shading = shading;
+                    systemSettings.cBodiesSettings[i].Shading = shading;
                     
                     physics.SetSettings(loadedCBodiesSettings.physicsSettingsList[i]);
-                    systemSettings.cBodiesSettings[i].physics = physics;
+                    systemSettings.cBodiesSettings[i].Physics = physics;
                 }
                 return systemSettings;
             }
@@ -170,10 +168,6 @@ public class SystemUtils : MonoBehaviour
         Physics physics = Instantiate(basePhysics);
         switch (type)
         {
-            case CBodySettings.CBodyType.Base:
-                shape = Instantiate(baseShape);
-                shading = Instantiate(baseShading);
-                break;
             case CBodySettings.CBodyType.Rocky:
                 shape = Instantiate(rockShape);
                 shading = Instantiate(rockShading);

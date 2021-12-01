@@ -25,13 +25,13 @@ namespace CBodies.Settings
             // todo: position according to the type of planet
             var count = cBodiesSettings.Count;
             Vector3 pos = new Vector3( count * 25, 0, 0);
-            cbd.physics.RandomInitialize(pos);
+            cbd.Physics.RandomInitialize(pos);
             
             // todo: update resolution in the editing menu according to camera distance from planets
             var res = 10;
-            cbd.shape.RandomInitialize(res);
+            cbd.Shape.RandomInitialize(res);
             
-            cbd.shading.RandomInitialize();
+            cbd.Shading.RandomInitialize();
 
             
             

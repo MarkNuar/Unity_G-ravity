@@ -12,9 +12,9 @@ namespace CBodies.Settings
         public CBodyType cBodyType;
         // ***** END
         
-        public Shape.Shape shape;
-        public Shading.Shading shading;
-        public Physics.Physics physics;
+        [NonSerialized] public Shape.Shape Shape;
+        [NonSerialized] public Shading.Shading Shading;
+        [NonSerialized] public Physics.Physics Physics;
         
         private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia"};
         
@@ -23,30 +23,29 @@ namespace CBodies.Settings
             cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
             cBodyType = type;
             (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
-            shape = sp;
-            shading = sd;
-            physics = ph;
+            Shape = sp;
+            Shading = sd;
+            Physics = ph;
         }
 
         public void Subscribe(CBodyGenerator observer)
         {
             observer.cBodySettings = this;
-            shape.Subscribe(observer);
-            shading.Subscribe(observer);
-            physics.Subscribe(observer);
+            Shape.Subscribe(observer);
+            Shading.Subscribe(observer);
+            Physics.Subscribe(observer);
         }
 
         public void Unsubscribe()
         {
-            shape.Unsubscribe();
-            shading.Unsubscribe();
-            physics.Unsubscribe();
+            Shape.Unsubscribe();
+            Shading.Unsubscribe();
+            Physics.Unsubscribe();
         }
 
         [Serializable]
         public enum CBodyType
         {
-            Base,
             Rocky,
             Gaseous,
             Star

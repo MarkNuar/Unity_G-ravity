@@ -45,23 +45,33 @@ namespace CBodies
         private void Start()
         {
 	        _cam = GameManager.Instance.GetMainCamera();
-	        
-            if (GameManager.Instance.gameMode == GameManager.GameMode.Explore)
-            {
-	            // Todo : are the setting ready? 
-                HandleExploreModeGeneration();
-            }
-            else if (GameManager.Instance.gameMode == GameManager.GameMode.Editing)
-            {
-	            Debug.Log("initial update");
-                _shapeUpdated = true;
-                _shadingUpdated = true;
-                _physicsUpdated = true;
-                HandleEditModeGeneration();
-            }
+
+	        switch (GameManager.Instance.gameMode)
+	        {
+		        case GameManager.GameMode.Explore:
+			        // Todo : are the setting ready? 
+			        HandleExploreModeGeneration();
+			        break;
+		        case GameManager.GameMode.Editing:
+			        Debug.Log("initial update");
+			        _shapeUpdated = true;
+			        _shadingUpdated = true;
+			        _physicsUpdated = true;
+			        HandleEditModeGeneration();
+			        break;
+		        default:
+			        throw new ArgumentOutOfRangeException();
+	        }
+        }
+
+        private void Update()
+        {
+	        if (GameManager.Instance.gameMode == GameManager.GameMode.Editing)
+	        {
+		        HandleEditModeGeneration();
+	        }
         }
         
-
         private void HandleExploreModeGeneration()
         {
 	        // Generate LOD meshes
@@ -128,7 +138,7 @@ namespace CBodies
                 // GeneratePhysics();
             }
         
-            if (cBodySettings.shading != null)
+            if (cBodySettings.Shading != null)
             {
                 // // Set material properties
                 // cBodySettings.shading.Initialize (cBodySettings.shape);
@@ -148,12 +158,12 @@ namespace CBodies
 			float edgeLength = (vertices[triangles[0]] - vertices[triangles[1]]).magnitude;
 
 			// Set heights
-			float[] heights = cBodySettings.shape.CalculateHeights (_vertexBuffer);
+			float[] heights = cBodySettings.Shape.CalculateHeights (_vertexBuffer);
 
-			Shape.ShapeSettings ss = cBodySettings.shape.GetSettings();
+			Shape.ShapeSettings ss = cBodySettings.Shape.GetSettings();
 			// Perturb vertices to give terrain a less perfectly smooth appearance
-			if (ss.perturbVertices && cBodySettings.shape.perturbCompute) {
-				ComputeShader perturbShader = cBodySettings.shape.perturbCompute;
+			if (ss.perturbVertices && cBodySettings.Shape.perturbCompute) {
+				ComputeShader perturbShader = cBodySettings.Shape.perturbCompute;
 				float maxPerturbStrength = ss.perturbStrength * edgeLength / 2;
 
 				perturbShader.SetBuffer (0, "points", _vertexBuffer);
@@ -182,8 +192,8 @@ namespace CBodies
 			mesh.RecalculateNormals (); //
 
 			// Shading noise data
-			cBodySettings.shading.Initialize (cBodySettings.shape);
-			Vector4[] shadingData = cBodySettings.shading.GenerateShadingData (_vertexBuffer);
+			cBodySettings.Shading.Initialize (cBodySettings.Shape);
+			Vector4[] shadingData = cBodySettings.Shading.GenerateShadingData (_vertexBuffer);
 			mesh.SetUVs (0, shadingData);
 
 			// Create crude tangents (vectors perpendicular to surface normal)
@@ -246,7 +256,7 @@ namespace CBodies
         private void GeneratePhysics()
         {
             // TODO update physics of current mesh!
-            Physics.PhysicsSettings pd = cBodySettings.physics.GetSettings();
+            Physics.PhysicsSettings pd = cBodySettings.Physics.GetSettings();
             Transform tr = transform;
             tr.position = pd.initialPosition;
             tr.localScale = Vector3.one * pd.radius;
@@ -258,19 +268,19 @@ namespace CBodies
         {
             _shapeUpdated = true;
             // todo : check if it is better to check in the update instead of direct call
-            HandleEditModeGeneration();
+            //HandleEditModeGeneration();
         }
 
         public void OnShadingUpdate()
         {
             _shadingUpdated = true;
-            HandleEditModeGeneration();
+            //HandleEditModeGeneration();
         }
         
         public void OnPhysicsUpdate()
         {
             _physicsUpdated = true; 
-            HandleEditModeGeneration();
+            //HandleEditModeGeneration();
         }
 
         public int PickTerrainRes()
@@ -290,8 +300,8 @@ namespace CBodies
 
         private void ReleaseAllBuffers () {
             ComputeHelper.Release (_vertexBuffer);
-            cBodySettings.shape?.ReleaseBuffers ();
-            cBodySettings.shading?.ReleaseBuffers ();
+            cBodySettings.Shape?.ReleaseBuffers ();
+            cBodySettings.Shading?.ReleaseBuffers ();
         }
         
         [System.Serializable]

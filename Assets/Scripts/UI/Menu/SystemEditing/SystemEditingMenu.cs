@@ -365,32 +365,32 @@ namespace UI.Menu.SystemEditing
 
         private Shape.ShapeSettings GetCurrentShapeSettings()
         {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.GetSettings();
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].Shape.GetSettings();
         }
 
         private void SetCurrentShapeSettings(Shape.ShapeSettings ss)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.SetSettings(ss);
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].Shape.SetSettings(ss);
         }
         
         private Shading.ShadingSettings GetCurrentShadingSettings()
         {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.GetSettings();
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].Shading.GetSettings();
         }
 
         private void SetCurrentShadingSettings(Shading.ShadingSettings ss)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.SetSettings(ss);
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].Shading.SetSettings(ss);
         }
         
         private Physics.PhysicsSettings GetCurrentPhysicsSettings()
         {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.GetSettings();
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].Physics.GetSettings();
         }
 
         private void SetCurrentPhysicsSettings(Physics.PhysicsSettings ps)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.SetSettings(ps);
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].Physics.SetSettings(ps);
         }
 
         private CBodySettings GetCurrentCBodySettings()

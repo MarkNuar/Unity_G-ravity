@@ -88,6 +88,9 @@ namespace CBodies.Settings.Shape
         [Serializable]
         public class ShapeSettings
         {
+            public bool randomize;
+            public int seed;
+            
             // Mesh resolution
             public int resolution;
             // Max height of the mountains of the CBody

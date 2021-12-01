@@ -98,6 +98,9 @@ namespace CBodies.Settings.Shading
         [Serializable]
         public class ShadingSettings
         {
+            public bool randomize;
+            public int seed;
+            
             public Color color;
         }
     }
