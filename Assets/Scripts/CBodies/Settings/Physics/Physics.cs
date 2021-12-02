@@ -6,12 +6,12 @@ using UnityEngine;
 namespace CBodies.Settings.Physics
 {
     [Serializable][CreateAssetMenu]
-    public class Physics : ScriptableObject
+    public class Physics : ScriptableObject, ISettingsComponent
     {
         // OBSERVER
         [CanBeNull] private CBodyGenerator _observer;
         // MEMENTO
-        private PhysicsSettings _physicsSettings;
+        [SerializeReference] private PhysicsSettings physicsSettings;
         
         
         // OBSERVER PATTERN
@@ -25,23 +25,9 @@ namespace CBodies.Settings.Physics
             _observer = null;
         }
         
-        // MEMENTO PATTERN
-        public PhysicsSettings GetSettings()
-        {
-            return _physicsSettings;
-        }
-
-        public void SetSettings(PhysicsSettings ps)
-        {
-            _physicsSettings = ps;
-            if(_observer)
-                _observer.OnPhysicsUpdate();
-        }
-
-
         public void RandomInitialize(Vector3 pos)
         {
-            _physicsSettings = new PhysicsSettings
+            physicsSettings = new PhysicsSettings
             {
                 radius = ParameterValues.minRadius,
                 surfaceGravity = ParameterValues.minGravity,
@@ -60,6 +46,26 @@ namespace CBodies.Settings.Physics
             public float surfaceGravity;
             public Vector3 initialPosition; 
             public Vector3 initialVelocity;
+        }
+        
+        
+        // MEMENTO PATTERN
+        public PhysicsSettings GetSettings()
+        {
+            return physicsSettings;
+        }
+
+        public void SetSettings(PhysicsSettings ps)
+        {
+            physicsSettings = ps;
+            if(_observer)
+                _observer.OnPhysicsUpdate();
+        }
+
+        // VISITOR PATTERN
+        public void AcceptVisitor(ISettingsVisitor visitor)
+        {
+            visitor.VisitPhysicsSettings(this);
         }
     }
 }

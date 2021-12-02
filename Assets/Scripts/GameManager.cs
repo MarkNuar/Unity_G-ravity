@@ -1,5 +1,7 @@
 using System.IO;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +24,8 @@ public class GameManager : MonoBehaviour
 
             // apply some quality settings 
             QualitySettings.vSyncCount = 1;
+            
+            JsonConvert.DefaultSettings().Converters.Add(new ColorConverter());
         }
         else
         {

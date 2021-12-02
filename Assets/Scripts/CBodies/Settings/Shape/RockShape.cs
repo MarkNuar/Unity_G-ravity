@@ -8,10 +8,11 @@ namespace CBodies.Settings.Shape
     [Serializable][CreateAssetMenu]
     public class RockShape : Shape
     {
+        // MEMENTO
+        [SerializeReference] protected ShapeSettings shapeSettings;
 
         public override void RandomInitialize(int res)
         {
-            base.RandomInitialize(res);
             shapeSettings = new RockShapeSettings
             {
                 resolution = res,
@@ -27,6 +28,25 @@ namespace CBodies.Settings.Shape
         public class RockShapeSettings : ShapeSettings
         {
             
+        }
+
+        // MEMENTO PATTERN
+        public override ShapeSettings GetSettings()
+        {
+            return shapeSettings;
+        }
+
+        public override void SetSettings (ShapeSettings ss)
+        {
+            shapeSettings = ss;
+            if(Observer)
+                Observer.OnShapeUpdate();
+        }
+        
+        // VISITOR PATTERN
+        public override void AcceptVisitor(ISettingsVisitor visitor)
+        {
+            visitor.VisitShapeSettings(this);
         }
     }
 }

@@ -1,5 +1,8 @@
 using System;
+using CBodies.Settings.Shape;
 using JetBrains.Annotations;
+using JsonSubTypes;
+using Newtonsoft.Json;
 using UnityEngine;
 using Utilities;
 using Random = UnityEngine.Random;
@@ -7,13 +10,11 @@ using Random = UnityEngine.Random;
 namespace CBodies.Settings.Shading
 {
     [Serializable][CreateAssetMenu]
-    public class Shading : ScriptableObject
+    public abstract class Shading : ScriptableObject, ISettingsComponent
     {
         // OBSERVER
-        [CanBeNull] private CBodyGenerator _observer;
-        // MEMENTO 
-        private ShadingSettings _shadingSettings;
-        
+        [CanBeNull] protected CBodyGenerator Observer;
+
         public ComputeShader shadingDataCompute;
         public Material terrainMaterial = null;
         
@@ -63,37 +64,20 @@ namespace CBodies.Settings.Shading
         // OBSERVER PATTERN
         public void Subscribe(CBodyGenerator observer)
         {
-            _observer = observer;
+            Observer = observer;
         }
         
         public void Unsubscribe()
         {
-            _observer = null;
+            Observer = null;
         }
 
         // MEMENTO PATTERN
-        public ShadingSettings GetSettings()
-        {
-            return _shadingSettings;
-        }
+        public abstract ShadingSettings GetSettings();
 
-        public void SetSettings(ShadingSettings ss)
-        {
-            _shadingSettings = ss;
-            if(_observer)
-                _observer.OnShadingUpdate();
-        }
-        
-        public void RandomInitialize()
-        {
-            _shadingSettings = new ShadingSettings
-            {
-                color = Random.ColorHSV()
-                // ...
-            };
-            if(_observer)
-                _observer.OnShadingUpdate();
-        }
+        public abstract void SetSettings(ShadingSettings ss);
+
+        public abstract void RandomInitialize();
 
         [Serializable]
         public class ShadingSettings
@@ -103,5 +87,7 @@ namespace CBodies.Settings.Shading
             
             public Color color;
         }
+
+        public abstract void AcceptVisitor(ISettingsVisitor visitor);
     }
 }

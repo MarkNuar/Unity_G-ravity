@@ -1,5 +1,7 @@
 using System;
 using JetBrains.Annotations;
+using JsonSubTypes;
+using Newtonsoft.Json;
 using UI.Menu.SystemEditing;
 using UnityEngine;
 using Utilities;
@@ -9,19 +11,17 @@ using Random = UnityEngine.Random;
 namespace CBodies.Settings.Shape
 {
     [Serializable][CreateAssetMenu]
-    public class Shape : ScriptableObject
+    public abstract class Shape : ScriptableObject, ISettingsComponent
     {
         // OBSERVER
         [CanBeNull] protected CBodyGenerator Observer;
-        // MEMENTO
-        [SerializeReference] protected ShapeSettings shapeSettings;
+
         
         public ComputeShader perturbCompute;
         public ComputeShader heightMapCompute;
         
         private ComputeBuffer _heightBuffer;
         
-
         
         public virtual float[] CalculateHeights (ComputeBuffer vertexBuffer) {
             //Debug.Log (System.Environment.StackTrace);
@@ -58,52 +58,33 @@ namespace CBodies.Settings.Shape
         {
             Observer = null;
         }
-        
-        // // MEMENTO PATTERN
-        // public T GetSettings <T> () where T : ShapeSettings
-        // {
-        //     return (T)shapeSettings;
-        // }
-        //
-        // public void SetSettings  <T> (T ss) where T : ShapeSettings
-        // {
-        //     shapeSettings = ss;
-        //     if(Observer)
-        //         Observer.OnShapeUpdate();
-        // }
-        
-        // MEMENTO PATTERN
-        public ShapeSettings GetSettings()
-        {
-            return shapeSettings;
-        }
 
-        public void SetSettings (ShapeSettings ss)
-        {
-            shapeSettings = ss;
-            if(Observer)
-                Observer.OnShapeUpdate();
-        }
-        
-        public virtual void RandomInitialize(int res)
-        {
-            
-        }
+        // MEMENTO PATTERN
+        public abstract ShapeSettings GetSettings();
+
+        public abstract void SetSettings(ShapeSettings ss);
+
+        public abstract void RandomInitialize(int res);
 
         [Serializable]
         public class ShapeSettings
         {
             public bool randomize;
-            public int seed;
             
+            public int seed;
             // Mesh resolution
+            
             public int resolution;
             // Max height of the mountains of the CBody
+            
             public float mountainsHeight;
             
             public bool perturbVertices;
+            
             [Range (0, 1)] public float perturbStrength = 0.7f;
             
         }
+
+        public abstract void AcceptVisitor(ISettingsVisitor visitor);
     }
 }
