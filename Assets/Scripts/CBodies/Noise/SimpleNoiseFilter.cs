@@ -18,12 +18,12 @@ namespace CBodies.Noise
         }
 
         // Set values using custom scale and elevation
-        public void SetComputeValues (ComputeShader cs, PRNG prng, string varSuffix, float scale, float elevation) {
-            SetComputeValues (cs, prng, varSuffix, scale, elevation, persistence);
+        public void SetComputeValues (ComputeShader cs, PRNG prng, string varSuffix, float cScale, float cElevation) {
+            SetComputeValues (cs, prng, varSuffix, cScale, cElevation, persistence);
         }
 
-        // Set values using custom scale and elevation
-        public void SetComputeValues (ComputeShader cs, PRNG prng, string varSuffix, float scale, float elevation, float persistence) {
+        // Set values using custom scale, elevation and persistance
+        public void SetComputeValues (ComputeShader cs, PRNG prng, string varSuffix, float cScale, float cElevation, float cPersistence) {
             Vector3 seededOffset = new Vector3 (prng.Value (), prng.Value (), prng.Value ()) * prng.Value () * 10000;
 
             float[] noiseParams = {
@@ -33,10 +33,10 @@ namespace CBodies.Noise
                 seededOffset.z + offset.z,
                 numLayers,
                 // [1]
-                persistence,
+                cPersistence,
                 lacunarity,
-                scale,
-                elevation,
+                cScale,
+                cElevation,
                 // [2]
                 verticalShift
             };

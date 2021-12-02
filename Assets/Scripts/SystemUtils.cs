@@ -93,6 +93,7 @@ public class SystemUtils : MonoBehaviour
             cBodiesSettings.shadingSettingsList.Add(cBodySettings.Shading.GetSettings());
             cBodiesSettings.physicsSettingsList.Add(cBodySettings.Physics.GetSettings());
         }
+        
         var cBodiesSettingsPath = _storePath + systemSettings.systemName + "_cBodies_settings";
         StreamWriter settingsWriter = new StreamWriter(cBodiesSettingsPath, false);
         var settingsJson = JsonUtility.ToJson(cBodiesSettings);
@@ -122,14 +123,33 @@ public class SystemUtils : MonoBehaviour
                 JsonUtility.FromJson<CBodiesTypes>(cBodiesTypesReader.ReadToEnd());
 
             StreamReader cBodiesSettingsReader = new StreamReader(cBodiesSettingsPath);
-            CBodiesSettings loadedCBodiesSettings =
-                JsonUtility.FromJson<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd());
+            
 
             StreamReader systemSettingsReader = new StreamReader(systemPath);
             SystemSettings systemSettings = JsonUtility.FromJson<SystemSettings>(systemSettingsReader.ReadToEnd());
 
-            if (loadedCBodiesTypes != null && loadedCBodiesSettings != null && systemSettings != null)
+            if (loadedCBodiesTypes != null && systemSettings != null)
             {
+                CBodiesSettings loadedCBodiesSettings = new CBodiesSettings();
+                foreach (CBodySettings.CBodyType type in loadedCBodiesTypes.types)
+                {
+                    switch (type)
+                    {
+                        case CBodySettings.CBodyType.Rocky:
+                            loadedCBodiesSettings.shapeSettingsList.Add(new RockShape.RockShapeSettings());
+                            break;
+                        case CBodySettings.CBodyType.Gaseous:
+                            loadedCBodiesSettings.shapeSettingsList.Add(new GaseousShape.GaseousShapeSettings());
+                            break;
+                        case CBodySettings.CBodyType.Star:
+                            loadedCBodiesSettings.shapeSettingsList.Add(new StarShape.StarShapeSettings());
+                            break;
+                    }
+                }
+                JsonUtility.FromJsonOverwrite(cBodiesSettingsReader.ReadToEnd(), loadedCBodiesSettings);
+                // CBodiesSettings loadedCBodiesSettings =
+                //     JsonUtility.FromJson<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd());
+                
                 for (int i = 0; i < loadedCBodiesTypes.types.Length; i ++)
                 {
                     (Shape shape, Shading shading, Physics physics) = GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
@@ -195,7 +215,7 @@ public class SystemUtils : MonoBehaviour
         savedNames = JsonUtility.FromJson<SavedSystemsNames>(reader.ReadToEnd());
         return savedNames.savedSysNames;
     }
-    
+
     // Utility class for serializing system cBodies types
     [Serializable]
     private class CBodiesTypes

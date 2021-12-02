@@ -21,7 +21,7 @@ namespace CBodies.Noise
         }
 
         // Set values using custom scale and elevation
-        public void SetComputeValues (ComputeShader cs, PRNG prng, string varSuffix, float scale, float elevation, float power) {
+        public void SetComputeValues (ComputeShader cs, PRNG prng, string varSuffix, float cScale, float cElevation, float cPower) {
             Vector3 seededOffset = new Vector3 (prng.Value (), prng.Value (), prng.Value ()) * prng.Value () * 10000;
 
             float[] noiseParams = {
@@ -33,10 +33,10 @@ namespace CBodies.Noise
                 // [1]
                 persistence,
                 lacunarity,
-                scale,
-                elevation,
+                cScale,
+                cElevation,
                 // [2]
-                power,
+                cPower,
                 gain,
                 verticalShift,
                 peakSmoothing

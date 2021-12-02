@@ -49,12 +49,12 @@ namespace UI.Menu.SystemEditing
             // load saved CBodies
             
             var (systemToLoad, isNew) = GameManager.Instance.GetSystemToLoad();
-            // todo: REMOVE FROM BUILD
-            if (systemToLoad == null)
-            {
-                systemToLoad = "Varudia";
-                isNew = true;
-            }
+            // // todo: REMOVE FROM BUILD
+            // if (systemToLoad == null)
+            // {
+            //     systemToLoad = "Varudia";
+            //     isNew = true;
+            // }
 
             if (systemToLoad != null)
             {

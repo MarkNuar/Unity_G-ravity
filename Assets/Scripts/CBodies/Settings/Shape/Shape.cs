@@ -12,9 +12,9 @@ namespace CBodies.Settings.Shape
     public class Shape : ScriptableObject
     {
         // OBSERVER
-        [CanBeNull] private CBodyGenerator _observer;
+        [CanBeNull] protected CBodyGenerator Observer;
         // MEMENTO
-        private ShapeSettings _shapeSettings;
+        [SerializeReference] protected ShapeSettings shapeSettings;
         
         public ComputeShader perturbCompute;
         public ComputeShader heightMapCompute;
@@ -51,38 +51,43 @@ namespace CBodies.Settings.Shape
         // OBSERVER PATTERN
         public void Subscribe(CBodyGenerator observer)
         {
-            _observer = observer;
+            Observer = observer;
         }
             
         public void Unsubscribe()
         {
-            _observer = null;
+            Observer = null;
         }
+        
+        // // MEMENTO PATTERN
+        // public T GetSettings <T> () where T : ShapeSettings
+        // {
+        //     return (T)shapeSettings;
+        // }
+        //
+        // public void SetSettings  <T> (T ss) where T : ShapeSettings
+        // {
+        //     shapeSettings = ss;
+        //     if(Observer)
+        //         Observer.OnShapeUpdate();
+        // }
         
         // MEMENTO PATTERN
         public ShapeSettings GetSettings()
         {
-            return _shapeSettings;
+            return shapeSettings;
         }
 
-        public void SetSettings(ShapeSettings ss)
+        public void SetSettings (ShapeSettings ss)
         {
-            _shapeSettings = ss;
-            if(_observer)
-                _observer.OnShapeUpdate();
+            shapeSettings = ss;
+            if(Observer)
+                Observer.OnShapeUpdate();
         }
         
-        public void RandomInitialize(int res)
+        public virtual void RandomInitialize(int res)
         {
-            _shapeSettings = new ShapeSettings
-            {
-                resolution = res,
-                mountainsHeight = Random.Range(ParameterValues.minMountainsHeight, ParameterValues.maxMountainsHeight),
-                perturbStrength = 0.7f
-                // ...
-            };
-            if(_observer)
-                _observer.OnShapeUpdate();
+            
         }
 
         [Serializable]
@@ -95,8 +100,10 @@ namespace CBodies.Settings.Shape
             public int resolution;
             // Max height of the mountains of the CBody
             public float mountainsHeight;
+            
             public bool perturbVertices;
             [Range (0, 1)] public float perturbStrength = 0.7f;
+            
         }
     }
 }

@@ -21,7 +21,7 @@ namespace CBodies.Settings
             cbd.Init(type);
             // // Subscribe the cBody to the newly created cBody settings 
             // cbd.Subscribe(observer);
-            
+
             // todo: position according to the type of planet
             var count = cBodiesSettings.Count;
             Vector3 pos = new Vector3( count * 25, 0, 0);

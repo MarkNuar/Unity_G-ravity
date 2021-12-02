@@ -1,4 +1,5 @@
 ﻿using CBodies;
+using CBodies.Settings;
 using CBodies.Settings.Shading;
 using CBodies.Settings.Shape;
 using UnityEditor;
@@ -18,7 +19,6 @@ namespace Editor
 
         public override void OnInspectorGUI()
         {
-            
             Shading.ShadingSettings sd = generator.cBodySettings.Shading.GetSettings();
             Shape.ShapeSettings sp = generator.cBodySettings.Shape.GetSettings();
             
