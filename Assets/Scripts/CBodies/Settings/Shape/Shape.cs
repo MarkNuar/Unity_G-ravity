@@ -11,10 +11,13 @@ using Random = UnityEngine.Random;
 namespace CBodies.Settings.Shape
 {
     [Serializable][CreateAssetMenu]
-    public abstract class Shape : ScriptableObject, ISettingsComponent
+    public abstract class Shape : ScriptableObject
     {
         // OBSERVER
         [CanBeNull] protected CBodyGenerator Observer;
+        
+        // MEMENTO
+        [SerializeReference] protected ShapeSettings shapeSettings;
 
         
         public ComputeShader perturbCompute;
@@ -59,10 +62,19 @@ namespace CBodies.Settings.Shape
             Observer = null;
         }
 
+        
         // MEMENTO PATTERN
-        public abstract ShapeSettings GetSettings();
+        public ShapeSettings GetSettings()
+        {
+            return shapeSettings;
+        }
 
-        public abstract void SetSettings(ShapeSettings ss);
+        public void SetSettings (ShapeSettings ss)
+        {
+            shapeSettings = ss;
+            if(Observer)
+                Observer.OnShapeUpdate();
+        }
 
         public abstract void RandomInitialize(int res);
 
@@ -84,7 +96,5 @@ namespace CBodies.Settings.Shape
             [Range (0, 1)] public float perturbStrength = 0.7f;
             
         }
-
-        public abstract void AcceptVisitor(ISettingsVisitor visitor);
     }
 }

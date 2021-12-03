@@ -6,7 +6,7 @@ using UnityEngine;
 namespace CBodies.Settings.Physics
 {
     [Serializable][CreateAssetMenu]
-    public class Physics : ScriptableObject, ISettingsComponent
+    public class Physics : ScriptableObject
     {
         // OBSERVER
         [CanBeNull] private CBodyGenerator _observer;
@@ -60,12 +60,6 @@ namespace CBodies.Settings.Physics
             physicsSettings = ps;
             if(_observer)
                 _observer.OnPhysicsUpdate();
-        }
-
-        // VISITOR PATTERN
-        public void AcceptVisitor(ISettingsVisitor visitor)
-        {
-            visitor.VisitPhysicsSettings(this);
         }
     }
 }

@@ -15,9 +15,6 @@ public class SystemUtils : MonoBehaviour
     public static SystemUtils Instance;
 
     public string storePath = null;
-    
-    private SystemReader _systemReader;
-    private SystemWriter _systemWriter;
 
     private JsonSerializerSettings _jSonSettings;
     
@@ -44,9 +41,6 @@ public class SystemUtils : MonoBehaviour
             // Save the store path
             storePath = Application.persistentDataPath + Path.DirectorySeparatorChar;
 
-            _systemReader = new SystemReader();
-            _systemWriter = new SystemWriter();
-            
             // Setting the de/-serialization settings 
             _jSonSettings = new JsonSerializerSettings();
             _jSonSettings.Converters.Add(JsonSubtypesConverterBuilder
@@ -72,12 +66,114 @@ public class SystemUtils : MonoBehaviour
 
     public void SaveSystem(SystemSettings systemSettings)
     {
-        _systemWriter.SaveSystem(systemSettings, storePath, _jSonSettings);
+        if (storePath == null) return;
+
+        // Add the newly created system name to the system names list
+        var systemNamesPath = storePath + "names_of_systems.txt";
+        SavedSystemsNames savedNames = new SavedSystemsNames();
+        if (File.Exists(systemNamesPath))
+        {
+            StreamReader namesReader = new StreamReader(systemNamesPath);
+            savedNames = JsonConvert.DeserializeObject<SavedSystemsNames>(namesReader.ReadToEnd());
+            namesReader.Close();
+        }
+
+        if (!savedNames.savedSysNames.Contains(systemSettings.systemName))
+        {
+            savedNames.savedSysNames.Add(systemSettings.systemName);
+        }
+
+        StreamWriter namesWriter = new StreamWriter(systemNamesPath, false);
+        var namesJson = JsonConvert.SerializeObject(savedNames);
+        namesWriter.WriteLine(namesJson);
+        namesWriter.Close();
+
+
+        // Stores the types of the newly created system cbodies
+        CBodiesTypes cBodiesTypes = new CBodiesTypes
+        {
+            types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
+        };
+        for (var i = 0; i < systemSettings.cBodiesSettings.Count; i++)
+        {
+            cBodiesTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
+        }
+
+        var cBodiesTypesPath = storePath + systemSettings.systemName + "_cBodies_types.txt";
+        StreamWriter typesWriter = new StreamWriter(cBodiesTypesPath, false);
+        var typesJson = JsonConvert.SerializeObject(cBodiesTypes);
+        typesWriter.WriteLine(typesJson);
+        typesWriter.Close();
+
+
+        // Stores cBody settings for each cBody
+        CBodiesSettings toStoreCBodiesSettings = new CBodiesSettings();
+        foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
+        {
+
+            toStoreCBodiesSettings.shapeSettingsList.Add(cBodySettings.Shape.GetSettings());
+            toStoreCBodiesSettings.shadingSettingsList.Add(cBodySettings.Shading.GetSettings());
+            toStoreCBodiesSettings.physicsSettingsList.Add(cBodySettings.Physics.GetSettings());
+        }
+
+        var cBodiesSettingsPath = storePath + systemSettings.systemName + "_cBodies_settings.txt";
+        StreamWriter settingsWriter = new StreamWriter(cBodiesSettingsPath, false);
+        var settingsJson = JsonConvert.SerializeObject(toStoreCBodiesSettings, _jSonSettings);
+        settingsWriter.WriteLine(settingsJson);
+        settingsWriter.Close();
+
+
+        // Stores the system settings
+        var systemPath = storePath + systemSettings.systemName + "_system_settings.txt";
+        StreamWriter systemWriter = new StreamWriter(systemPath, false);
+        var systemJson = JsonConvert.SerializeObject(systemSettings);
+        systemWriter.WriteLine(systemJson);
+        systemWriter.Close();
     }
 
     public SystemSettings LoadSystem(string systemName)
     {
-        return _systemReader.LoadSystem(systemName, storePath, _jSonSettings);
+        var cBodiesTypesPath = storePath + systemName + "_cBodies_types.txt";
+        var cBodiesSettingsPath = storePath + systemName + "_cBodies_settings.txt";
+        var systemPath = storePath + systemName + "_system_settings.txt";
+        
+        if (File.Exists(systemPath) && File.Exists(cBodiesTypesPath) && File.Exists(cBodiesSettingsPath))
+        {
+            // There exists already a previous saved state
+            StreamReader cBodiesTypesReader = new StreamReader(cBodiesTypesPath);
+            CBodiesTypes loadedCBodiesTypes = JsonConvert.DeserializeObject<CBodiesTypes>(cBodiesTypesReader.ReadToEnd());
+            
+            StreamReader cBodiesSettingsReader = new StreamReader(cBodiesSettingsPath);
+
+            StreamReader systemSettingsReader = new StreamReader(systemPath);
+            SystemSettings loadedSystemSettings = JsonConvert.DeserializeObject<SystemSettings>(systemSettingsReader.ReadToEnd());
+            
+        
+            if (loadedCBodiesTypes != null && loadedSystemSettings != null)
+            {
+                CBodiesSettings loadedCBodiesSettings = JsonConvert.DeserializeObject<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd(),_jSonSettings);
+
+                for (int i = 0; i < loadedCBodiesTypes.types.Length; i ++)
+                {
+                    (Shape shape, Shading shading, Physics physics) = Instance.GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
+                    
+                    shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
+                    loadedSystemSettings.cBodiesSettings[i].Shape = shape;
+                    shading.SetSettings(loadedCBodiesSettings.shadingSettingsList[i]);
+                    loadedSystemSettings.cBodiesSettings[i].Shading = shading;
+                    physics.SetSettings(loadedCBodiesSettings.physicsSettingsList[i]);
+                    loadedSystemSettings.cBodiesSettings[i].Physics = physics;
+                }
+                return loadedSystemSettings;
+            }
+            else
+            {
+                Debug.LogError("System types not correctly loaded");
+                return null;
+            }
+        }
+        Debug.LogError("No saved system data found");
+        return null;
     }
 
     public void DeleteSystem(string systemName)
@@ -143,206 +239,6 @@ public class SystemUtils : MonoBehaviour
     private class SavedSystemsNames
     {
         public List<string> savedSysNames = new List<string>();
-    }
-    
-    
-    private class SystemWriter : ISettingsVisitor
-    {
-
-        private CBodiesSettings _cBodiesSettings;
-        
-        public void SaveSystem(SystemSettings systemSettings, string storePath, JsonSerializerSettings settings)
-        {
-            if (storePath == null) return;
-
-            // Add the newly created system name to the system names list
-            var systemNamesPath = storePath + "names_of_systems.txt";
-            SavedSystemsNames savedNames = new SavedSystemsNames();
-            if (File.Exists(systemNamesPath))
-            {
-                StreamReader namesReader = new StreamReader(systemNamesPath);
-                savedNames = JsonConvert.DeserializeObject<SavedSystemsNames>(namesReader.ReadToEnd());
-                namesReader.Close();
-            }
-            if (!savedNames.savedSysNames.Contains(systemSettings.systemName))
-            {
-                savedNames.savedSysNames.Add(systemSettings.systemName);
-            }
-            StreamWriter namesWriter = new StreamWriter(systemNamesPath, false);
-            var namesJson = JsonConvert.SerializeObject(savedNames);
-            namesWriter.WriteLine(namesJson);
-            namesWriter.Close();
-
-
-            // Stores the types of the newly created system cbodies
-            CBodiesTypes cBodiesTypes = new CBodiesTypes
-            {
-                types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
-            };
-            for (var i = 0; i < systemSettings.cBodiesSettings.Count; i++)
-            {
-                cBodiesTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
-            }
-            var cBodiesTypesPath = storePath + systemSettings.systemName + "_cBodies_types.txt";
-            StreamWriter typesWriter = new StreamWriter(cBodiesTypesPath, false);
-            var typesJson = JsonConvert.SerializeObject(cBodiesTypes);
-            typesWriter.WriteLine(typesJson);
-            typesWriter.Close();
-
-
-            // Stores cBody settings for each cBody
-            _cBodiesSettings = new CBodiesSettings();
-            foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
-            {
-                cBodySettings.Shape.AcceptVisitor(this);
-                cBodySettings.Shading.AcceptVisitor(this);
-                cBodySettings.Physics.AcceptVisitor(this);
-            }
-
-            var cBodiesSettingsPath = storePath + systemSettings.systemName + "_cBodies_settings.txt";
-            StreamWriter settingsWriter = new StreamWriter(cBodiesSettingsPath, false);
-            var settingsJson = JsonConvert.SerializeObject(_cBodiesSettings, settings);
-            settingsWriter.WriteLine(settingsJson);
-            settingsWriter.Close();
-
-
-            // Stores the system settings
-            var systemPath = storePath + systemSettings.systemName + "_system_settings.txt";
-            StreamWriter systemWriter = new StreamWriter(systemPath, false);
-            var systemJson = JsonConvert.SerializeObject(systemSettings);
-            systemWriter.WriteLine(systemJson);
-            systemWriter.Close();
-        }
-        
-        public void VisitShapeSettings(RockShape sp)
-        {
-            _cBodiesSettings.shapeSettingsList.Add(sp.GetSettings());
-        }
-
-        public void VisitShapeSettings(GaseousShape sp)
-        {
-            _cBodiesSettings.shapeSettingsList.Add(sp.GetSettings());
-        }
-
-        public void VisitShapeSettings(StarShape sp)
-        {
-            _cBodiesSettings.shapeSettingsList.Add( sp.GetSettings());
-        }
-
-        public void VisitShadingSettings(RockShading sd)
-        {
-            _cBodiesSettings.shadingSettingsList.Add(sd.GetSettings());
-        }
-
-        public void VisitShadingSettings(GaseousShading sd)
-        {
-            _cBodiesSettings.shadingSettingsList.Add(sd.GetSettings());
-        }
-
-        public void VisitShadingSettings(StarShading sd)
-        {
-            _cBodiesSettings.shadingSettingsList.Add(sd.GetSettings());
-        }
-
-        public void VisitPhysicsSettings(Physics ps)
-        {
-            _cBodiesSettings.physicsSettingsList.Add(ps.GetSettings());
-        }
-
-    }
-    
-
-    private class SystemReader : ISettingsVisitor
-    {
-        private CBodiesSettings _loadedCBodiesSettings;
-
-        private SystemSettings _loadedSystemSettings;
-
-        private int _cbIndex;
-        
-        public SystemSettings LoadSystem(string systemName, string storePath, JsonSerializerSettings settings)
-        {
-            var cBodiesTypesPath = storePath + systemName + "_cBodies_types.txt";
-            var cBodiesSettingsPath = storePath + systemName + "_cBodies_settings.txt";
-            var systemPath = storePath + systemName + "_system_settings.txt";
-            
-            if (File.Exists(systemPath) && File.Exists(cBodiesTypesPath) && File.Exists(cBodiesSettingsPath))
-            {
-                // There exists already a previous saved state
-                StreamReader cBodiesTypesReader = new StreamReader(cBodiesTypesPath);
-                CBodiesTypes loadedCBodiesTypes = JsonConvert.DeserializeObject<CBodiesTypes>(cBodiesTypesReader.ReadToEnd());
-                
-                StreamReader cBodiesSettingsReader = new StreamReader(cBodiesSettingsPath);
-
-                StreamReader systemSettingsReader = new StreamReader(systemPath);
-                _loadedSystemSettings = JsonConvert.DeserializeObject<SystemSettings>(systemSettingsReader.ReadToEnd());
-                
-            
-                if (loadedCBodiesTypes != null && _loadedSystemSettings != null)
-                {
-                    _loadedCBodiesSettings = JsonConvert.DeserializeObject<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd(),settings);
-
-                    for (_cbIndex = 0; _cbIndex < loadedCBodiesTypes.types.Length; _cbIndex ++)
-                    {
-                        (Shape shape, Shading shading, Physics physics) = Instance.GetShapeShadingPhysics(loadedCBodiesTypes.types[_cbIndex]);
- 
-                        shape.AcceptVisitor(this);
-                        shading.AcceptVisitor(this);
-                        physics.AcceptVisitor(this);
-                    }
-                    return _loadedSystemSettings;
-                }
-                else
-                {
-                    Debug.LogError("System types not correctly loaded");
-                    return null;
-                }
-            }
-            Debug.LogError("No saved system data found");
-            return null;
-        }
-        
-        public void VisitShapeSettings(RockShape sp)
-        {
-            sp.SetSettings(_loadedCBodiesSettings.shapeSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Shape = sp;
-        }
-
-        public void VisitShapeSettings(GaseousShape sp)
-        {
-            sp.SetSettings(_loadedCBodiesSettings.shapeSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Shape = sp;
-        }
-
-        public void VisitShapeSettings(StarShape sp)
-        {
-            sp.SetSettings(_loadedCBodiesSettings.shapeSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Shape = sp;
-        }
-
-        public void VisitShadingSettings(RockShading sd)
-        {
-            sd.SetSettings(_loadedCBodiesSettings.shadingSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Shading = sd;
-        }
-
-        public void VisitShadingSettings(GaseousShading sd)
-        {
-            sd.SetSettings(_loadedCBodiesSettings.shadingSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Shading = sd;
-        }
-
-        public void VisitShadingSettings(StarShading sd)
-        {
-            sd.SetSettings(_loadedCBodiesSettings.shadingSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Shading = sd;
-        }
-
-        public void VisitPhysicsSettings(Physics ps)
-        {
-            ps.SetSettings(_loadedCBodiesSettings.physicsSettingsList[_cbIndex]);
-            _loadedSystemSettings.cBodiesSettings[_cbIndex].Physics = ps;
-        }
     }
 
 }

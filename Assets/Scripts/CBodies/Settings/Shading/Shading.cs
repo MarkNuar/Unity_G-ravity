@@ -10,10 +10,12 @@ using Random = UnityEngine.Random;
 namespace CBodies.Settings.Shading
 {
     [Serializable][CreateAssetMenu]
-    public abstract class Shading : ScriptableObject, ISettingsComponent
+    public abstract class Shading : ScriptableObject
     {
         // OBSERVER
         [CanBeNull] protected CBodyGenerator Observer;
+        // MEMENTO
+        [SerializeReference] protected ShadingSettings shadingSettings;
 
         public ComputeShader shadingDataCompute;
         public Material terrainMaterial = null;
@@ -71,12 +73,20 @@ namespace CBodies.Settings.Shading
         {
             Observer = null;
         }
-
+        
         // MEMENTO PATTERN
-        public abstract ShadingSettings GetSettings();
+        public ShadingSettings GetSettings()
+        {
+            return shadingSettings;
+        }
 
-        public abstract void SetSettings(ShadingSettings ss);
-
+        public void SetSettings(ShadingSettings ss)
+        {
+            shadingSettings = ss;
+            if(Observer)
+                Observer.OnShadingUpdate();
+        }
+        
         public abstract void RandomInitialize();
 
         [Serializable]
@@ -87,7 +97,5 @@ namespace CBodies.Settings.Shading
             
             public Color color;
         }
-
-        public abstract void AcceptVisitor(ISettingsVisitor visitor);
     }
 }
