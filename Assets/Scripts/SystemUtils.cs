@@ -111,9 +111,9 @@ public class SystemUtils : MonoBehaviour
         foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
         {
 
-            toStoreCBodiesSettings.shapeSettingsList.Add(cBodySettings.Shape.GetSettings());
-            toStoreCBodiesSettings.shadingSettingsList.Add(cBodySettings.Shading.GetSettings());
-            toStoreCBodiesSettings.physicsSettingsList.Add(cBodySettings.Physics.GetSettings());
+            toStoreCBodiesSettings.shapeSettingsList.Add(cBodySettings.shape.GetSettings());
+            toStoreCBodiesSettings.shadingSettingsList.Add(cBodySettings.shading.GetSettings());
+            toStoreCBodiesSettings.physicsSettingsList.Add(cBodySettings.physics.GetSettings());
         }
 
         var cBodiesSettingsPath = storePath + systemSettings.systemName + "_cBodies_settings.txt";
@@ -158,11 +158,11 @@ public class SystemUtils : MonoBehaviour
                     (Shape shape, Shading shading, Physics physics) = Instance.GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
                     
                     shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
-                    loadedSystemSettings.cBodiesSettings[i].Shape = shape;
+                    loadedSystemSettings.cBodiesSettings[i].shape = shape;
                     shading.SetSettings(loadedCBodiesSettings.shadingSettingsList[i]);
-                    loadedSystemSettings.cBodiesSettings[i].Shading = shading;
+                    loadedSystemSettings.cBodiesSettings[i].shading = shading;
                     physics.SetSettings(loadedCBodiesSettings.physicsSettingsList[i]);
-                    loadedSystemSettings.cBodiesSettings[i].Physics = physics;
+                    loadedSystemSettings.cBodiesSettings[i].physics = physics;
                 }
                 return loadedSystemSettings;
             }

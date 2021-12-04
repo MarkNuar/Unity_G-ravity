@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,9 +13,9 @@ namespace CBodies.Settings
         public CBodyType cBodyType;
         // ***** END
         
-        [NonSerialized] public Shape.Shape Shape;
-        [NonSerialized] public Shading.Shading Shading;
-        [NonSerialized] public Physics.Physics Physics;
+        [JsonIgnore] public Shape.Shape shape;
+        [JsonIgnore] public Shading.Shading shading; 
+        [JsonIgnore] public Physics.Physics physics;
         
         private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia"};
         
@@ -23,24 +24,26 @@ namespace CBodies.Settings
             cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
             cBodyType = type;
             (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
-            Shape = sp;
-            Shading = sd;
-            Physics = ph;
+            shape = sp;
+            shading = sd;
+            physics = ph;
         }
 
         public void Subscribe(CBodyGenerator observer)
         {
             observer.cBodySettings = this;
-            Shape.Subscribe(observer);
-            Shading.Subscribe(observer);
-            Physics.Subscribe(observer);
+            shape.Subscribe(observer);
+            shading.Subscribe(observer);
+            physics.Subscribe(observer);
+            
+            observer.OnInitialUpdate();
         }
 
         public void Unsubscribe()
         {
-            Shape.Unsubscribe();
-            Shading.Unsubscribe();
-            Physics.Unsubscribe();
+            shape.Unsubscribe();
+            shading.Unsubscribe();
+            physics.Unsubscribe();
         }
 
         [Serializable]

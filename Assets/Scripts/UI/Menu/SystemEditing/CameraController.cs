@@ -48,7 +48,6 @@ namespace UI.Menu.SystemEditing
                 if (posDifference.magnitude < cinematicPrecision && Mathf.Abs(zoomDifference) < cinematicPrecision 
                     || Input.GetMouseButton(1) || Input.mouseScrollDelta.y != 0) // stop the zoom out if the user presses a button
                 {
-                    // Debug.Log("giving back control");
                     _restoringControl = false;
                 }
                 else

@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5641544729d546598aa5eac3e825ff4b, type: 3}
   m_Name: RockShape
   m_EditorClassIdentifier: 
-  currentResolution: 0
-  currentMountainsHeight: 0
-  currentPerturbVertices: 0
-  currentPerturbStrength: 0.7
+  perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
+  heightMapCompute: {fileID: 7200000, guid: 9c2c260115dde784cbfe72d24b70a415, type: 3}
+  shapeSettings:
+    id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: , ns: , asm: }

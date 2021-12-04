@@ -14,8 +14,6 @@ namespace CBodies.Settings.Shading
     {
         // OBSERVER
         [CanBeNull] protected CBodyGenerator Observer;
-        // MEMENTO
-        [SerializeReference] protected ShadingSettings shadingSettings;
 
         public ComputeShader shadingDataCompute;
         public Material terrainMaterial = null;
@@ -23,10 +21,12 @@ namespace CBodies.Settings.Shading
         protected Vector4[] CachedShadingData;
         private ComputeBuffer _shadingBuffer;
         
+        private static System.Random _prng = new System.Random ();
+        
         public virtual void ReleaseBuffers () {
             ComputeHelper.Release (_shadingBuffer);
         }
-        
+
         public virtual void Initialize (Shape.Shape shape) { }
         
         // Set shading properties on terrain
@@ -75,25 +75,16 @@ namespace CBodies.Settings.Shading
         }
         
         // MEMENTO PATTERN
-        public ShadingSettings GetSettings()
-        {
-            return shadingSettings;
-        }
+        public abstract void InitSettings();
+        public abstract ShadingSettings GetSettings();
 
-        public void SetSettings(ShadingSettings ss)
-        {
-            shadingSettings = ss;
-            if(Observer)
-                Observer.OnShadingUpdate();
-        }
-        
-        public abstract void RandomInitialize();
+        public abstract void SetSettings(ShadingSettings ss);
 
         [Serializable]
-        public class ShadingSettings
+        public abstract class ShadingSettings
         {
             public bool randomize;
-            public int seed;
+            public int seed = _prng.Next(-10000, 10000);
             
             public Color color;
         }

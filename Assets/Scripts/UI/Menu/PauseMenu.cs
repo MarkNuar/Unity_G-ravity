@@ -39,6 +39,7 @@ namespace UI.Menu
 
         public void LoadMainMenu()
         {
+            Resume();
             //SceneManager.LoadScene("Scenes/MainMenu", LoadSceneMode.Single);
             GameManager.Instance.LoadScene(0);
         }

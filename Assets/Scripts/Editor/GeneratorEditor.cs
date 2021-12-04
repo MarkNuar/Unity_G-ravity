@@ -22,12 +22,13 @@ namespace Editor
 
         public override void OnInspectorGUI()
         {
-            Shading.ShadingSettings sd = generator.cBodySettings.Shading.GetSettings();
-            Shape.ShapeSettings sp = generator.cBodySettings.Shape.GetSettings();
-            Physics.PhysicsSettings ps = generator.cBodySettings.Physics.GetSettings();
-            
+            Shading.ShadingSettings sd = generator.cBodySettings.shading.GetSettings();
+            Shape.ShapeSettings sp = generator.cBodySettings.shape.GetSettings();
+            Physics.PhysicsSettings ps = generator.cBodySettings.physics.GetSettings();
+
             using (var check = new EditorGUI.ChangeCheckScope ()) {
                 DrawDefaultInspector ();
+                DrawSettings();
                 if (check.changed) {
                     Regenerate (sp, sd, ps);
                 }
@@ -47,7 +48,7 @@ namespace Editor
                 var prng = new System.Random ();
                 sp.randomize = true;
                 sp.seed = prng.Next (-10000, 10000);
-                generator.cBodySettings.Shape.SetSettings(sp);
+                generator.cBodySettings.shape.SetSettings(sp);
                 Regenerate (sp, sd, ps);
             }
 
@@ -57,8 +58,8 @@ namespace Editor
                 sp.randomize = true;
                 sp.seed = prng.Next (-10000, 10000);
                 sd.seed = prng.Next (-10000, 10000);
-                generator.cBodySettings.Shape.SetSettings(sp);
-                generator.cBodySettings.Shading.SetSettings(sd);
+                generator.cBodySettings.shape.SetSettings(sp);
+                generator.cBodySettings.shading.SetSettings(sd);
                 Regenerate (sp, sd, ps);
             }
 
@@ -71,25 +72,28 @@ namespace Editor
                     sp.randomize = false;
                     sp.seed = 0;
                     sd.seed = 0;
-                    generator.cBodySettings.Shape.SetSettings(sp);
-                    generator.cBodySettings.Shading.SetSettings(sd);
+                    generator.cBodySettings.shape.SetSettings(sp);
+                    generator.cBodySettings.shading.SetSettings(sd);
                     Regenerate (sp, sd, ps);
                 }
             }
 
-            // Draw shape/shading object editors
-            DrawSettingsEditor (generator.cBodySettings.Shape, ref shapeFoldout, ref shapeEditor);
-            DrawSettingsEditor (generator.cBodySettings.Shading, ref shadingFoldout, ref shadingEditor);
-            DrawSettingsEditor (generator.cBodySettings.Physics, ref physicsFoldout, ref physicsEditor);
-
             SaveState ();
+        }
+
+        private void DrawSettings()
+        {
+            // Draw shape/shading object editors
+            DrawSettingsEditor (generator.cBodySettings.shape, ref shapeFoldout, ref shapeEditor);
+            DrawSettingsEditor (generator.cBodySettings.shading, ref shadingFoldout, ref shadingEditor);
+            DrawSettingsEditor (generator.cBodySettings.physics, ref physicsFoldout, ref physicsEditor);
         }
         
         
         void Regenerate (Shape.ShapeSettings sp, Shading.ShadingSettings sd, Physics.PhysicsSettings ps) {
-            generator.cBodySettings.Shape.SetSettings(sp);
-            generator.cBodySettings.Shading.SetSettings(sd);
-            generator.cBodySettings.Physics.SetSettings(ps);
+            generator.cBodySettings.shape.SetSettings(sp);
+            generator.cBodySettings.shading.SetSettings(sd);
+            generator.cBodySettings.physics.SetSettings(ps);
             EditorApplication.QueuePlayerLoopUpdate ();
         }
 

@@ -16,14 +16,13 @@ namespace CBodies.Settings.Shape
         // OBSERVER
         [CanBeNull] protected CBodyGenerator Observer;
         
-        // MEMENTO
-        [SerializeReference] protected ShapeSettings shapeSettings;
-
-        
         public ComputeShader perturbCompute;
         public ComputeShader heightMapCompute;
         
         private ComputeBuffer _heightBuffer;
+        
+        
+        private static System.Random _prng = new System.Random ();
         
         
         public virtual float[] CalculateHeights (ComputeBuffer vertexBuffer) {
@@ -64,37 +63,19 @@ namespace CBodies.Settings.Shape
 
         
         // MEMENTO PATTERN
-        public ShapeSettings GetSettings()
-        {
-            return shapeSettings;
-        }
+        public abstract void InitSettings();
 
-        public void SetSettings (ShapeSettings ss)
-        {
-            shapeSettings = ss;
-            if(Observer)
-                Observer.OnShapeUpdate();
-        }
+        public abstract ShapeSettings GetSettings();
 
-        public abstract void RandomInitialize(int res);
+        public abstract void SetSettings(ShapeSettings ss);
 
         [Serializable]
-        public class ShapeSettings
+        public abstract class ShapeSettings
         {
-            public bool randomize;
-            
-            public int seed;
-            // Mesh resolution
-            
-            public int resolution;
-            // Max height of the mountains of the CBody
-            
-            public float mountainsHeight;
-            
-            public bool perturbVertices;
-            
+            public bool randomize = false;
+            public int seed = _prng.Next(-10000,10000);
+            public bool perturbVertices = true;
             [Range (0, 1)] public float perturbStrength = 0.7f;
-            
         }
     }
 }

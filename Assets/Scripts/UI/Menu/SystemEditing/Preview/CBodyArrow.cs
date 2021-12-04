@@ -31,8 +31,6 @@ namespace UI.Menu.SystemEditing.Preview
         {
             maxArrowLen = Mathf.Min(Screen.width, Screen.height) * 0.4f;
             
-            // Debug.Log("Starting Arrow");
-            // Debug.Log(arrowHead.rectTransform.position);
             _cam = GameManager.Instance.GetMainCamera();
             _cameraController = _cam.GetComponent<CameraController>();
             
@@ -73,7 +71,6 @@ namespace UI.Menu.SystemEditing.Preview
         {
             var len = (maxArrowLen - minArrowLen) * percent + minArrowLen;
             UpdateArrow(true, direction * len);
-            //Debug.Log("Len: " + len + ", Position: " + arrowHead.rectTransform.position);
         }
 
         private void UpdateArrow(bool setNewDiff, Vector2 newDiff)

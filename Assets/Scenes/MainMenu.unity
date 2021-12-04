@@ -270,7 +270,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.09803922, g: 0.16470589, b: 0.3372549, a: 1}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -287,7 +287,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -378,11 +378,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e4ad70075ae469f87e74fca3a09cfb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseShape: {fileID: 11400000, guid: 0370d3b67ea1f384db617df397df8e37, type: 2}
+  storePath: 
   rockShape: {fileID: 11400000, guid: 56ecf2f17d21ca74c8de086ab9382e9d, type: 2}
   gaseousShape: {fileID: 11400000, guid: f39c0ee2497438b47a991e7ec80383b6, type: 2}
   starShape: {fileID: 11400000, guid: 09840366b9b480947b30944e459b3a8c, type: 2}
-  baseShading: {fileID: 11400000, guid: 2f664480d865c6947b0fa3eeb3127eb5, type: 2}
   rockShading: {fileID: 11400000, guid: cbbab0d588e903e4a89dad90bc61b65a, type: 2}
   gaseousShading: {fileID: 11400000, guid: 2262102604554b145ae0c640ac8e1c75, type: 2}
   starShading: {fileID: 11400000, guid: 65dd7af6b9e592a4d8f3874471939859, type: 2}

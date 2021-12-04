@@ -37,7 +37,6 @@ namespace UI.Menu.SystemEditing.Preview
         public void OnBeginDrag(PointerEventData eventData)
         {
             _diff = _dragHandleTransform.position.x - eventData.position.x;
-            //Debug.Log("Begin Dragging");
         }
 
         public void OnDrag(PointerEventData data)
@@ -54,7 +53,6 @@ namespace UI.Menu.SystemEditing.Preview
         
         public void OnEndDrag(PointerEventData eventData)
         {
-            //Debug.Log("End Dragging");
         }
 
         private void UpdateObjToDragPos()
@@ -73,7 +71,6 @@ namespace UI.Menu.SystemEditing.Preview
 
         private void UpdateDragHandlePosition(Vector3 targetPosition, bool isFromInput)
         {
-            //Debug.Log("Target world pos: " + targetPosition);
             Vector3 handleTargetPos;
             if (isFromInput)
             {
@@ -85,9 +82,7 @@ namespace UI.Menu.SystemEditing.Preview
                 handleTargetPos = _cam.WorldToScreenPoint(targetPosition);
                 //handleTargetPos.x -= handleOffset;
             }
-            //Debug.Log("Handle target screen pos not fixed: "+ handleTargetPos);
             Vector3 handlePos = _dragHandleTransform.position;
-            //Debug.Log("Handle initial screen pos: " + handlePos);
             if (isFromInput)
             {
                 handleTargetPos.y = handlePos.y;
@@ -95,7 +90,6 @@ namespace UI.Menu.SystemEditing.Preview
 
             handleTargetPos.z = 0; //handlePos.z;
             handlePos = handleTargetPos;
-            //Debug.Log("Handle target screen pos fixed: "+ handlePos);
             _dragHandleTransform.position = handlePos;
         }
 

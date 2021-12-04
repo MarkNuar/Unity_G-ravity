@@ -10,7 +10,6 @@ namespace CBodies
 
             bodies = FindObjectsOfType<CBody> ();
             Time.fixedDeltaTime = Constants.PhysicsTimeStep;
-            Debug.Log ("Setting fixedDeltaTime to: " + Constants.PhysicsTimeStep);
         }
 
         void FixedUpdate () {

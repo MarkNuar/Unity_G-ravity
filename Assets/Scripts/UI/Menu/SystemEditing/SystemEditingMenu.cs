@@ -33,6 +33,7 @@ namespace UI.Menu.SystemEditing
         // PHYSICS
         [SerializeField] private Slider radiusSlider = null;
         [SerializeField] private Slider gravitySlider = null;
+        [SerializeField] private Slider rotationSlider = null;
         
         // SHAPE & SHADING
         [SerializeField] private TMP_Text systemName = null;
@@ -64,7 +65,8 @@ namespace UI.Menu.SystemEditing
                     _systemSettings = new SystemSettings();
                     SetSystemName(systemToLoad);
                     // Start by adding always a star to the system
-                    _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Star);
+                    // TODO : ADD A STAR, NOT A ROCK PLANET AT THE BEGINNING
+                    _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Rocky);
                     CreateCBodyAndPreview();
                 }
                 else
@@ -74,7 +76,6 @@ namespace UI.Menu.SystemEditing
                     if (systemSettings != null)
                     {
                         _systemSettings = systemSettings;
-                        // Debug.Log(_systemData.cBodies.Count);
                         systemName.text = _systemSettings.systemName;
                         foreach (CBodySettings cb in _systemSettings.cBodiesSettings)
                         {
@@ -172,6 +173,7 @@ namespace UI.Menu.SystemEditing
         // This method sets the current cBody index
         private void OpenContextualMenu(int currentCBodyIndex)
         {
+            Debug.LogError("Opening contextual menu");
             // avoid unwanted clicks
             if (cameraController.isDragging) return;
             
@@ -198,6 +200,13 @@ namespace UI.Menu.SystemEditing
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
             ps.surfaceGravity = gravitySlider.value * (ParameterValues.maxGravity - ParameterValues.minGravity) + ParameterValues.minGravity;
+            SetCurrentPhysicsSettings(ps);
+        }
+
+        public void SetCBodyRotation()
+        {
+            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
+            ps.rotationSpeed = rotationSlider.value * (ParameterValues.maxRotationSpeed - ParameterValues.minRotationSpeed) + ParameterValues.minRotationSpeed;
             SetCurrentPhysicsSettings(ps);
         }
         
@@ -352,45 +361,50 @@ namespace UI.Menu.SystemEditing
         private void UpdateContextualSliders()
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            var r = (ps.radius - ParameterValues.minRadius) /
+            var radius = (ps.radius - ParameterValues.minRadius) /
                     (ParameterValues.maxRadius - ParameterValues.minRadius);
-            var g = (ps.surfaceGravity - ParameterValues.minGravity) /
+            var gravity = (ps.surfaceGravity - ParameterValues.minGravity) /
                     (ParameterValues.maxGravity - ParameterValues.minGravity);
+            var rotationSpeed = (ps.rotationSpeed - ParameterValues.minRotationSpeed) /
+                                (ParameterValues.maxRotationSpeed - ParameterValues.minRotationSpeed);
             
-            radiusSlider.value = r;
-            radiusSlider.onValueChanged.Invoke(r);
-            gravitySlider.value = g;
-            gravitySlider.onValueChanged.Invoke(g);
+            radiusSlider.value = radius;
+            radiusSlider.onValueChanged.Invoke(radius);
+            gravitySlider.value = gravity;
+            gravitySlider.onValueChanged.Invoke(gravity);
+            rotationSlider.value = rotationSpeed;
+            rotationSlider.onValueChanged.Invoke(rotationSpeed);
+
         }
 
         private Shape.ShapeSettings GetCurrentShapeSettings()
         {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].Shape.GetSettings();
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.GetSettings();
         }
 
         private void SetCurrentShapeSettings(Shape.ShapeSettings ss)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].Shape.SetSettings(ss);
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.SetSettings(ss);
         }
         
         private Shading.ShadingSettings GetCurrentShadingSettings()
         {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].Shading.GetSettings();
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.GetSettings();
         }
 
         private void SetCurrentShadingSettings(Shading.ShadingSettings ss)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].Shading.SetSettings(ss);
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.SetSettings(ss);
         }
         
         private Physics.PhysicsSettings GetCurrentPhysicsSettings()
         {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].Physics.GetSettings();
+            return _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.GetSettings();
         }
 
         private void SetCurrentPhysicsSettings(Physics.PhysicsSettings ps)
         {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].Physics.SetSettings(ps);
+            _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.SetSettings(ps);
         }
 
         private CBodySettings GetCurrentCBodySettings()

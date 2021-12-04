@@ -9,20 +9,27 @@ namespace CBodies.Settings.Shape
     [Serializable][CreateAssetMenu]
     public class StarShape : Shape
     {
+        // MEMENTO
+        [SerializeReference] protected StarShapeSettings shapeSettings;
 
-        public override void RandomInitialize(int res)
+        // MEMENTO PATTERN
+        public override void InitSettings()
         {
-            shapeSettings = new StarShapeSettings
-            {
-                resolution = res,
-                mountainsHeight = Random.Range(ParameterValues.minMountainsHeight, ParameterValues.maxMountainsHeight),
-                perturbStrength = 0.6f,
-                starCazzo = 0.1f
-                // ...
-            };
+            shapeSettings = new StarShapeSettings();
             if(Observer)
                 Observer.OnShapeUpdate();
         }
+        public override ShapeSettings GetSettings()
+        {
+            return shapeSettings;
+        }
+        public override void SetSettings (ShapeSettings ss)
+        {
+            shapeSettings = (StarShapeSettings) ss;
+            if(Observer)
+                Observer.OnShapeUpdate();
+        }
+        // END MEMENTO
 
 
         [Serializable]

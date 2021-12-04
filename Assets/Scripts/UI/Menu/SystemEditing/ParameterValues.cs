@@ -11,7 +11,7 @@ namespace UI.Menu.SystemEditing
         public static float minGravity = 0.1f;
         public static float maxGravity = 20f;
 
-        public static float minMountainsHeight = 0f;
-        public static float maxMountainsHeight = 10f;
+        public static float minRotationSpeed = -30f;
+        public static float maxRotationSpeed = 30f;
     }
 }

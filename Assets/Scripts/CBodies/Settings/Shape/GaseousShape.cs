@@ -8,19 +8,28 @@ namespace CBodies.Settings.Shape
     [Serializable][CreateAssetMenu]
     public class GaseousShape : Shape
     {
+        // MEMENTO
+        [SerializeReference] protected GaseousShapeSettings shapeSettings;
 
-        public override void RandomInitialize(int res)
+        
+        // MEMENTO PATTERN
+        public override void InitSettings()
         {
-            shapeSettings = new GaseousShapeSettings()
-            {
-                resolution = res,
-                mountainsHeight = Random.Range(ParameterValues.minMountainsHeight, ParameterValues.maxMountainsHeight),
-                perturbStrength = 0.7f
-                // ...
-            };
+            shapeSettings = new GaseousShapeSettings();
             if(Observer)
                 Observer.OnShapeUpdate();
         }
+        public override ShapeSettings GetSettings()
+        {
+            return shapeSettings;
+        }
+        public override void SetSettings (ShapeSettings ss)
+        {
+            shapeSettings = (GaseousShapeSettings)ss;
+            if(Observer)
+                Observer.OnShapeUpdate();
+        }
+        // END MEMENTO
 
 
         [Serializable]

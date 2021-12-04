@@ -24,32 +24,27 @@ namespace CBodies.Settings.Physics
         {
             _observer = null;
         }
+        // END OBSERVER
         
-        public void RandomInitialize(Vector3 pos)
-        {
-            physicsSettings = new PhysicsSettings
-            {
-                radius = ParameterValues.minRadius,
-                surfaceGravity = ParameterValues.minGravity,
-                initialPosition = pos,
-                initialVelocity = Vector3.up * ParameterValues.minVelocity
-                // ...
-            };
-            if (_observer)
-                _observer.OnPhysicsUpdate();
-        }
-
+        
         [Serializable]
         public class PhysicsSettings
         {
-            public float radius;
-            public float surfaceGravity;
-            public Vector3 initialPosition; 
-            public Vector3 initialVelocity;
+            public float radius = (ParameterValues.maxRadius - ParameterValues.minRadius)/3;
+            public float surfaceGravity = ParameterValues.minGravity;
+            public float rotationSpeed = ParameterValues.maxRotationSpeed - ParameterValues.minRotationSpeed + 5;
+            public Vector3 initialPosition = Vector3.zero; 
+            public Vector3 initialVelocity = Vector3.up * ParameterValues.minVelocity;
         }
         
         
         // MEMENTO PATTERN
+        public void InitSettings()
+        {
+            physicsSettings = new PhysicsSettings();
+            if(_observer)
+                _observer.OnPhysicsUpdate();
+        }
         public PhysicsSettings GetSettings()
         {
             return physicsSettings;
