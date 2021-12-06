@@ -116,8 +116,10 @@ namespace CBodies
 
 				_heightMinMax = GenerateShapeAndShading(ref _previewMesh, PickTerrainRes());
 
+				// todo : the material is wrong!!
+				// may be call it surface material??
 				_terrainHolder =
-					GetOrCreateMeshObject("Terrain Mesh", _previewMesh, new Material(Shader.Find("Specular")));
+					GetOrCreateMeshObject("Terrain Mesh", _previewMesh, cBodySettings.shading.terrainMaterial);
 			}
 			// If only shading noise has changed, update it separately from shape to save time
 			else if (_shadingUpdated)

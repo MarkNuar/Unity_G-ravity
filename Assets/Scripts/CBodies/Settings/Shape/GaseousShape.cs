@@ -15,7 +15,10 @@ namespace CBodies.Settings.Shape
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shapeSettings = new GaseousShapeSettings();
+            shapeSettings = new GaseousShapeSettings
+            {
+                perturbVertices = false
+            };
             if(Observer)
                 Observer.OnShapeUpdate();
         }

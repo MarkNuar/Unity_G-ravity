@@ -153,7 +153,7 @@ namespace UI.Menu.SystemEditing
         
         public void LockCamAt(Vector3 pos, float cBodyRadius, bool fromCreation)
         {
-            _cinematicMinZoo = cBodyRadius;
+            _cinematicMinZoo = cBodyRadius + 3;
             _enableControl = false;
             _restoringControl = false; 
             Transform camTransform = cam.transform;

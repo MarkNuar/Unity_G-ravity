@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3aae0ff16364bf2b963e84b6dcfb831, type: 3}
   m_Name: StarShape
   m_EditorClassIdentifier: 
-  currentResolution: 0
-  currentMountainsHeight: 0
-  currentPerturbVertices: 0
-  currentPerturbStrength: 0.7
+  perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
+  heightMapCompute: {fileID: 7200000, guid: 77298fc7e0d0ac445bb4d21d388df307, type: 3}
+  shapeSettings:
+    id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: , ns: , asm: }

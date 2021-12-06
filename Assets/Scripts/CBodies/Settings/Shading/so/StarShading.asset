@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5df56bc3d4954ace8a9d1a61f05216aa, type: 3}
   m_Name: StarShading
   m_EditorClassIdentifier: 
-  currentColor: {r: 0, g: 0, b: 0, a: 0}
+  shadingDataCompute: {fileID: 0}
+  terrainMaterial: {fileID: 2100000, guid: 2555cb87bd0f35748a191be17b233b0f, type: 2}
+  shadingSettings:
+    id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: , ns: , asm: }

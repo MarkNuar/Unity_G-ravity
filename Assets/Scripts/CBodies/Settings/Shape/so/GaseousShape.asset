@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c332ecba6314a0187e010259a72233c, type: 3}
   m_Name: GaseousShape
   m_EditorClassIdentifier: 
-  currentResolution: 0
-  currentMountainsHeight: 0
-  currentPerturbVertices: 0
-  currentPerturbStrength: 0.7
+  perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
+  heightMapCompute: {fileID: 7200000, guid: f509f6a544569524aacda48217625494, type: 3}
+  shapeSettings:
+    id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: , ns: , asm: }

@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccc654c69d8d43bea3b9ba6ea569bb7c, type: 3}
   m_Name: GaseousShading
   m_EditorClassIdentifier: 
-  currentColor: {r: 0, g: 0, b: 0, a: 0}
+  shadingDataCompute: {fileID: 0}
+  terrainMaterial: {fileID: 2100000, guid: b964f3e57f861f041b2919fc1f8bf0c8, type: 2}
+  shadingSettings:
+    id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: , ns: , asm: }
