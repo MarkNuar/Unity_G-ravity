@@ -307,7 +307,6 @@ namespace CBodies
 			switch (GameManager.Instance.gameMode)
 			{
 				case GameManager.GameMode.Editing:
-					Debug.LogError("Initial update");
 					HandleEditModeGeneration();
 					break;
 				case GameManager.GameMode.Explore:

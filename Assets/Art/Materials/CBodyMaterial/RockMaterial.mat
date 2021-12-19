@@ -69,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
-        m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
+        m_Texture: {fileID: 2800000, guid: 506d5e63eca33874ab8aa52b4882c30d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -135,17 +135,17 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FlatColBlend: 1.5
-    - _FlatColBlendNoise: 0.3
-    - _FlatToSteepBlend: 0.1
-    - _FlatToSteepNoise: 0.1
+    - _FlatColBlend: 1.53
+    - _FlatColBlendNoise: 0.5
+    - _FlatToSteepBlend: 0.218
+    - _FlatToSteepNoise: 0.092
     - _FresnelPow: 2
     - _FresnelStrengthFar: 5
     - _FresnelStrengthNear: 2
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _MaxFlatHeight: 0.5
+    - _MaxFlatHeight: 0.453
     - _Metallic: 0
     - _NoiseScale: 1
     - _NoiseScale2: 1
@@ -153,7 +153,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShoreBlend: 0.03
+    - _ShoreBlend: 0.2
     - _ShoreHeight: 0.05
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
@@ -173,7 +173,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - bodyScale: 13
-    - oceanLevel: 0.434
+    - oceanLevel: 0.55
     m_Colors:
     - Color_11745d673fb346bca051fff41288352c: {r: 0, g: 0, b: 0, a: 0}
     - Color_355ccba7841841768bd0208b87aaa813: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 0}
@@ -190,17 +190,17 @@ Material:
     - _BaseColor: {r: 1, g: 0.6675592, b: 0.41037738, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FlatHighA: {r: 0.32774198, g: 0.28575888, b: 0.55376375, a: 1}
-    - _FlatHighB: {r: 0.17139159, g: 0.21817686, b: 0.5007001, a: 1}
-    - _FlatLowA: {r: 0.6854679, g: 0.38319376, b: 0.79030913, a: 1}
-    - _FlatLowB: {r: 0.40893897, g: 0.34372863, b: 0.7335579, a: 1}
+    - _FlatHighA: {r: 0.3254902, g: 0.57254905, b: 0.11764707, a: 1}
+    - _FlatHighB: {r: 0, g: 0, b: 0, a: 1}
+    - _FlatLowA: {r: 0.41176474, g: 0.7058824, b: 0.15686275, a: 1}
+    - _FlatLowB: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelCol: {r: 1, g: 1, b: 1, a: 1}
-    - _ShoreHigh: {r: 0.51314217, g: 0.6881714, b: 0.61714655, a: 1}
-    - _ShoreLow: {r: 0.7212061, g: 0.9388605, b: 0.8179706, a: 1}
+    - _ShoreHigh: {r: 0.5882353, g: 0.48627454, b: 0.20000002, a: 1}
+    - _ShoreLow: {r: 0.5921569, g: 0.4666667, b: 0.29411766, a: 1}
     - _SnowCol: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _SteepHigh: {r: 0.127406, g: 0.057494618, b: 0.2634406, a: 1}
-    - _SteepLow: {r: 0.24183226, g: 0.20456497, b: 0.5222895, a: 1}
+    - _SteepHigh: {r: 0.44705886, g: 0.30980393, b: 0.058823533, a: 1}
+    - _SteepLow: {r: 0.5176471, g: 0.34509805, b: 0.058823533, a: 1}
     - _TestParams: {r: 0, g: 0, b: 0, a: 0}
-    - heightMinMax: {r: 0.9184, g: 1.1489543, b: 0, a: 0}
+    - heightMinMax: {r: 0.9184, g: 1.1416821, b: 0, a: 0}
   m_BuildTextureStacks: []

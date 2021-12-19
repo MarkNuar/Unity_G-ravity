@@ -10,15 +10,11 @@ namespace CBodies.Settings.Shape
     public class StarShape : Shape
     {
         // MEMENTO
-        [SerializeReference] public StarShapeSettings shapeSettings;
+        [SerializeField] public StarShapeSettings shapeSettings;
 
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shapeSettings = new StarShapeSettings
-            {
-                perturbVertices = false
-            };
             if(Observer)
                 Observer.OnShapeUpdate();
         }
@@ -38,7 +34,7 @@ namespace CBodies.Settings.Shape
         [Serializable]
         public class StarShapeSettings : ShapeSettings
         {
-            public float starCazzo;
+
         }
     }
 }

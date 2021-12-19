@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0.004775328, a: 1}
+  m_IndirectSpecularColor: {r: 0.00020546332, g: 0.00020546332, b: 0.0049807876, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -155,6 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storePath: 
   testStorePath: 
+  createCopyOfSettings: 0
   rockShape: {fileID: 11400000, guid: 56ecf2f17d21ca74c8de086ab9382e9d, type: 2}
   gaseousShape: {fileID: 11400000, guid: f39c0ee2497438b47a991e7ec80383b6, type: 2}
   starShape: {fileID: 11400000, guid: 09840366b9b480947b30944e459b3a8c, type: 2}

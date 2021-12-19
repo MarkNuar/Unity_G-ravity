@@ -22,12 +22,7 @@ namespace CBodies.Settings
         public void Init(CBodyType type)
         {
             cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
-            cBodyType = type;
-            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
-            shape = sp;
-            shading = sd;
-            physics = ph;
-            
+            UpdateCBodyType(type);
         }
 
         public void Subscribe(CBodyGenerator observer)
@@ -45,6 +40,18 @@ namespace CBodies.Settings
             shape.Unsubscribe();
             shading.Unsubscribe();
             physics.Unsubscribe();
+        }
+
+        public void UpdateCBodyType(CBodyType newType)
+        {
+            cBodyType = newType;
+            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
+            shape = sp;
+            shading = sd;
+            physics = ph;
+            sp.InitSettings();
+            sd.InitSettings();
+            ph.InitSettings();
         }
 
         [Serializable]

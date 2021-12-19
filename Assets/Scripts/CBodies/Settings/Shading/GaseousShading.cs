@@ -8,15 +8,11 @@ namespace CBodies.Settings.Shading
     public class GaseousShading : Shading
     {
         // MEMENTO
-        [SerializeReference] protected GaseousShadingSettings shadingSettings;
+        [SerializeField] protected GaseousShadingSettings shadingSettings;
         
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shadingSettings = new GaseousShadingSettings
-            {
-                //color = Random.ColorHSV()
-            };
             if(Observer)
                 Observer.OnShadingUpdate();
         }

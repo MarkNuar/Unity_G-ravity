@@ -8,15 +8,11 @@ namespace CBodies.Settings.Shading
     public class StarShading : Shading
     {
         // MEMENTO
-        [SerializeReference] protected StarShadingSettings shadingSettings;
+        [SerializeField] protected StarShadingSettings shadingSettings;
 
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shadingSettings = new StarShadingSettings
-            {
-                //color = Random.ColorHSV()
-            };
             if(Observer)
                 Observer.OnShadingUpdate();
         }

@@ -32,7 +32,7 @@ namespace CBodies.Settings.Physics
         {
             public float radius = (ParameterValues.maxRadius - ParameterValues.minRadius)/3;
             public float surfaceGravity = ParameterValues.minGravity;
-            public float rotationSpeed = ParameterValues.maxRotationSpeed - ParameterValues.minRotationSpeed + 5;
+            public float rotationSpeed = 0;
             public Vector3 initialPosition = Vector3.zero; 
             public Vector3 initialVelocity = Vector3.up * ParameterValues.minVelocity;
         }

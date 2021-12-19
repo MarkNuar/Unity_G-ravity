@@ -174,7 +174,6 @@ namespace UI.Menu.SystemEditing
         // This method sets the current cBody index
         private void OpenContextualMenu(int currentCBodyIndex)
         {
-            Debug.LogError("Opening contextual menu");
             // avoid unwanted clicks
             if (cameraController.isDragging) return;
             

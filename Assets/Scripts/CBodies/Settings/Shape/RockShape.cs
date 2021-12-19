@@ -9,7 +9,7 @@ namespace CBodies.Settings.Shape
     public class RockShape : Shape
     {
         // MEMENTO
-        [SerializeReference] public RockShapeSettings shapeSettings;
+        [SerializeField] public RockShapeSettings shapeSettings;
         
         protected override void SetShapeData () {
             PRNG prng = new PRNG (shapeSettings.seed);
@@ -30,10 +30,6 @@ namespace CBodies.Settings.Shape
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shapeSettings = new RockShapeSettings
-            {
-                perturbVertices = true
-            };
             if(Observer)
                 Observer.OnShapeUpdate();
         }

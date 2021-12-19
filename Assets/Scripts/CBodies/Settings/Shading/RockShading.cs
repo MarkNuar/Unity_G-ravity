@@ -10,15 +10,14 @@ namespace CBodies.Settings.Shading
     public class RockShading : Shading
     {
         // MEMENTO
-        [SerializeReference] protected RockShadingSettings shadingSettings;
+        [SerializeField] protected RockShadingSettings shadingSettings;
 
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shadingSettings = new RockShadingSettings
-            {
-                //color = Random.ColorHSV()
-            };
+            SetColors();
+            // todo: eventually remove customized colors if players cannot choose directly every single color
+            // shadingSettings.baseColors = shadingSettings.randomColors;
             if(Observer)
                 Observer.OnShadingUpdate();
         }
@@ -47,70 +46,73 @@ namespace CBodies.Settings.Shading
             material.SetFloat ("oceanLevel", shadingSettings.oceanLevel);
             material.SetFloat ("bodyScale", bodyScale);
 
-            if (shadingSettings.randomize) {
-                SetRandomColours (material);
-                ApplyColours (material, shadingSettings.randomizedCols);
-            } else {
-                ApplyColours (material, shadingSettings.customizedCols);
+            if (shadingSettings.randomize)
+            {
+                SetColors ();
+                ApplyColours (material, shadingSettings.randomColors);
+            }
+            else
+            {
+                ApplyColours (material, shadingSettings.baseColors);
             }
         }
         
-        void SetRandomColours (Material material) {
+        private void SetColors () {
             PRNG random = new PRNG (shadingSettings.seed);
             //randomizedCols.shoreCol = ColourHelper.Random (random, 0.3f, 0.7f, 0.4f, 0.8f);
-            shadingSettings.randomizedCols.flatColLowA = ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f);
-            shadingSettings.randomizedCols.flatColHighA = ColorHelper.TweakHSV (
-                shadingSettings.randomizedCols.flatColLowA,
+            shadingSettings.randomColors.flatColLowA = ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f);
+            shadingSettings.randomColors.flatColHighA = ColorHelper.TweakHSV (
+                shadingSettings.randomColors.flatColLowA,
                 random.SignedValue () * 0.2f,
                 random.SignedValue () * 0.15f,
                 random.Range (-0.25f, -0.2f)
             );
 
-            shadingSettings.randomizedCols.flatColLowB = ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f);
-            shadingSettings.randomizedCols.flatColHighB = ColorHelper.TweakHSV (
-                shadingSettings.randomizedCols.flatColLowB,
+            shadingSettings.randomColors.flatColLowB = ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f);
+            shadingSettings.randomColors.flatColHighB = ColorHelper.TweakHSV (
+                shadingSettings.randomColors.flatColLowB,
                 random.SignedValue () * 0.2f,
                 random.SignedValue () * 0.15f,
                 random.Range (-0.25f, -0.2f)
             );
 
-            shadingSettings.randomizedCols.shoreColLow = ColorHelper.Random (random, 0.2f, 0.3f, 0.9f, 1);
-            shadingSettings.randomizedCols.shoreColHigh = ColorHelper.TweakHSV (
-                shadingSettings.randomizedCols.shoreColLow,
+            shadingSettings.randomColors.shoreColLow = ColorHelper.Random (random, 0.2f, 0.3f, 0.9f, 1);
+            shadingSettings.randomColors.shoreColHigh = ColorHelper.TweakHSV (
+                shadingSettings.randomColors.shoreColLow,
                 random.SignedValue () * 0.2f,
                 random.SignedValue () * 0.2f,
                 random.Range (-0.3f, -0.2f)
             );
 
-            shadingSettings.randomizedCols.steepLow = ColorHelper.Random (random, 0.3f, 0.7f, 0.4f, 0.6f);
-            shadingSettings.randomizedCols.steepHigh = ColorHelper.TweakHSV (
-                shadingSettings.randomizedCols.steepLow,
+            shadingSettings.randomColors.steepLow = ColorHelper.Random (random, 0.3f, 0.7f, 0.4f, 0.6f);
+            shadingSettings.randomColors.steepHigh = ColorHelper.TweakHSV (
+                shadingSettings.randomColors.steepLow,
                 random.SignedValue () * 0.2f,
                 random.SignedValue () * 0.2f,
                 random.Range (-0.35f, -0.2f)
             );
         }
         
-        void ApplyColours (Material material, EarthColours colours) {
-            material.SetColor ("_ShoreLow", colours.shoreColLow);
-            material.SetColor ("_ShoreHigh", colours.shoreColHigh);
+        void ApplyColours (Material material, EarthColors colors) {
+            material.SetColor ("_ShoreLow", colors.shoreColLow);
+            material.SetColor ("_ShoreHigh", colors.shoreColHigh);
 
-            material.SetColor ("_FlatLowA", colours.flatColLowA);
-            material.SetColor ("_FlatHighA", colours.flatColHighA);
+            material.SetColor ("_FlatLowA", colors.flatColLowA);
+            material.SetColor ("_FlatHighA", colors.flatColHighA);
 
-            material.SetColor ("_FlatLowB", colours.flatColLowB);
-            material.SetColor ("_FlatHighB", colours.flatColHighB);
+            material.SetColor ("_FlatLowB", colors.flatColLowB);
+            material.SetColor ("_FlatHighB", colors.flatColHighB);
 
-            material.SetColor ("_SteepLow", colours.steepLow);
-            material.SetColor ("_SteepHigh", colours.steepHigh);
+            material.SetColor ("_SteepLow", colors.steepLow);
+            material.SetColor ("_SteepHigh", colors.steepHigh);
         }
         
 
         [Serializable]
         public class RockShadingSettings : ShadingSettings
         {
-            public EarthColours customizedCols;
-            public EarthColours randomizedCols;
+            public EarthColors baseColors;
+            public EarthColors randomColors;
 
             [Header ("Shading Data")]
             public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
@@ -120,7 +122,7 @@ namespace CBodies.Settings.Shading
         }
         
         [System.Serializable]
-        public struct EarthColours {
+        public struct EarthColors {
             public Color shoreColLow;
             public Color shoreColHigh;
             public Color flatColLowA;

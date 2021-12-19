@@ -18,6 +18,9 @@ public class SystemUtils : MonoBehaviour
     public string testStorePath = null;
 
     private JsonSerializerSettings _jSonSettings;
+
+    [Tooltip("Decide whether to instantiate a copy of the settings, or to use (and edit) them directly")] 
+    public bool createCopyOfSettings = true;
     
     // SHAPES 
     [Header("Shapes")] public RockShape rockShape;
@@ -42,9 +45,7 @@ public class SystemUtils : MonoBehaviour
             // Save the store path
             storePath = Application.persistentDataPath + Path.DirectorySeparatorChar;
             testStorePath = storePath + "test" + Path.DirectorySeparatorChar;
-            Debug.Log(storePath);
-            Debug.Log(testStorePath);
-
+            
             // Setting the de/-serialization settings 
             _jSonSettings = new JsonSerializerSettings();
             _jSonSettings.Converters.Add(JsonSubtypesConverterBuilder
@@ -209,23 +210,47 @@ public class SystemUtils : MonoBehaviour
         Shape shape = null;
         Shading shading = null;
         Physics physics = Instantiate(basePhysics);
-        switch (type)
+        if (createCopyOfSettings)
         {
-            case CBodySettings.CBodyType.Rocky:
-                shape = Instantiate(rockShape);
-                shading = Instantiate(rockShading);
-                break;
-            case CBodySettings.CBodyType.Gaseous:
-                shape = Instantiate(gaseousShape);
-                shading = Instantiate(gaseousShading);
-                break;
-            case CBodySettings.CBodyType.Star:
-                shape = Instantiate(starShape);
-                shading = Instantiate(starShading);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            switch (type)
+            {
+                case CBodySettings.CBodyType.Rocky:
+                    shape = Instantiate(rockShape);
+                    shading = Instantiate(rockShading);
+                    break;
+                case CBodySettings.CBodyType.Gaseous:
+                    shape = Instantiate(gaseousShape);
+                    shading = Instantiate(gaseousShading);
+                    break;
+                case CBodySettings.CBodyType.Star:
+                    shape = Instantiate(starShape);
+                    shading = Instantiate(starShading);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
+        else
+        {
+            switch (type)
+            {
+                case CBodySettings.CBodyType.Rocky:
+                    shape = (rockShape);
+                    shading = (rockShading);
+                    break;
+                case CBodySettings.CBodyType.Gaseous:
+                    shape = (gaseousShape);
+                    shading = (gaseousShading);
+                    break;
+                case CBodySettings.CBodyType.Star:
+                    shape = (starShape);
+                    shading = (starShading);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
 
         return (shape, shading, physics);
     }

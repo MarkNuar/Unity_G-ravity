@@ -9,16 +9,12 @@ namespace CBodies.Settings.Shape
     public class GaseousShape : Shape
     {
         // MEMENTO
-        [SerializeReference] public GaseousShapeSettings shapeSettings;
+        [SerializeField] public GaseousShapeSettings shapeSettings;
 
         
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            shapeSettings = new GaseousShapeSettings
-            {
-                perturbVertices = false
-            };
             if(Observer)
                 Observer.OnShapeUpdate();
         }
