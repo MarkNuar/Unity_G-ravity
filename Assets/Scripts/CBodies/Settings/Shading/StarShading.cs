@@ -15,7 +15,7 @@ namespace CBodies.Settings.Shading
         {
             shadingSettings = new StarShadingSettings
             {
-                color = Random.ColorHSV()
+                //color = Random.ColorHSV()
             };
             if(Observer)
                 Observer.OnShadingUpdate();

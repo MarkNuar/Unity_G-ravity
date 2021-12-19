@@ -15,6 +15,7 @@ public class SystemUtils : MonoBehaviour
     public static SystemUtils Instance;
 
     public string storePath = null;
+    public string testStorePath = null;
 
     private JsonSerializerSettings _jSonSettings;
     
@@ -40,6 +41,9 @@ public class SystemUtils : MonoBehaviour
 
             // Save the store path
             storePath = Application.persistentDataPath + Path.DirectorySeparatorChar;
+            testStorePath = storePath + "test" + Path.DirectorySeparatorChar;
+            Debug.Log(storePath);
+            Debug.Log(testStorePath);
 
             // Setting the de/-serialization settings 
             _jSonSettings = new JsonSerializerSettings();
@@ -131,6 +135,14 @@ public class SystemUtils : MonoBehaviour
         systemWriter.Close();
     }
 
+    public void SaveTestSystem(SystemSettings systemSettings)
+    {
+        var temp = storePath;
+        storePath = testStorePath;
+        SaveSystem(systemSettings);
+        storePath = temp;
+    }
+
     public SystemSettings LoadSystem(string systemName)
     {
         var cBodiesTypesPath = storePath + systemName + "_cBodies_types.txt";
@@ -174,6 +186,15 @@ public class SystemUtils : MonoBehaviour
         }
         Debug.LogError("No saved system data found");
         return null;
+    }
+
+    public SystemSettings LoadTestSystem(string systemName)
+    {
+        var temp = storePath;
+        storePath = testStorePath;
+        SystemSettings ss = LoadSystem(systemName);
+        storePath = temp;
+        return ss;
     }
 
     public void DeleteSystem(string systemName)

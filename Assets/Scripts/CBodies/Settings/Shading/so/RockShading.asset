@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee8c0860bb374549a9dcd5229c9729ad, type: 3}
   m_Name: RockShading
   m_EditorClassIdentifier: 
-  shadingDataCompute: {fileID: 0}
+  shadingDataCompute: {fileID: 7200000, guid: df2027d2c81f97f4a805c6de259ef183, type: 3}
   terrainMaterial: {fileID: 2100000, guid: fd29f3207e3de9446a115f52986b110f, type: 2}
   shadingSettings:
     id: 0

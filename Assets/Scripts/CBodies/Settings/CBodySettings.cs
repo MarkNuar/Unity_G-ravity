@@ -17,7 +17,7 @@ namespace CBodies.Settings
         [JsonIgnore] public Shading.Shading shading; 
         [JsonIgnore] public Physics.Physics physics;
         
-        private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia"};
+        private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia", "Mah", "Craxis"};
         
         public void Init(CBodyType type)
         {
@@ -27,6 +27,7 @@ namespace CBodies.Settings
             shape = sp;
             shading = sd;
             physics = ph;
+            
         }
 
         public void Subscribe(CBodyGenerator observer)

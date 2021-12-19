@@ -83,6 +83,7 @@ namespace UI.Menu.SystemEditing
                             BeginCBodyCreation(true);
                         }
                         SetSystemName(systemToLoad);
+                        //cameraController.LockCamAt(systemSettings.lastCameraPosition, systemSettings.lastCameraZoom - 3, false);
                     }
                     else
                     {
@@ -220,7 +221,7 @@ namespace UI.Menu.SystemEditing
             DisableCBodyButtons();
             
             inputCBodyName.text = GetCurrentCBodySettings().cBodyName;
-            SetButtonColor(cBodyColorButton, GetCurrentShadingSettings().color);
+            //todo SetButtonColor(cBodyColorButton, GetCurrentShadingSettings().color);
 
             HideCurrentCBodySelectionHUD();
 
@@ -251,18 +252,20 @@ namespace UI.Menu.SystemEditing
 
         public void BeginPickColor()
         {
-            OverlayPanel(3,true);
-            colorPicker.CurrentColor = GetCurrentShadingSettings().color;
-            colorPicker.onValueChanged.AddListener(SetCBodyColor);
+            // todo coloring
+            // OverlayPanel(3,true);
+            // colorPicker.CurrentColor = GetCurrentShadingSettings().color;
+            // colorPicker.onValueChanged.AddListener(SetCBodyColor);
         }
 
         private void SetCBodyColor(Color color)
         {
-            Shading.ShadingSettings ss = GetCurrentShadingSettings();
-            ss.color = color;
-            SetCurrentShadingSettings(ss);
-            
-            SetButtonColor(cBodyColorButton, color);
+            // todo coloring
+            // Shading.ShadingSettings ss = GetCurrentShadingSettings();
+            // ss.color = color;
+            // SetCurrentShadingSettings(ss);
+            //
+            // SetButtonColor(cBodyColorButton, color);
         }
 
         public void EndPickColor()
@@ -414,6 +417,17 @@ namespace UI.Menu.SystemEditing
 
         private void OnDestroy()
         {
+            if (cameraController.cam)
+            {
+                _systemSettings.lastCameraPosition = cameraController.cam.transform.position; 
+                _systemSettings.lastCameraZoom = cameraController.cam.orthographicSize;
+            }
+            else
+            {
+                _systemSettings.lastCameraPosition = Vector3.zero;
+                _systemSettings.lastCameraZoom = (cameraController.maxZoom - cameraController.minZoom)/2;
+            }
+            
             SystemUtils.Instance.SaveSystem(_systemSettings);
         }
     }

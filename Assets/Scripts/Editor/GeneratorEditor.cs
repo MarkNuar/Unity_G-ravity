@@ -91,6 +91,7 @@ namespace Editor
         
         
         void Regenerate (Shape.ShapeSettings sp, Shading.ShadingSettings sd, Physics.PhysicsSettings ps) {
+            
             generator.cBodySettings.shape.SetSettings(sp);
             generator.cBodySettings.shading.SetSettings(sd);
             generator.cBodySettings.physics.SetSettings(ps);

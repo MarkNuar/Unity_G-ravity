@@ -9,7 +9,7 @@ namespace CBodies.Settings.Shape
     public class GaseousShape : Shape
     {
         // MEMENTO
-        [SerializeReference] protected GaseousShapeSettings shapeSettings;
+        [SerializeReference] public GaseousShapeSettings shapeSettings;
 
         
         // MEMENTO PATTERN

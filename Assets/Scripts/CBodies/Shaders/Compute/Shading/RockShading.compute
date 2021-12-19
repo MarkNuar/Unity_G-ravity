@@ -1,14 +1,46 @@
-// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-// Create a RenderTexture with enableRandomWrite flag and set it
-// with cs.SetTexture
-RWTexture2D<float4> Result;
+#include "../../Includes/FractalNoise.cginc"
+#include "../../Includes/Math.cginc"
 
-[numthreads(8,8,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+StructuredBuffer<float3> vertices;
+RWStructuredBuffer<float4> shadingData;
+uint numVertices;
+
+// Noise settings
+float4 noiseParams_detailWarp[3];
+float4 noiseParams_detail[3];
+
+float4 noiseParams_large[3];
+float4 noiseParams_small[3];
+
+// Second warp
+float4 noiseParams_warp2[3];
+float4 noiseParams_noise2[3];
+
+[numthreads(512, 1, 1)]
+void CSMain (uint id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
+    if (id >= numVertices) { return; }
+	
+    float3 pos = vertices[id];
 
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    // Large, low frequency noise
+    float largeNoise = simpleNoise(pos, noiseParams_large);
+    float smallNoise = simpleNoise(pos, noiseParams_small);
+
+    // Warped detail noise
+    float detailWarp = simpleNoise(pos, noiseParams_detailWarp);
+    float detailNoise = simpleNoise(pos + detailWarp * 0.1, noiseParams_detail);
+
+    // Second warp noise
+    float3 warpOffset2;
+    warpOffset2.x = simpleNoise(pos, noiseParams_warp2);
+    warpOffset2.y = simpleNoise(pos + 99999, noiseParams_warp2);
+    warpOffset2.z = simpleNoise(pos - 99999, noiseParams_warp2);
+    float warpedNoise2 = simpleNoise(pos + warpOffset2 * 0.1, noiseParams_noise2);
+
+
+
+    shadingData[id] = float4(largeNoise, detailNoise, smallNoise, warpedNoise2);
 }

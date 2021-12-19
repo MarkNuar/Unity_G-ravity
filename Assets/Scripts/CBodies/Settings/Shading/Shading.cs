@@ -86,7 +86,11 @@ namespace CBodies.Settings.Shading
             public bool randomize;
             public int seed = _prng.Next(-10000, 10000);
             
-            public Color color;
+            public bool hasOcean;
+            [Range (0, 1)]
+            public float oceanLevel = 0.55f;
+            
+            //public Color color;
         }
     }
 }

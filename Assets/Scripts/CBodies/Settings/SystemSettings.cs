@@ -10,6 +10,9 @@ namespace CBodies.Settings
         // ***** SERIALIZED
         public string systemName;
         public List<CBodySettings> cBodiesSettings = new List<CBodySettings>();
+
+        public Vector3 lastCameraPosition;
+        public float lastCameraZoom;
         // ***** END
         
         

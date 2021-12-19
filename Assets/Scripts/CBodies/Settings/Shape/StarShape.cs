@@ -10,7 +10,7 @@ namespace CBodies.Settings.Shape
     public class StarShape : Shape
     {
         // MEMENTO
-        [SerializeReference] protected StarShapeSettings shapeSettings;
+        [SerializeReference] public StarShapeSettings shapeSettings;
 
         // MEMENTO PATTERN
         public override void InitSettings()

@@ -74,8 +74,8 @@ namespace CBodies.Settings.Shape
         {
             public bool randomize = false;
             public int seed = _prng.Next(-10000,10000);
-            public bool perturbVertices = true;
-            [Range (0, 1)] public float perturbStrength = 0.7f;
+            public bool perturbVertices = false;
+            [Range (0, 1)] public float perturbStrength = 0.36f;
         }
     }
 }
