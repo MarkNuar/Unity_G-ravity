@@ -11,7 +11,7 @@ namespace CBodies.Settings.Physics
         // OBSERVER
         [CanBeNull] private CBodyGenerator _observer;
         // MEMENTO
-        [SerializeReference] private PhysicsSettings physicsSettings;
+        [SerializeField] private PhysicsSettings physicsSettings;
         
         
         // OBSERVER PATTERN

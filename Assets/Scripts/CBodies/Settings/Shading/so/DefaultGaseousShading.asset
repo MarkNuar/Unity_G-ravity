@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5df56bc3d4954ace8a9d1a61f05216aa, type: 3}
-  m_Name: StarShading
+  m_Script: {fileID: 11500000, guid: ccc654c69d8d43bea3b9ba6ea569bb7c, type: 3}
+  m_Name: DefaultGaseousShading
   m_EditorClassIdentifier: 
   shadingDataCompute: {fileID: 0}
-  terrainMaterial: {fileID: 2100000, guid: 2555cb87bd0f35748a191be17b233b0f, type: 2}
+  terrainMaterial: {fileID: 2100000, guid: b964f3e57f861f041b2919fc1f8bf0c8, type: 2}
   shadingSettings:
     id: 0
   references:

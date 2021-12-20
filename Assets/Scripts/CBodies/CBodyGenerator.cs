@@ -67,6 +67,7 @@ namespace CBodies
 			if (!_terrainHolder) return;
 			if(GameManager.Instance.gameMode != GameManager.GameMode.Editing) return;
 			Transform transform1 = _terrainHolder.transform;
+			Debug.Log(cBodySettings.physics.GetSettings());
 			transform1.RotateAround(transform1.position, transform1.up, cBodySettings.physics.GetSettings().rotationSpeed*Time.deltaTime);
 		}
 

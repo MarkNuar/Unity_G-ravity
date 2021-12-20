@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee8c0860bb374549a9dcd5229c9729ad, type: 3}
-  m_Name: RockShading
+  m_Name: DefaultRockShading
   m_EditorClassIdentifier: 
   shadingDataCompute: {fileID: 7200000, guid: df2027d2c81f97f4a805c6de259ef183, type: 3}
   terrainMaterial: {fileID: 2100000, guid: fd29f3207e3de9446a115f52986b110f, type: 2}
@@ -18,7 +18,7 @@ MonoBehaviour:
     randomize: 0
     seed: 0
     hasOcean: 0
-    oceanLevel: 0.55
+    oceanLevel: 0.5
     baseColors:
       shoreColLow: {r: 0.5921569, g: 0.4666667, b: 0.29411766, a: 1}
       shoreColHigh: {r: 0.5882353, g: 0.48627454, b: 0.20000002, a: 1}
@@ -29,14 +29,14 @@ MonoBehaviour:
       steepLow: {r: 0.5176471, g: 0.34509805, b: 0.058823533, a: 1}
       steepHigh: {r: 0.44705886, g: 0.30980393, b: 0.058823533, a: 1}
     randomColors:
-      shoreColLow: {r: 0.92161024, g: 0.73580337, b: 0.7705771, a: 1}
-      shoreColHigh: {r: 0.64474773, g: 0.6233106, b: 0.43181852, a: 1}
-      flatColLowA: {r: 0.71951425, g: 0.5199694, b: 0.33378196, a: 1}
-      flatColHighA: {r: 0.48470125, g: 0.17034255, b: 0.17075257, a: 1}
-      flatColLowB: {r: 0.35229024, g: 0.7153515, b: 0.35952878, a: 1}
-      flatColHighB: {r: 0.23869233, g: 0.47755003, b: 0.32524863, a: 1}
-      steepLow: {r: 0.18608591, g: 0.4037649, b: 0.3340223, a: 1}
-      steepHigh: {r: 0.08805397, g: 0.14015232, b: 0.18456565, a: 1}
+      shoreColLow: {r: 0.7517047, g: 0.8020041, b: 0.99821514, a: 1}
+      shoreColHigh: {r: 0.48511228, g: 0.7977499, b: 0.6942151, a: 1}
+      flatColLowA: {r: 0.49100283, g: 0.33200622, b: 0.7768023, a: 1}
+      flatColHighA: {r: 0.4195908, g: 0.28602242, b: 0.5547465, a: 1}
+      flatColLowB: {r: 0.797755, g: 0.3858528, b: 0.61809874, a: 1}
+      flatColHighB: {r: 0.5433968, g: 0.31188986, b: 0.57112074, a: 1}
+      steepLow: {r: 0.33860803, g: 0.32347304, b: 0.5633816, a: 1}
+      steepHigh: {r: 0.20446965, g: 0.082377665, b: 0.2182754, a: 1}
     detailWarpNoise:
       numLayers: 4
       lacunarity: 2

@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccc654c69d8d43bea3b9ba6ea569bb7c, type: 3}
-  m_Name: GaseousShading
+  m_Script: {fileID: 11500000, guid: 0c332ecba6314a0187e010259a72233c, type: 3}
+  m_Name: DefaultGaseousShape
   m_EditorClassIdentifier: 
-  shadingDataCompute: {fileID: 0}
-  terrainMaterial: {fileID: 2100000, guid: b964f3e57f861f041b2919fc1f8bf0c8, type: 2}
-  shadingSettings:
+  perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
+  heightMapCompute: {fileID: 7200000, guid: f509f6a544569524aacda48217625494, type: 3}
+  shapeSettings:
     id: 0
   references:
     version: 1

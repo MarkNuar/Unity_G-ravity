@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5641544729d546598aa5eac3e825ff4b, type: 3}
-  m_Name: RockShape
+  m_Script: {fileID: 11500000, guid: f3aae0ff16364bf2b963e84b6dcfb831, type: 3}
+  m_Name: DefaultStarShape
   m_EditorClassIdentifier: 
   perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
-  heightMapCompute: {fileID: 7200000, guid: 9c2c260115dde784cbfe72d24b70a415, type: 3}
+  heightMapCompute: {fileID: 7200000, guid: 77298fc7e0d0ac445bb4d21d388df307, type: 3}
   shapeSettings:
     id: 0
   references:
