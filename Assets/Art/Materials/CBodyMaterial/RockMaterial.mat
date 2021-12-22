@@ -108,6 +108,7 @@ Material:
     - Vector1_2f050fbc74d6480aa9262f3bdd717c2b: 0.4
     - Vector1_322c22d100be4e53851e2ed191547689: 0.026
     - Vector1_3d178ec4766649e585c231af16bc4fe1: 0.3
+    - Vector1_437a31d49bf44cb9a0c9f20976da11a1: 100
     - Vector1_4526a734f51944ca9168414f2c0d5974: 0
     - Vector1_474038b3be2f4962b64f3cd78f57f7b3: 0
     - Vector1_50740c7321f441a598440c6062553960: 0
@@ -135,26 +136,26 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FlatColBlend: 1.53
-    - _FlatColBlendNoise: 0.5
-    - _FlatToSteepBlend: 0.218
-    - _FlatToSteepNoise: 0.092
-    - _FresnelPow: 2
+    - _FlatColBlend: 1.48
+    - _FlatColBlendNoise: 0.196
+    - _FlatToSteepBlend: 0.108
+    - _FlatToSteepNoise: 0.014
+    - _FresnelPow: 18.06
     - _FresnelStrengthFar: 5
     - _FresnelStrengthNear: 2
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _MaxFlatHeight: 0.453
+    - _MaxFlatHeight: 0.359
     - _Metallic: 0
-    - _NoiseScale: 1
-    - _NoiseScale2: 1
+    - _NoiseScale: 5
+    - _NoiseScale2: 50
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShoreBlend: 0.2
-    - _ShoreHeight: 0.05
+    - _ShoreBlend: 0.191
+    - _ShoreHeight: 0.17
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SnowBlend: 0.1
@@ -165,15 +166,15 @@ Material:
     - _SnowSpecular: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _SteepBandStrength: 0.5
+    - _SteepBandStrength: 0.989
     - _SteepBands: 8
-    - _SteepnessThreshold: 0.5
+    - _SteepnessThreshold: 0.527
     - _Surface: 0
     - _UseSnowyPoles: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     - bodyScale: 13
-    - oceanLevel: 0.55
+    - oceanLevel: 0.41
     m_Colors:
     - Color_11745d673fb346bca051fff41288352c: {r: 0, g: 0, b: 0, a: 0}
     - Color_355ccba7841841768bd0208b87aaa813: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 0}
@@ -190,17 +191,17 @@ Material:
     - _BaseColor: {r: 1, g: 0.6675592, b: 0.41037738, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FlatHighA: {r: 0.3254902, g: 0.57254905, b: 0.11764707, a: 1}
-    - _FlatHighB: {r: 0, g: 0, b: 0, a: 1}
-    - _FlatLowA: {r: 0.41176474, g: 0.7058824, b: 0.15686275, a: 1}
-    - _FlatLowB: {r: 0, g: 0, b: 0, a: 1}
+    - _FlatHighA: {r: 0.5157461, g: 0.2663922, b: 0.465722, a: 1}
+    - _FlatHighB: {r: 0.50680095, g: 0.24628843, b: 0.3779899, a: 1}
+    - _FlatLowA: {r: 0.7296372, g: 0.46809667, b: 0.34696746, a: 1}
+    - _FlatLowB: {r: 0.49409485, g: 0.33151403, b: 0.71095854, a: 1}
     - _FresnelCol: {r: 1, g: 1, b: 1, a: 1}
-    - _ShoreHigh: {r: 0.5882353, g: 0.48627454, b: 0.20000002, a: 1}
-    - _ShoreLow: {r: 0.5921569, g: 0.4666667, b: 0.29411766, a: 1}
+    - _ShoreHigh: {r: 0.47243193, g: 0.68927604, b: 0.57046413, a: 1}
+    - _ShoreLow: {r: 0.8019036, g: 0.90384585, b: 0.6845778, a: 1}
     - _SnowCol: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _SteepHigh: {r: 0.44705886, g: 0.30980393, b: 0.058823533, a: 1}
-    - _SteepLow: {r: 0.5176471, g: 0.34509805, b: 0.058823533, a: 1}
-    - _TestParams: {r: 0, g: 0, b: 0, a: 0}
-    - heightMinMax: {r: 0.9184, g: 1.1416821, b: 0, a: 0}
+    - _SteepHigh: {r: 0.16798714, g: 0.07724335, b: 0.1535398, a: 1}
+    - _SteepLow: {r: 0.2651951, g: 0.19158538, b: 0.43297076, a: 1}
+    - _TestParams: {r: 0, g: 0, b: 20.58, a: 0}
+    - heightMinMax: {r: 0.9184, g: 1.1549649, b: 0, a: 0}
   m_BuildTextureStacks: []

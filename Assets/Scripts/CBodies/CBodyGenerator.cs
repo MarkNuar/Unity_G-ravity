@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CBodies.Settings;
 using CBodies.Settings.Shape;
+using UnityEditor;
 using UnityEngine;
 using Utilities;
 using Physics = CBodies.Settings.Physics.Physics;
@@ -67,8 +68,13 @@ namespace CBodies
 			if (!_terrainHolder) return;
 			if(GameManager.Instance.gameMode != GameManager.GameMode.Editing) return;
 			Transform transform1 = _terrainHolder.transform;
-			Debug.Log(cBodySettings.physics.GetSettings());
 			transform1.RotateAround(transform1.position, transform1.up, cBodySettings.physics.GetSettings().rotationSpeed*Time.deltaTime);
+
+			// if (Input.GetButtonDown("Fire1"))
+			// {
+			// 	Debug.LogError("Storing mesh");
+			// 	AssetDatabase.CreateAsset(_previewMesh, "Assets/Art/Meshes/CBodyMesh.asset");
+			// }
 		}
 
 		private void HandleExploreModeGeneration()
@@ -377,7 +383,7 @@ namespace CBodies
             public const int NumLODLevels = 3;
             const int MAXAllowedResolution = 500;
 
-            public int lod0 = 300;
+            public int lod0 = 200;
             public int lod1 = 100;
             public int lod2 = 50;
             public int collider = 100;

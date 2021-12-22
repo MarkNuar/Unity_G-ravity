@@ -15,10 +15,10 @@ MonoBehaviour:
   perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
   heightMapCompute: {fileID: 7200000, guid: 9c2c260115dde784cbfe72d24b70a415, type: 3}
   shapeSettings:
-    randomize: 0
-    seed: 0
+    randomize: 1
+    seed: 6778
     perturbVertices: 1
-    perturbStrength: 0.36
+    perturbStrength: 0.302
     hasOcean: 1
     oceanDepthMultiplier: 5
     oceanFloorDepth: 1.36
@@ -51,4 +51,4 @@ MonoBehaviour:
       verticalShift: 0.09
       peakSmoothing: 1
       offset: {x: 0, y: 0, z: 0}
-    testParams: {x: 0, y: 0, z: 0, w: 0}
+    testParams: {x: 0, y: 0, z: 3.39, w: 0}
