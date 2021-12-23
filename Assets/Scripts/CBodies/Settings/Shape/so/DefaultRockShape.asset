@@ -21,7 +21,7 @@ MonoBehaviour:
     perturbStrength: 0.554
     hasOcean: 1
     oceanDepthMultiplier: 5
-    oceanFloorDepth: 1.36
+    oceanFloorDepth: 1.44
     oceanFloorSmoothing: 0.5
     mountainBlend: 1.16
     continentNoise:
@@ -48,7 +48,7 @@ MonoBehaviour:
       power: 2.18
       elevation: 8.7
       gain: 0.8
-      verticalShift: 0.09
+      verticalShift: 0
       peakSmoothing: 1
       offset: {x: 0, y: 0, z: 0}
     testParams: {x: 0, y: 0, z: 3.39, w: 0}

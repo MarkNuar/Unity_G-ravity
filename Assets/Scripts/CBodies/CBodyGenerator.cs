@@ -152,7 +152,7 @@ namespace CBodies
 				// Set material properties
 				cBodySettings.shading.Initialize(cBodySettings.shape);
 				cBodySettings.shading.SetTerrainProperties(cBodySettings.shading.terrainMaterial, _heightMinMax,
-					BodyScale);
+					BodyScale, cBodySettings.ocean.GetSettings().oceanLevel);
 			}
 
 			ReleaseAllBuffers();
@@ -355,7 +355,7 @@ namespace CBodies
         
         // Radius of the ocean (0 if no ocean exists)
         public float GetOceanRadius () {
-	        if (!cBodySettings.shading.GetSettings().hasOcean) {
+	        if (!cBodySettings.ocean.GetSettings().hasOcean) {
 		        return 0;
 	        }
 	        return UnscaledOceanRadius * BodyScale;
@@ -363,7 +363,7 @@ namespace CBodies
 
         private float UnscaledOceanRadius {
 	        get {
-		        return Mathf.Lerp (_heightMinMax.x, 1, cBodySettings.shading.GetSettings().oceanLevel);
+		        return Mathf.Lerp (_heightMinMax.x, 1, cBodySettings.ocean.GetSettings().oceanLevel);
 	        }
         }
 

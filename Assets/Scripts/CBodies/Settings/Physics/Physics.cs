@@ -41,7 +41,6 @@ namespace CBodies.Settings.Physics
         // MEMENTO PATTERN
         public void InitSettings()
         {
-            physicsSettings = new PhysicsSettings();
             if(_observer)
                 _observer.OnPhysicsUpdate();
         }

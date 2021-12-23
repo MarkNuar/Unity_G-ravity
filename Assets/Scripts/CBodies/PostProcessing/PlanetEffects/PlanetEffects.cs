@@ -107,7 +107,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 
 			public EffectHolder (CBodyGenerator generator) {
 				this.generator = generator;
-				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky && generator.cBodySettings.shading.GetSettings().hasOcean) {
+				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky && generator.cBodySettings.ocean.GetSettings().hasOcean) {
 					oceanEffect = new OceanEffect ();
 				}
 				// if (generator.body.shading.hasAtmosphere && generator.body.shading.atmosphereSettings) {

@@ -10,17 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91022b9860344b9da203e10d78c495e3, type: 3}
-  m_Name: BaseOceanSettings
+  m_Name: DefaultOcean
   m_EditorClassIdentifier: 
-  depthMultiplier: 15
-  alphaMultiplier: 70
-  colA: {r: 0.3137255, g: 0.9411765, b: 0.75686276, a: 1}
-  colB: {r: 0.05882353, g: 0.15686275, b: 0.35686275, a: 1}
-  specularCol: {r: 1, g: 1, b: 1, a: 1}
+  oceanSettings:
+    randomize: 0
+    seed: -5355
+    hasOcean: 1
+    oceanLevel: 0.557
+    depthMultiplier: 60
+    alphaMultiplier: 70
+    colA: {r: 0, g: 0.9999995, b: 1, a: 1}
+    colB: {r: 0, g: 0.13174716, b: 0.4339623, a: 1}
+    specularCol: {r: 1, g: 1, b: 1, a: 1}
+    waveStrength: 0.939
+    waveScale: 19.9
+    waveSpeed: 0.5
+    smoothness: 0.899
+    testParams: {x: 0, y: 0, z: 0, w: 0}
   waveNormalA: {fileID: 2800000, guid: 958ac9a3057b60c4e95850265ee08393, type: 3}
   waveNormalB: {fileID: 2800000, guid: 59fb97734ed9e6e4db99cc581b4cba33, type: 3}
-  waveStrength: 0.439
-  waveScale: 15
-  waveSpeed: 0.5
-  smoothness: 0.923
-  testParams: {x: 0, y: 50, z: 20, w: 9.4}

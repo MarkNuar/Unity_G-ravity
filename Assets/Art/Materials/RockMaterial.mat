@@ -174,7 +174,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - bodyScale: 13
-    - oceanLevel: 0.824
+    - oceanLevel: 0.557
     m_Colors:
     - Color_11745d673fb346bca051fff41288352c: {r: 0, g: 0, b: 0, a: 0}
     - Color_355ccba7841841768bd0208b87aaa813: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 0}
@@ -203,5 +203,5 @@ Material:
     - _SteepHigh: {r: 0.13207549, g: 0.103191055, b: 0.079120696, a: 1}
     - _SteepLow: {r: 0.4528302, g: 0.37974325, b: 0.3011748, a: 1}
     - _TestParams: {r: 0, g: 0, b: 131.37, a: 0}
-    - heightMinMax: {r: 0.9184, g: 1.1325895, b: 0, a: 0}
+    - heightMinMax: {r: 0.9136, g: 1.1316894, b: 0, a: 0}
   m_BuildTextureStacks: []

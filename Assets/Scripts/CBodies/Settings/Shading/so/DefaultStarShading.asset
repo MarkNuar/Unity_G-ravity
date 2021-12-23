@@ -15,8 +15,5 @@ MonoBehaviour:
   shadingDataCompute: {fileID: 0}
   terrainMaterial: {fileID: 2100000, guid: 2555cb87bd0f35748a191be17b233b0f, type: 2}
   shadingSettings:
-    id: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: , ns: , asm: }
+    randomize: 0
+    seed: 0

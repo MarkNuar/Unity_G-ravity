@@ -16,6 +16,7 @@ namespace CBodies.Settings
         [JsonIgnore] public Shape.Shape shape;
         [JsonIgnore] public Shading.Shading shading; 
         [JsonIgnore] public Physics.Physics physics;
+        [JsonIgnore] public Ocean.Ocean ocean;
         
         private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia", "Mah", "Craxis"};
         
@@ -45,13 +46,15 @@ namespace CBodies.Settings
         public void UpdateCBodyType(CBodyType newType)
         {
             cBodyType = newType;
-            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
+            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph, Ocean.Ocean oc) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
             shape = sp;
             shading = sd;
             physics = ph;
+            ocean = oc;
             sp.InitSettings();
             sd.InitSettings();
             ph.InitSettings();
+            oc.InitSettings();
         }
 
         [Serializable]

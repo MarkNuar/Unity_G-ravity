@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 831b750f426f485488330c77cce52d7d, type: 3}
   m_Name: DefaultPhysics
   m_EditorClassIdentifier: 
-  currentRadius: 0
-  currentSurfaceGravity: 0
-  currentInitialPosition: {x: 0, y: 0, z: 0}
-  currentInitialVelocity: {x: 0, y: 0, z: 0}
+  physicsSettings:
+    radius: 13
+    surfaceGravity: 0.1
+    rotationSpeed: 0
+    initialPosition: {x: 0, y: 0, z: 0}
+    initialVelocity: {x: 0, y: 0.1, z: 0}

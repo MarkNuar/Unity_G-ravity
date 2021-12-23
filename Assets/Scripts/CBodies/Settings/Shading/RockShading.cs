@@ -40,10 +40,10 @@ namespace CBodies.Settings.Shading
             shadingSettings.smallNoise.SetComputeValues (shadingDataCompute, random, "_small");
         }
         
-        public override void SetTerrainProperties (Material material, Vector2 heightMinMax, float bodyScale) 
+        public override void SetTerrainProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
         {
             material.SetVector ("heightMinMax", heightMinMax);
-            material.SetFloat ("oceanLevel", shadingSettings.oceanLevel);
+            material.SetFloat ("oceanLevel", oceanLevel);
             material.SetFloat ("bodyScale", bodyScale);
 
             if (shadingSettings.randomize)
@@ -57,13 +57,7 @@ namespace CBodies.Settings.Shading
             }
         }
 
-        public override void SetOceanProperties(Material oceanMaterial)
-        {
-            if (shadingSettings.hasOcean && oceanSettings)
-            {
-                oceanSettings.SetProperties(oceanMaterial, shadingSettings.seed, shadingSettings.randomize);
-            }
-        }
+
 
         private void SetColors () {
             PRNG random = new PRNG (shadingSettings.seed);

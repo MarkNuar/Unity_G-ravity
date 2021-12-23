@@ -23,7 +23,7 @@ namespace CBodies.PostProcessing
 				var allBodies = FindObjectsOfType<CBodyGenerator> ();
 				var oceanBodiesList = new List<CBodyGenerator> ();
 				for (int i = 0; i < allBodies.Length; i++) {
-					if(allBodies[i].cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky && allBodies[i].cBodySettings.shading.GetSettings().hasOcean)
+					if(allBodies[i].cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky && allBodies[i].cBodySettings.ocean.GetSettings().hasOcean)
 					{
 						oceanBodiesList.Add (allBodies[i]);
 					}
