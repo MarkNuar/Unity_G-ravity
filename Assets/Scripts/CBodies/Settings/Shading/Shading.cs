@@ -1,4 +1,5 @@
 using System;
+using CBodies.Settings.Effects;
 using CBodies.Settings.Shape;
 using JetBrains.Annotations;
 using JsonSubTypes;
@@ -21,6 +22,8 @@ namespace CBodies.Settings.Shading
         protected Vector4[] CachedShadingData;
         private ComputeBuffer _shadingBuffer;
         
+        public OceanSettings oceanSettings;
+
         private static System.Random _prng = new System.Random ();
         
         public virtual void ReleaseBuffers () {
@@ -30,8 +33,14 @@ namespace CBodies.Settings.Shading
         public virtual void Initialize (Shape.Shape shape) { }
         
         // Set shading properties on terrain
-        public virtual void SetTerrainProperties (Material material, Vector2 heightMinMax, float bodyScale) {
+        public virtual void SetTerrainProperties (Material material, Vector2 heightMinMax, float bodyScale) 
+        {
 
+        }
+
+        public virtual void SetOceanProperties(Material oceanMaterial)
+        {
+            
         }
         
         // Generate Vector4[] of shading data. This is stored in mesh uvs and used to help shade the body
@@ -90,6 +99,8 @@ namespace CBodies.Settings.Shading
             [Range (0, 1)]
             public float oceanLevel = 0.55f;
             
+            
+
             //public Color color;
         }
     }

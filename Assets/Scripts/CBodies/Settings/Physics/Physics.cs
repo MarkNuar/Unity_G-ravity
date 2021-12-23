@@ -1,6 +1,6 @@
 using System;
+using Game.UI.Menu.SystemEditing;
 using JetBrains.Annotations;
-using UI.Menu.SystemEditing;
 using UnityEngine;
 
 namespace CBodies.Settings.Physics

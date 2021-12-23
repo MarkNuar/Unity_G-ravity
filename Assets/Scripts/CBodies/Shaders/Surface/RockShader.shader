@@ -31,7 +31,7 @@ Shader "CBodies/Rock"
 
 		[Header(Snowy Poles)]
 		[Toggle()]
-      _UseSnowyPoles("Use Poles", float) = 0
+		_UseSnowyPoles("Use Poles", float) = 0
 		_SnowCol("Snow Colour", Color) = (1,1,1,1)
 		_SnowLongitude("Snow Longitude", Range(0,1)) = 0.8
 		_SnowBlend("Snow Blend", Range(0, 0.2)) = 0.1

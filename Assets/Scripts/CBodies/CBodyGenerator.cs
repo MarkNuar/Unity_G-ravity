@@ -126,8 +126,7 @@ namespace CBodies
 
 				_heightMinMax = GenerateShapeAndShading(ref _previewMesh, PickTerrainRes());
 
-				// todo : the material is wrong!!
-				// may be call it surface material??
+				// todo : the material is shared between cbodies, which is wrong
 				_terrainHolder =
 					GetOrCreateMeshObject("Terrain Mesh", _previewMesh, cBodySettings.shading.terrainMaterial);
 			}
@@ -153,7 +152,7 @@ namespace CBodies
 				// Set material properties
 				cBodySettings.shading.Initialize(cBodySettings.shape);
 				cBodySettings.shading.SetTerrainProperties(cBodySettings.shading.terrainMaterial, _heightMinMax,
-					cBodySettings.physics.GetSettings().radius);
+					BodyScale);
 			}
 
 			ReleaseAllBuffers();
@@ -353,6 +352,22 @@ namespace CBodies
 
 	        return child.gameObject;
         }
+        
+        // Radius of the ocean (0 if no ocean exists)
+        public float GetOceanRadius () {
+	        if (!cBodySettings.shading.GetSettings().hasOcean) {
+		        return 0;
+	        }
+	        return UnscaledOceanRadius * BodyScale;
+        }
+
+        private float UnscaledOceanRadius {
+	        get {
+		        return Mathf.Lerp (_heightMinMax.x, 1, cBodySettings.shading.GetSettings().oceanLevel);
+	        }
+        }
+
+        public float BodyScale => cBodySettings.physics.GetSettings().radius;
 
         public int PickTerrainRes()
         {

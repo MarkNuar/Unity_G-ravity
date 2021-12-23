@@ -48,6 +48,7 @@ public class SystemUtils : MonoBehaviour
             
             // Setting the de/-serialization settings 
             _jSonSettings = new JsonSerializerSettings();
+            _jSonSettings.ConstructorHandling = ConstructorHandling.Default;
             _jSonSettings.Converters.Add(JsonSubtypesConverterBuilder
                 .Of<Shape.ShapeSettings>("Type") // type property is only defined here
                 .RegisterSubtype<RockShape.RockShapeSettings>(CBodySettings.CBodyType.Rocky)
@@ -115,7 +116,7 @@ public class SystemUtils : MonoBehaviour
         CBodiesSettings toStoreCBodiesSettings = new CBodiesSettings();
         foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
         {
-
+            Debug.LogError(cBodySettings.shape.GetSettings().seed);
             toStoreCBodiesSettings.shapeSettingsList.Add(cBodySettings.shape.GetSettings());
             toStoreCBodiesSettings.shadingSettingsList.Add(cBodySettings.shading.GetSettings());
             toStoreCBodiesSettings.physicsSettingsList.Add(cBodySettings.physics.GetSettings());

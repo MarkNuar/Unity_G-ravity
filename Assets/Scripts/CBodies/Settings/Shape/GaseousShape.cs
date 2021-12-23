@@ -1,7 +1,5 @@
 ﻿using System;
-using UI.Menu.SystemEditing;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace CBodies.Settings.Shape
 {

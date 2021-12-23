@@ -55,41 +55,13 @@ namespace CBodies.Settings.Shape
             public float oceanFloorSmoothing = 0.5f;
             public float mountainBlend = 1f; // Determines how smoothly the base of mountains blends into the terrain
 
-            [Header("Noise settings")] public SimpleNoiseSettings continentNoise = new SimpleNoiseSettings
-            {
-                numLayers = 6,
-                lacunarity = 2.12f,
-                persistence = 0.5f,
-                scale = 1,
-                elevation = 2.64f,
-                verticalShift = 0,
-                offset = Vector3.zero,
-            };
+            [Header("Noise settings")] 
+            public SimpleNoiseSettings continentNoise = new SimpleNoiseSettings();
 
-            public SimpleNoiseSettings maskNoise = new SimpleNoiseSettings
-            {
-                numLayers = 3,
-                lacunarity = 1.66f,
-                persistence = 0.55f,
-                scale = 1.09f,
-                elevation = 1,
-                verticalShift = 0.2f,
-                offset = Vector3.zero,
-            };
+            public SimpleNoiseSettings maskNoise = new SimpleNoiseSettings();
 
-            public RidgeNoiseSettings ridgeNoise = new RidgeNoiseSettings
-            {
-                numLayers = 5,
-                lacunarity = 4,
-                persistence = 0.5f,
-                scale = 1.5f,
-                power = 2.18f,
-                elevation = 8.7f,
-                gain = 0.8f,
-                verticalShift = 0.09f,
-                peakSmoothing = 1,
-                offset = Vector3.zero
-            };
+            public RidgeNoiseSettings ridgeNoise = new RidgeNoiseSettings();
+            
             public Vector4 testParams = Vector4.zero;
         }
     }

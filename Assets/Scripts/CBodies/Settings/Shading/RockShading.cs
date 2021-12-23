@@ -56,7 +56,15 @@ namespace CBodies.Settings.Shading
                 ApplyColours (material, shadingSettings.baseColors);
             }
         }
-        
+
+        public override void SetOceanProperties(Material oceanMaterial)
+        {
+            if (shadingSettings.hasOcean && oceanSettings)
+            {
+                oceanSettings.SetProperties(oceanMaterial, shadingSettings.seed, shadingSettings.randomize);
+            }
+        }
+
         private void SetColors () {
             PRNG random = new PRNG (shadingSettings.seed);
             //randomizedCols.shoreCol = ColourHelper.Random (random, 0.3f, 0.7f, 0.4f, 0.8f);

@@ -1,11 +1,7 @@
 using System;
 using JetBrains.Annotations;
-using JsonSubTypes;
-using Newtonsoft.Json;
-using UI.Menu.SystemEditing;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 
 namespace CBodies.Settings.Shape
