@@ -152,7 +152,7 @@ namespace CBodies
 				// Set material properties
 				cBodySettings.shading.Initialize(cBodySettings.shape);
 				cBodySettings.shading.SetTerrainProperties(cBodySettings.shading.terrainMaterial, _heightMinMax,
-					BodyScale, cBodySettings.ocean.GetSettings().oceanLevel);
+					BodyScale, cBodySettings.ocean.GetSettings().GetOceanLevel());
 			}
 
 			ReleaseAllBuffers();
@@ -361,15 +361,11 @@ namespace CBodies
 	        return UnscaledOceanRadius * BodyScale;
         }
 
-        private float UnscaledOceanRadius {
-	        get {
-		        return Mathf.Lerp (_heightMinMax.x, 1, cBodySettings.ocean.GetSettings().oceanLevel);
-	        }
-        }
+        private float UnscaledOceanRadius => Mathf.Lerp (_heightMinMax.x, 1, cBodySettings.ocean.GetSettings().GetOceanLevel());
 
         public float BodyScale => cBodySettings.physics.GetSettings().radius;
 
-        public int PickTerrainRes()
+        private int PickTerrainRes()
         {
 	        return previewMode switch
             {

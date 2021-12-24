@@ -43,19 +43,19 @@ namespace CBodies.Settings.Ocean
 
             if (randomize) {
                 var random = new PRNG (seed);
-                var randomColA = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
-                var randomColB = ColorHelper.TweakHSV (randomColA,
+                oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
+                oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
                     random.SignedValue() * 0.2f,
                     random.SignedValue() * 0.2f,
                     random.Range (-0.5f, -0.4f)
                 );
 
-                material.SetColor ("colA", randomColA);
-                material.SetColor ("colB", randomColB);
+                material.SetColor ("colA", oceanSettings.randomShallowCol);
+                material.SetColor ("colB", oceanSettings.randomDepthCol);
                 material.SetColor ("specularCol", Color.white);
             } else {
-                material.SetColor ("colA", oceanSettings.colA);
-                material.SetColor ("colB", oceanSettings.colB);
+                material.SetColor ("colA", oceanSettings.baseShallowCol);
+                material.SetColor ("colB", oceanSettings.baseDepthCol);
                 material.SetColor ("specularCol", oceanSettings.specularCol);
             }
         }
@@ -68,12 +68,14 @@ namespace CBodies.Settings.Ocean
         
             public bool hasOcean;
             [Range (0, 1)]
-            public float oceanLevel = 0.55f;
+            [SerializeField] private float oceanLevel = 0.55f;
             
             public float depthMultiplier = 10;
             public float alphaMultiplier = 70;
-            public Color colA;
-            public Color colB;
+            public Color baseShallowCol;
+            public Color baseDepthCol;
+            public Color randomShallowCol = Color.black;
+            public Color randomDepthCol = Color.black;
             public Color specularCol = Color.white;
 
             [Range (0, 1)]
@@ -84,6 +86,13 @@ namespace CBodies.Settings.Ocean
             [Range (0, 1)]
             public float smoothness = 0.92f;
             public Vector4 testParams;
+
+            public float GetOceanLevel()
+            {
+                if (hasOcean)
+                    return oceanLevel;
+                return 0;
+            }
         }
         
         // MEMENTO PATTERN
@@ -100,6 +109,11 @@ namespace CBodies.Settings.Ocean
         public void SetSettings(OceanSettings ps)
         {
             oceanSettings = ps;
+            if (ps.randomize)
+            {
+                // Randomize ocean colors
+                
+            }
             // if(_observer)
             //     _observer.OnPhysicsUpdate();
         }

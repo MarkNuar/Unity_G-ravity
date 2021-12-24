@@ -120,7 +120,6 @@ public class SystemUtils : MonoBehaviour
         CBodiesSettings toStoreCBodiesSettings = new CBodiesSettings();
         foreach (CBodySettings cBodySettings in systemSettings.cBodiesSettings)
         {
-            Debug.LogError(cBodySettings.shape.GetSettings().seed);
             toStoreCBodiesSettings.shapeSettingsList.Add(cBodySettings.shape.GetSettings());
             toStoreCBodiesSettings.shadingSettingsList.Add(cBodySettings.shading.GetSettings());
             toStoreCBodiesSettings.physicsSettingsList.Add(cBodySettings.physics.GetSettings());

@@ -70,29 +70,43 @@ namespace Editor
                 Regenerate (sp, sd, ps, os);
             }
             
+            if (GUILayout.Button ("Randomize Ocean")) {
+                var prng = new System.Random ();
+                os.randomize = true;
+                os.seed = prng.Next (-10000, 10000);
+                _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
+                Regenerate (sp, sd, ps, os);
+            }
+            
             // TODO ADD RANDOMIZE OCEAN, RANDOMIZE ATMOSPHERE 
 
-            if (GUILayout.Button ("Randomize Both")) {
+            if (GUILayout.Button ("Randomize All")) {
                 var prng = new System.Random ();
                 sd.randomize = true;
                 sp.randomize = true;
+                os.randomize = true;
                 sp.seed = prng.Next (-10000, 10000);
                 sd.seed = prng.Next (-10000, 10000);
+                os.seed = prng.Next(-10000, 10000);
                 _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
                 _cBodyGenerator.cBodySettings.shading.SetSettings(sd);
+                _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
                 Regenerate (sp, sd, ps, os);
             }
 
-            bool randomized = sd.randomize || sp.randomize;
-            randomized |= sd.seed != 0 || sp.seed != 0;
+            bool randomized = sd.randomize || sp.randomize || os.randomize;
+            randomized |= sd.seed != 0 || sp.seed != 0 || os.seed != 0;
             using (new EditorGUI.DisabledGroupScope (!randomized)) {
                 if (GUILayout.Button ("Reset Randomization")) {
                     sd.randomize = false;
                     sp.randomize = false;
+                    os.randomize = false;
                     sp.seed = 0;
                     sd.seed = 0;
+                    os.seed = 0;
                     _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
                     _cBodyGenerator.cBodySettings.shading.SetSettings(sd);
+                    _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
                     Regenerate (sp, sd, ps, os);
                 }
             }
