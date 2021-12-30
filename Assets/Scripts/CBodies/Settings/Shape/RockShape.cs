@@ -40,6 +40,7 @@ namespace CBodies.Settings.Shape
         public override void SetSettings (ShapeSettings ss)
         {
             shapeSettings = (RockShapeSettings)ss;
+            shapeSettings.UpdateMountainsHeights();
             if(Observer)
                 Observer.OnShapeUpdate();
         }
@@ -55,6 +56,10 @@ namespace CBodies.Settings.Shape
             public float oceanFloorSmoothing = 0.5f;
             public float mountainBlend = 1f; // Determines how smoothly the base of mountains blends into the terrain
 
+            public float baseMountainHeight = 0.02f;
+            public float minMountainHeight = -0.8f;
+            public float maxMountainHeight = 0.8f;
+            
             [Header("Noise settings")] 
             public SimpleNoiseSettings continentNoise = new SimpleNoiseSettings();
 
@@ -63,6 +68,20 @@ namespace CBodies.Settings.Shape
             public RidgeNoiseSettings ridgeNoise = new RidgeNoiseSettings();
             
             public Vector4 testParams = Vector4.zero;
+
+            public void UpdateMountainsHeights()
+            {
+                if (randomize)
+                {
+                    PRNG random = new PRNG(seed); 
+                    maskNoise.verticalShift = random.Range(minMountainHeight, maxMountainHeight);
+                }
+                else
+                {
+                    maskNoise.verticalShift = baseMountainHeight;
+                }
+                
+            }
         }
     }
 }

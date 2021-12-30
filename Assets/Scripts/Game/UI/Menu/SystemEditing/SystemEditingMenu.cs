@@ -131,7 +131,7 @@ namespace Game.UI.Menu.SystemEditing
         public void CreateCBodyOfType(string type)
         {
             CBodySettings.CBodyType enumType =
-                (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type);
+                (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type); 
             _currentCBodyIndex = _systemSettings.AddNewCBody(enumType);
             
             CreateCBodyAndPreview();

@@ -55,6 +55,11 @@ namespace CBodies.Settings
             sd.InitSettings();
             ph.InitSettings();
             oc.InitSettings();
+
+            // Enable ocean by default only on rocky planets
+            Ocean.Ocean.OceanSettings os = ocean.GetSettings();
+            os.hasOcean = cBodyType == CBodyType.Rocky;
+            
         }
 
         [Serializable]

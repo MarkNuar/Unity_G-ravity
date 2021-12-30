@@ -1,0 +1,1 @@
+{"systemName":"Test","cBodiesSettings":[{"cBodyName":"Nanastria","cBodyType":0}],"lastCameraPosition":{"x":0.0,"y":0.0,"z":0.0},"lastCameraZoom":0.0}

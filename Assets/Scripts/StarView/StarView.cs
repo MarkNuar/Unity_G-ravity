@@ -16,6 +16,7 @@ namespace StarView
         {
             _cam = GameManager.Instance.GetMainCamera();
             //var sw = System.Diagnostics.Stopwatch.StartNew ();
+            Debug.Log(GameManager.Instance.GetMainCamera());
             if (_cam) {
                 float starDst = _cam.farClipPlane - radiusMinMax.y;
                 float scale = starDst / CalibrationDst;

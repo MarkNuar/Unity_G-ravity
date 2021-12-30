@@ -143,6 +143,11 @@ public class SystemUtils : MonoBehaviour
 
     public void SaveTestSystem(SystemSettings systemSettings)
     {
+        if (!Directory.Exists(testStorePath))
+        {
+            Directory.CreateDirectory(testStorePath);
+        }
+        
         var temp = storePath;
         storePath = testStorePath;
         SaveSystem(systemSettings);

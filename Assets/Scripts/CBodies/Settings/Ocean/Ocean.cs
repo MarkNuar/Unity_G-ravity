@@ -6,11 +6,8 @@ using Utilities;
 namespace CBodies.Settings.Ocean
 {
     [Serializable][CreateAssetMenu]
-    public class Ocean : ScriptableObject {
-        
-        // // OBSERVER
-        // [CanBeNull] private CBodyGenerator _observer;
-        
+    public class Ocean : ScriptableObject 
+    {
         private static System.Random _prng = new System.Random ();
         
         // MEMENTO
@@ -42,7 +39,7 @@ namespace CBodies.Settings.Ocean
             material.SetVector ("params", oceanSettings.testParams);
 
             if (randomize) {
-                var random = new PRNG (seed);
+                PRNG random = new PRNG (seed);
                 oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
                 oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
                     random.SignedValue() * 0.2f,
@@ -67,9 +64,12 @@ namespace CBodies.Settings.Ocean
             public int seed = _prng.Next(-10000, 10000);
         
             public bool hasOcean;
-            [Range (0, 1)]
-            [SerializeField] private float oceanLevel = 0.55f;
             
+            private float _oceanLevel = 0.55f;
+            public float baseOceanLevel = 0.5f;
+            public float minOceanLevel = 0.3f;
+            public float maxOceanLevel = 0.85f;
+
             public float depthMultiplier = 10;
             public float alphaMultiplier = 70;
             public Color baseShallowCol;
@@ -90,16 +90,29 @@ namespace CBodies.Settings.Ocean
             public float GetOceanLevel()
             {
                 if (hasOcean)
-                    return oceanLevel;
+                    return _oceanLevel;
                 return 0;
+            }
+
+            public void UpdateOceanLevel()
+            {
+                if (randomize)
+                {
+                    PRNG random = new PRNG (seed);
+                    _oceanLevel = random.Range(minOceanLevel, maxOceanLevel);
+                }
+                else
+                {
+                    _oceanLevel = baseOceanLevel;
+                }
+                
             }
         }
         
         // MEMENTO PATTERN
         public void InitSettings()
         {
-            // if(_observer)
-            //     _observer.OnPhysicsUpdate();
+
         }
         public OceanSettings GetSettings()
         {
@@ -109,13 +122,7 @@ namespace CBodies.Settings.Ocean
         public void SetSettings(OceanSettings ps)
         {
             oceanSettings = ps;
-            if (ps.randomize)
-            {
-                // Randomize ocean colors
-                
-            }
-            // if(_observer)
-            //     _observer.OnPhysicsUpdate();
+            oceanSettings.UpdateOceanLevel();
         }
     }
 }

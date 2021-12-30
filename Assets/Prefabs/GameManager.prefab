@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2241725730448225738
+--- !u!1 &4916227859157875941
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7726828581127354412}
-  - component: {fileID: 910152193250779299}
+  - component: {fileID: 4916227859157875947}
+  - component: {fileID: 4916227859157875940}
   m_Layer: 0
-  m_Name: StarView
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7726828581127354412
+--- !u!4 &4916227859157875947
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2241725730448225738}
+  m_GameObject: {fileID: 4916227859157875941}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -234.32515, y: -115.96636, z: 547.4086}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &910152193250779299
+--- !u!114 &4916227859157875940
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2241725730448225738}
+  m_GameObject: {fileID: 4916227859157875941}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 645f39646d684890933c59a945ef7b53, type: 3}
+  m_Script: {fileID: 11500000, guid: cf082e09fa0c8f14992429da980f7e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  starPrefab: {fileID: 1557662550303686523, guid: 202c78f5114ec914b9bc118e38111085, type: 3}
-  radiusMinMax: {x: 1, y: 3}
-  count: 2000
-  brightnessMinMax: {x: 0.25, y: 0.9}
+  gameMode: 2

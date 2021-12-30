@@ -62,9 +62,9 @@ namespace CBodies.PostProcessing
 				RenderTexture.ReleaseTemporary (_temporaryTextures[i]);
 			}
 
-			if (debugOceanMask) {
-				Graphics.Blit (FindObjectOfType<OceanMaskRenderer> ().oceanMaskTexture, finalDestination, _defaultMat);
-			}
+			// if (debugOceanMask) {
+			// 	Graphics.Blit (FindObjectOfType<OceanMaskRenderer> ().oceanMaskTexture, finalDestination, _defaultMat);
+			// }
 
 			// Trigger post processing complete event
 			if (onPostProcessingComplete != null) {
