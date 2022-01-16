@@ -23,7 +23,7 @@ namespace CBodies.PostProcessing
 		}
 
 		[ImageEffectOpaque]
-		void OnRenderImage (RenderTexture initialSource, RenderTexture finalDestination) {
+		private void OnRenderImage (RenderTexture initialSource, RenderTexture finalDestination) {
 			onPostProcessingBegin?.Invoke (finalDestination);
 			
 			Init ();
@@ -42,7 +42,7 @@ namespace CBodies.PostProcessing
 							currentDestination = finalDestination;
 						} else {
 							// Get temporary texture to render this effect into
-							currentDestination = TemporaryRenderTexture (finalDestination);
+							currentDestination = GetTemporaryRenderTexture (finalDestination);
 							_temporaryTextures.Add (currentDestination); //
 						}
 
@@ -58,18 +58,13 @@ namespace CBodies.PostProcessing
 			}
 
 			// Release temporary textures
-			for (int i = 0; i < _temporaryTextures.Count; i++) {
-				RenderTexture.ReleaseTemporary (_temporaryTextures[i]);
+			foreach (RenderTexture t in _temporaryTextures)
+			{
+				RenderTexture.ReleaseTemporary (t);
 			}
-
-			// if (debugOceanMask) {
-			// 	Graphics.Blit (FindObjectOfType<OceanMaskRenderer> ().oceanMaskTexture, finalDestination, _defaultMat);
-			// }
 
 			// Trigger post processing complete event
-			if (onPostProcessingComplete != null) {
-				onPostProcessingComplete (finalDestination);
-			}
+			onPostProcessingComplete?.Invoke (finalDestination);
 
 		}
 
@@ -89,7 +84,7 @@ namespace CBodies.PostProcessing
 							currentDestination = destination;
 						} else {
 							// get temporary texture to render this effect into
-							currentDestination = TemporaryRenderTexture (destination);
+							currentDestination = GetTemporaryRenderTexture (destination);
 							temporaryTextures.Add (currentDestination);
 						}
 						Graphics.Blit (currentSource, currentDestination, material);
@@ -108,7 +103,7 @@ namespace CBodies.PostProcessing
 			}
 		}
 
-		public static RenderTexture TemporaryRenderTexture (RenderTexture template) {
+		public static RenderTexture GetTemporaryRenderTexture (RenderTexture template) {
 			return RenderTexture.GetTemporary (template.descriptor);
 		}
     }

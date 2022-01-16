@@ -49,13 +49,15 @@ namespace Game.UI.Menu.SystemEditing
             // load saved CBodies
             
             var (systemToLoad, isNew) = GameManager.Instance.GetSystemToLoad();
-            // // todo: REMOVE FROM BUILD
-            // if (systemToLoad == null)
-            // {
-            //     systemToLoad = "Varudia";
-            //     isNew = true;
-            // }
-
+            
+            // todo: REMOVE FROM BUILD
+            // systemToLoad is null if game started from editing menu, otherwise always not null
+            if (systemToLoad == null)
+            {
+                systemToLoad = "Varudia";
+                isNew = true;
+            }
+            
             if (systemToLoad != null)
             {
                 if (isNew)
@@ -90,6 +92,8 @@ namespace Game.UI.Menu.SystemEditing
                     }
                 }
             }
+            // Set current system settings, available to whole program
+            SystemUtils.Instance.currentSystemSettings = _systemSettings;
 
             // sometimes the color handle is spawned in the wrong position
             colorHandle.anchoredPosition = new Vector2(0, 0);
@@ -131,7 +135,7 @@ namespace Game.UI.Menu.SystemEditing
         public void CreateCBodyOfType(string type)
         {
             CBodySettings.CBodyType enumType =
-                (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type); 
+                (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type);
             _currentCBodyIndex = _systemSettings.AddNewCBody(enumType);
             
             CreateCBodyAndPreview();

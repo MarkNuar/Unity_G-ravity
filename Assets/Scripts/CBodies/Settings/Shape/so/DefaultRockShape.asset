@@ -16,7 +16,7 @@ MonoBehaviour:
   heightMapCompute: {fileID: 7200000, guid: 9c2c260115dde784cbfe72d24b70a415, type: 3}
   shapeSettings:
     randomize: 1
-    seed: 295
+    seed: -1646
     perturbVertices: 1
     perturbStrength: 0.54
     hasOcean: 1
@@ -26,7 +26,7 @@ MonoBehaviour:
     mountainBlend: 1.16
     baseMountainHeight: 0.02
     minMountainHeight: -0.8
-    maxMountainHeight: 0.8
+    maxMountainHeight: 0.4
     continentNoise:
       numLayers: 6
       lacunarity: 2.12
@@ -41,7 +41,7 @@ MonoBehaviour:
       persistence: 0.55
       scale: 1.09
       elevation: 1
-      verticalShift: 0.5467376
+      verticalShift: -0.034027483
       offset: {x: 0, y: 0, z: 0}
     ridgeNoise:
       numLayers: 5

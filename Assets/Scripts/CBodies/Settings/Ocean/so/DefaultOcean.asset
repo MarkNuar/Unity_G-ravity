@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oceanSettings:
     randomize: 1
-    seed: 5689
+    seed: -8749
     hasOcean: 1
-    oceanLevel: 0.8038557
     baseOceanLevel: 0.78
     minOceanLevel: 0
     maxOceanLevel: 1
@@ -24,8 +23,8 @@ MonoBehaviour:
     alphaMultiplier: 70
     baseShallowCol: {r: 0, g: 0.99, b: 1, a: 1}
     baseDepthCol: {r: 0, g: 0.13, b: 0.43, a: 1}
-    randomShallowCol: {r: 0.6761921, g: 0.29198924, b: 0.75874513, a: 1}
-    randomDepthCol: {r: 0.27509582, g: 0.08293289, b: 0.15458697, a: 1}
+    randomShallowCol: {r: 0.15413755, g: 0.72488296, b: 0.46913353, a: 1}
+    randomDepthCol: {r: 0.07891369, g: 0.13479471, b: 0.25396252, a: 1}
     specularCol: {r: 1, g: 1, b: 1, a: 1}
     waveStrength: 1
     waveScale: 11.1

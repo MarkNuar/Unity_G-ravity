@@ -4,7 +4,7 @@ namespace CBodies.PostProcessing
 {
     public abstract class PostProcessingEffect : ScriptableObject {
 
-        protected Material material;
+        protected Material Material;
 
         public virtual Material GetMaterial () {
             return null;

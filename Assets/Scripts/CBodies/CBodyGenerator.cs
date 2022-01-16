@@ -127,8 +127,7 @@ namespace CBodies
 				_heightMinMax = GenerateShapeAndShading(ref _previewMesh, PickTerrainRes());
 
 				// todo : the material is shared between cbodies, which is wrong
-				_terrainHolder =
-					GetOrCreateMeshObject("Terrain Mesh", _previewMesh, cBodySettings.shading.terrainMaterial);
+				_terrainHolder = GetOrCreateMeshObject("Terrain Mesh", _previewMesh, cBodySettings.shading.terrainMaterial);
 			}
 			// If only shading noise has changed, update it separately from shape to save time
 			else if (_shadingUpdated)

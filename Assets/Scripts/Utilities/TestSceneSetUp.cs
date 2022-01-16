@@ -34,6 +34,9 @@ namespace Utilities
             Physics.PhysicsSettings ps = _cs.physics.GetSettings();
             ps.rotationSpeed = 0;
             _cs.physics.SetSettings(ps);
+
+            // Set current system settings, available to whole program
+            SystemUtils.Instance.currentSystemSettings = _ss;
         }
 
         private void OnDestroy()

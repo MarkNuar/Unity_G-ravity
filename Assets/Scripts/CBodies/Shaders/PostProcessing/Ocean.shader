@@ -1,4 +1,7 @@
-﻿Shader "Hidden/Ocean"
+﻿// For reference:
+// https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
+
+Shader "Hidden/Ocean"
 {
 	Properties
 	{
@@ -20,25 +23,25 @@
 			#include "../Includes/Triplanar.cginc"
 
 			struct appdata {
-					float4 vertex : POSITION;
-					float2 uv : TEXCOORD0;
+				float4 vertex : POSITION;
+				float2 uv : TEXCOORD0;
 			};
 
 			struct v2f {
-					float4 pos : SV_POSITION;
-					float2 uv : TEXCOORD0;
-					float3 viewVector : TEXCOORD1;
+				float4 pos : SV_POSITION;
+				float2 uv : TEXCOORD0;
+				float3 viewVector : TEXCOORD1;
 			};
 			
 			v2f vert (appdata v) {
-					v2f output;
-					output.pos = UnityObjectToClipPos(v.vertex);
-					output.uv = v.uv;
-					// Camera space matches OpenGL convention where cam forward is -z. In unity forward is positive z.
-					// (https://docs.unity3d.com/ScriptReference/Camera-cameraToWorldMatrix.html)
-					float3 viewVector = mul(unity_CameraInvProjection, float4(v.uv * 2 - 1, 0, -1));
-					output.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
-					return output;
+				v2f output;
+				output.pos = UnityObjectToClipPos(v.vertex);
+				output.uv = v.uv;
+				// Camera space matches OpenGL convention where cam forward is -z. In unity forward is positive z
+				// (https://docs.unity3d.com/ScriptReference/Camera-cameraToWorldMatrix.html)
+				float3 viewVector = mul(unity_CameraInvProjection, float4(v.uv * 2 -1, 0, -1));
+				output.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
+				return output;
 			}
 
 			float4 colA;
@@ -47,8 +50,7 @@
 			float depthMultiplier;
 			float alphaMultiplier;
 			float smoothness;
-
-
+			
 			sampler2D waveNormalA;
 			sampler2D waveNormalB;
 			float waveStrength;
@@ -64,18 +66,42 @@
 			float oceanRadius;
 			float3 dirToSun;
 
+			float correctDepth(float rawDepth, float viewLength)
+			{
+				float persp = LinearEyeDepth(rawDepth) * viewLength;
+				float t = _ProjectionParams.x>0 ? (rawDepth) : (1-rawDepth);
+				float ortho = lerp(_ProjectionParams.y, _ProjectionParams.z, t);
+	            return lerp(persp,ortho,unity_OrthoParams.w);
+	        }
+			
 			fixed4 frag (v2f i) : SV_Target
 			{
-	
 				fixed4 originalCol = tex2D(_MainTex, i.uv);
 
-				float3 rayPos = _WorldSpaceCameraPos;
-				float viewLength = length(i.viewVector);
-				float3 rayDir = i.viewVector / viewLength;
+				float3 rayPos;
+				float viewLength;
+				float3 rayDir;
+				if(unity_OrthoParams.w == 0)
+				{
+					rayPos = _WorldSpaceCameraPos;
+					viewLength = length(i.viewVector);
+					rayDir = i.viewVector / viewLength;
+				}
+				else
+				{
+					const float hw = unity_OrthoParams.x;
+					const float hh = unity_OrthoParams.y;
+                    float2 uv = i.uv * 2 - 1;
+                    rayPos = float3(_WorldSpaceCameraPos.x + uv.x * hw, _WorldSpaceCameraPos.y + uv.y * hh, _WorldSpaceCameraPos.z);
+                    viewLength = length(i.viewVector);
+                    rayDir = float3(0, 0, 1);
+				}
 
 				float nonlin_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
-				float sceneDepth = LinearEyeDepth(nonlin_depth) * viewLength;
+				float sceneDepth = correctDepth(nonlin_depth, viewLength);
 
+				// return sceneDepth / 1000;
+				
 				float2 hitInfo = raySphere(oceanCentre, oceanRadius, rayPos, rayDir);
 				float dstToOcean = hitInfo.x;
 				float dstThroughOcean = hitInfo.y;
@@ -86,6 +112,8 @@
 
 
 				if (oceanViewDepth > 0) {
+					// return 1;
+					
 					float3 clipPlanePos = rayPos + i.viewVector * _ProjectionParams.y;
 
 					float dstAboveWater = length(clipPlanePos - oceanCentre) - oceanRadius;
@@ -114,8 +142,6 @@
 					float4 finalCol =  originalCol * (1-alpha) + oceanCol * alpha;
 					return float4(finalCol.xyz, params.x);
 				}
-
-				
 				return originalCol;
 			}
 			ENDCG

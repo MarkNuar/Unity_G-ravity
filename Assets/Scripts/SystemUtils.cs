@@ -15,6 +15,8 @@ public class SystemUtils : MonoBehaviour
 {
     public static SystemUtils Instance;
 
+    public SystemSettings currentSystemSettings;
+    
     public string storePath = null;
     public string testStorePath = null;
 

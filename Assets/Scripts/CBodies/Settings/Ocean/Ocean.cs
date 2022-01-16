@@ -37,7 +37,7 @@ namespace CBodies.Settings.Ocean
             material.SetFloat ("waveSpeed", oceanSettings.waveSpeed);
             material.SetFloat ("smoothness", oceanSettings.smoothness);
             material.SetVector ("params", oceanSettings.testParams);
-
+            
             if (randomize) {
                 PRNG random = new PRNG (seed);
                 oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
@@ -96,6 +96,7 @@ namespace CBodies.Settings.Ocean
 
             public void UpdateOceanLevel()
             {
+                Debug.Log("Updating ocean level");
                 if (randomize)
                 {
                     PRNG random = new PRNG (seed);

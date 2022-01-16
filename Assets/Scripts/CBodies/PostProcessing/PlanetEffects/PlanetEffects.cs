@@ -17,10 +17,10 @@ namespace CBodies.PostProcessing.PlanetEffects
 		public bool displayOceans = true;
 		//public bool displayAtmospheres = true;
 
-		List<EffectHolder> effectHolders;
-		List<float> sortDistances;
+		List<EffectHolder> _effectHolders;
+		List<float> _sortDistances;
 
-		List<Material> postProcessingMaterials;
+		List<Material> _postProcessingMaterials;
 		bool active = true;
 
 		public override void Render (RenderTexture source, RenderTexture destination) {
@@ -29,21 +29,24 @@ namespace CBodies.PostProcessing.PlanetEffects
 		}
 
 		void Init () {
-			if (effectHolders == null || effectHolders.Count == 0 || !Application.isPlaying) {
+			if (_effectHolders == null || _effectHolders.Count == 0 || 
+			    // new cBody added, happens only in edit mode
+			    _effectHolders.Count != SystemUtils.Instance.currentSystemSettings.cBodiesSettings.Count) {
 				var generators = FindObjectsOfType<CBodyGenerator> ();
-				effectHolders = new List<EffectHolder> (generators.Length);
-				for (int i = 0; i < generators.Length; i++) {
-					effectHolders.Add (new EffectHolder (generators[i]));
+				_effectHolders = new List<EffectHolder> (generators.Length);
+				foreach (CBodyGenerator t in generators)
+				{
+					_effectHolders.Add (new EffectHolder (t));
 				}
 			}
-			if (postProcessingMaterials == null) {
-				postProcessingMaterials = new List<Material> ();
+			if (_postProcessingMaterials == null) {
+				_postProcessingMaterials = new List<Material> ();
 			}
-			if (sortDistances == null) {
-				sortDistances = new List<float> ();
+			if (_sortDistances == null) {
+				_sortDistances = new List<float> ();
 			}
-			sortDistances.Clear ();
-			postProcessingMaterials.Clear ();
+			_sortDistances.Clear ();
+			_postProcessingMaterials.Clear ();
 		}
 
 		public List<Material> GetMaterials () {
@@ -53,14 +56,14 @@ namespace CBodies.PostProcessing.PlanetEffects
 			}
 			Init ();
 
-			if (effectHolders.Count > 0) {
-				Camera cam = Camera.current;
+			if (_effectHolders.Count > 0) {
+				Camera cam = GameManager.Instance.GetMainCamera();
 				Vector3 camPos = cam.transform.position;
 
 				SortFarToNear (camPos);
 
-				for (int i = 0; i < effectHolders.Count; i++) {
-					EffectHolder effectHolder = effectHolders[i];
+				foreach (EffectHolder effectHolder in _effectHolders)
+				{
 					Material underwaterMaterial = null;
 					// Oceans
 					if (displayOceans) {
@@ -72,7 +75,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 							if (camDstFromCentre < effectHolder.generator.GetOceanRadius ()) {
 								underwaterMaterial = effectHolder.oceanEffect.GetMaterial ();
 							} else {
-								postProcessingMaterials.Add (effectHolder.oceanEffect.GetMaterial ());
+								_postProcessingMaterials.Add (effectHolder.oceanEffect.GetMaterial ());
 							}
 						}
 					}
@@ -85,19 +88,12 @@ namespace CBodies.PostProcessing.PlanetEffects
 					// }
 
 					if (underwaterMaterial != null) {
-						postProcessingMaterials.Add (underwaterMaterial);
+						_postProcessingMaterials.Add (underwaterMaterial);
 					}
 				}
 			}
 
-			return postProcessingMaterials;
-		}
-
-		float CalculateMaxClippingDst (Camera cam) {
-			float halfHeight = cam.nearClipPlane * Mathf.Tan (cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-			float halfWidth = halfHeight * cam.aspect;
-			float dstToNearClipPlaneCorner = new Vector3 (halfWidth, halfHeight, cam.nearClipPlane).magnitude;
-			return dstToNearClipPlaneCorner;
+			return _postProcessingMaterials;
 		}
 
 		public class EffectHolder {
@@ -121,20 +117,20 @@ namespace CBodies.PostProcessing.PlanetEffects
 		}
 
 		void SortFarToNear (Vector3 viewPos) {
-			for (int i = 0; i < effectHolders.Count; i++) {
-				float dstToSurface = effectHolders[i].DstFromSurface (viewPos);
-				sortDistances.Add (dstToSurface);
+			for (int i = 0; i < _effectHolders.Count; i++) {
+				float dstToSurface = _effectHolders[i].DstFromSurface (viewPos);
+				_sortDistances.Add (dstToSurface);
 			}
 
-			for (int i = 0; i < effectHolders.Count - 1; i++) {
+			for (int i = 0; i < _effectHolders.Count - 1; i++) {
 				for (int j = i + 1; j > 0; j--) {
-					if (sortDistances[j - 1] < sortDistances[j]) {
-						float tempDst = sortDistances[j - 1];
-						var temp = effectHolders[j - 1];
-						sortDistances[j - 1] = sortDistances[j];
-						sortDistances[j] = tempDst;
-						effectHolders[j - 1] = effectHolders[j];
-						effectHolders[j] = temp;
+					if (_sortDistances[j - 1] < _sortDistances[j]) {
+						float tempDst = _sortDistances[j - 1];
+						var temp = _effectHolders[j - 1];
+						_sortDistances[j - 1] = _sortDistances[j];
+						_sortDistances[j] = tempDst;
+						_effectHolders[j - 1] = _effectHolders[j];
+						_effectHolders[j] = temp;
 					}
 				}
 			}
