@@ -5,11 +5,12 @@ namespace Game
     [RequireComponent(typeof(Light))]
     public class SunShadowCaster : MonoBehaviour {
         public Transform cameraToTrack;
-
-        // void LateUpdate () {
-        //     if (cameraToTrack) {
-        //         transform.LookAt (-cameraToTrack.position);
-        //     }
-        // }
+        public bool trackCamera = true;
+        
+        void LateUpdate () {
+            if (trackCamera && cameraToTrack != null) {
+                transform.LookAt (-cameraToTrack.position);
+            }
+        }
     }
 }
