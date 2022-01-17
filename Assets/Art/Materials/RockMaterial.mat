@@ -174,7 +174,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - bodyScale: 14.61
-    - oceanLevel: 0.4253171
+    - oceanLevel: 0.55
     m_Colors:
     - Color_11745d673fb346bca051fff41288352c: {r: 0, g: 0, b: 0, a: 0}
     - Color_355ccba7841841768bd0208b87aaa813: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 0}

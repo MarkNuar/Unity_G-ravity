@@ -14,7 +14,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
             }
 
             if (_light == null) {
-                _light = Object.FindObjectOfType<SunShadowCaster> ()?.GetComponent<Light> ();
+                _light = Object.FindObjectOfType<Light> ();
             }
 
             Vector3 centre = generator.transform.position;

@@ -14,6 +14,7 @@ namespace CBodies
         private Rigidbody _rb;
 
         public CBodyGenerator cBodyGenerator;
+        public Material surfaceMaterial;
 
         private void Awake () {
             _rb = gameObject.AddComponent<Rigidbody> ();

@@ -127,7 +127,9 @@ namespace CBodies
 				_heightMinMax = GenerateShapeAndShading(ref _previewMesh, PickTerrainRes());
 
 				// todo : the material is shared between cbodies, which is wrong
-				_terrainHolder = GetOrCreateMeshObject("Terrain Mesh", _previewMesh, cBodySettings.shading.terrainMaterial);
+				var terrainMatInstance = new Material (cBodySettings.shading.terrainMaterial);
+				cBody.surfaceMaterial = terrainMatInstance;
+				_terrainHolder = GetOrCreateMeshObject("Terrain Mesh", _previewMesh, terrainMatInstance);
 			}
 			// If only shading noise has changed, update it separately from shape to save time
 			else if (_shadingUpdated)
@@ -146,11 +148,11 @@ namespace CBodies
 				GeneratePhysics();
 			}
 
-			if (cBodySettings.shading != null)
+			if (cBodySettings.shading != null && cBody.surfaceMaterial != null)
 			{
 				// Set material properties
 				cBodySettings.shading.Initialize(cBodySettings.shape);
-				cBodySettings.shading.SetTerrainProperties(cBodySettings.shading.terrainMaterial, _heightMinMax,
+				cBodySettings.shading.SetTerrainProperties(cBody.surfaceMaterial, _heightMinMax,
 					BodyScale, cBodySettings.ocean.GetSettings().GetOceanLevel());
 			}
 

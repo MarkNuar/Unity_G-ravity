@@ -6,10 +6,10 @@ namespace Game
     public class SunShadowCaster : MonoBehaviour {
         public Transform cameraToTrack;
 
-        void LateUpdate () {
-            if (cameraToTrack) {
-                transform.LookAt (-cameraToTrack.position);
-            }
-        }
+        // void LateUpdate () {
+        //     if (cameraToTrack) {
+        //         transform.LookAt (-cameraToTrack.position);
+        //     }
+        // }
     }
 }

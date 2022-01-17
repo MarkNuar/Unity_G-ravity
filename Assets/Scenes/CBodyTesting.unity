@@ -215,6 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 0
   cBodyGenerator: {fileID: 0}
+  surfaceMaterial: {fileID: 0}
 --- !u!4 &743628650
 Transform:
   m_ObjectHideFlags: 0
@@ -418,7 +419,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2111931553}
   - component: {fileID: 2111931552}
-  - component: {fileID: 2111931554}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -502,19 +502,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &2111931554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2111931551}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7894780c4ed413a95b2c82faa70c2ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraToTrack: {fileID: 1230531909}
 --- !u!1001 &8972045567377018006
 PrefabInstance:
   m_ObjectHideFlags: 0
