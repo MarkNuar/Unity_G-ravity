@@ -85,9 +85,12 @@ namespace CBodies.Settings.Shading
         public abstract class ShadingSettings
         {
             public bool randomize;
-            public int seed = _prng.Next(-10000, 10000);
+            public int seed = 0;
             
-            //public Color color;
+            public void UpdateSeed(bool rand)
+            {
+                seed = rand ? _prng.Next(-10000, 10000) : 0;
+            }
         }
     }
 }

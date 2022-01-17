@@ -22,7 +22,7 @@ namespace CBodies.Settings.Ocean
         {
             if (oceanSettings.hasOcean)
             {
-                SetProperties(oceanMaterial, oceanSettings.seed, oceanSettings.randomize);
+                SetProperties(oceanMaterial, oceanSettings.colorSeed, oceanSettings.randomizeColor);
             }
         }
         
@@ -60,8 +60,10 @@ namespace CBodies.Settings.Ocean
         [Serializable]
         public class OceanSettings
         {
-            public bool randomize;
-            public int seed = _prng.Next(-10000, 10000);
+            public bool randomizeColor;
+            public bool randomizeHeight;
+            public int colorSeed = 0;
+            public int heightSeed = 0;
         
             public bool hasOcean;
             
@@ -97,16 +99,25 @@ namespace CBodies.Settings.Ocean
             public void UpdateOceanLevel()
             {
                 Debug.Log("Updating ocean level");
-                if (randomize)
+                if (randomizeHeight)
                 {
-                    PRNG random = new PRNG (seed);
+                    PRNG random = new PRNG (heightSeed);
                     _oceanLevel = random.Range(minOceanLevel, maxOceanLevel);
                 }
                 else
                 {
                     _oceanLevel = baseOceanLevel;
                 }
-                
+            }
+
+            public void UpdateColorSeed(bool rand)
+            {
+                colorSeed = rand ? _prng.Next(-10000, 10000) : 0;
+            }
+            
+            public void UpdateHeightSeed(bool rand)
+            {
+                heightSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }
         

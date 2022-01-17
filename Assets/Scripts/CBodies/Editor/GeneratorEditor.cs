@@ -52,61 +52,46 @@ namespace Editor
                 }
             }
 
-            if (GUILayout.Button ("Generate")) {
-                Regenerate (sp, sd, ps, os);
-            }
             if (GUILayout.Button ("Randomize Shading")) {
-                var prng = new System.Random ();
                 sd.randomize = true;
-                sd.seed = prng.Next (-10000, 10000);
+                os.randomizeColor = true;
+                sd.UpdateSeed(sd.randomize);
+                os.UpdateColorSeed(os.randomizeColor);
                 Regenerate (sp, sd, ps, os);
             }
 
             if (GUILayout.Button ("Randomize Shape")) {
-                var prng = new System.Random ();
                 sp.randomize = true;
-                sp.seed = prng.Next (-10000, 10000);
-                _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
+                os.randomizeHeight = true;
+                sp.UpdateSeed(sp.randomize);
+                os.UpdateHeightSeed(os.randomizeColor);
                 Regenerate (sp, sd, ps, os);
             }
-            
-            if (GUILayout.Button ("Randomize Ocean")) {
-                var prng = new System.Random ();
-                os.randomize = true;
-                os.seed = prng.Next (-10000, 10000);
-                _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
-                Regenerate (sp, sd, ps, os);
-            }
-            
-            // TODO ADD RANDOMIZE OCEAN, RANDOMIZE ATMOSPHERE 
 
             if (GUILayout.Button ("Randomize All")) {
-                var prng = new System.Random ();
                 sd.randomize = true;
                 sp.randomize = true;
-                os.randomize = true;
-                sp.seed = prng.Next (-10000, 10000);
-                sd.seed = prng.Next (-10000, 10000);
-                os.seed = prng.Next(-10000, 10000);
-                _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
-                _cBodyGenerator.cBodySettings.shading.SetSettings(sd);
-                _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
+                os.randomizeColor = true;
+                os.randomizeHeight = true;
+                sd.UpdateSeed(sd.randomize);
+                sp.UpdateSeed(sp.randomize);
+                os.UpdateColorSeed(os.randomizeColor);
+                os.UpdateHeightSeed(os.randomizeColor);
                 Regenerate (sp, sd, ps, os);
             }
 
-            bool randomized = sd.randomize || sp.randomize || os.randomize;
-            randomized |= sd.seed != 0 || sp.seed != 0 || os.seed != 0;
+            bool randomized = sd.randomize || sp.randomize || os.randomizeColor;
+            randomized |= sd.seed != 0 || sp.seed != 0 || os.colorSeed != 0;
             using (new EditorGUI.DisabledGroupScope (!randomized)) {
                 if (GUILayout.Button ("Reset Randomization")) {
                     sd.randomize = false;
                     sp.randomize = false;
-                    os.randomize = false;
-                    sp.seed = 0;
-                    sd.seed = 0;
-                    os.seed = 0;
-                    _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
-                    _cBodyGenerator.cBodySettings.shading.SetSettings(sd);
-                    _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
+                    os.randomizeColor = false;
+                    os.randomizeHeight = false;
+                    sd.UpdateSeed(sd.randomize);
+                    sp.UpdateSeed(sp.randomize);
+                    os.UpdateColorSeed(os.randomizeColor);
+                    os.UpdateHeightSeed(os.randomizeColor);
                     Regenerate (sp, sd, ps, os);
                 }
             }
@@ -126,10 +111,13 @@ namespace Editor
         
         void Regenerate (Shape.ShapeSettings sp, Shading.ShadingSettings sd, Physics.PhysicsSettings ps, Ocean.OceanSettings os) 
         {
+            // The order matters! 
+            // Set the ocean update before shading update 
+            // Otherwise the shading shader will get a wrong ocean level value
+            _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
             _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
             _cBodyGenerator.cBodySettings.shading.SetSettings(sd);
             _cBodyGenerator.cBodySettings.physics.SetSettings(ps);
-            _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
             EditorApplication.QueuePlayerLoopUpdate ();
         }
 

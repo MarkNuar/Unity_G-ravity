@@ -69,9 +69,14 @@ namespace CBodies.Settings.Shape
         public abstract class ShapeSettings
         {
             public bool randomize = false;
-            public int seed = _prng.Next(-10000,10000);
+            public int seed = 0;
             public bool perturbVertices = false;
             [Range (0, 1)] public float perturbStrength = 0.36f;
+
+            public void UpdateSeed(bool rand)
+            {
+                seed = rand ? _prng.Next(-10000, 10000) : 0;
+            }
         }
     }
 }
