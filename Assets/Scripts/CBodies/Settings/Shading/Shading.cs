@@ -30,7 +30,7 @@ namespace CBodies.Settings.Shading
         public virtual void Initialize (Shape.Shape shape) { }
         
         // Set shading properties on terrain
-        public virtual void SetTerrainProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
+        public virtual void SetSurfaceProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
         {
 
         }

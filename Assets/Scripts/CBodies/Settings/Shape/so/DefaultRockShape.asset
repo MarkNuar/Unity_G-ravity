@@ -16,7 +16,7 @@ MonoBehaviour:
   heightMapCompute: {fileID: 7200000, guid: 9c2c260115dde784cbfe72d24b70a415, type: 3}
   shapeSettings:
     randomize: 1
-    seed: -1646
+    seed: -245
     perturbVertices: 1
     perturbStrength: 0.54
     hasOcean: 1
@@ -41,7 +41,7 @@ MonoBehaviour:
       persistence: 0.55
       scale: 1.09
       elevation: 1
-      verticalShift: -0.034027483
+      verticalShift: 0.06453433
       offset: {x: 0, y: 0, z: 0}
     ridgeNoise:
       numLayers: 5

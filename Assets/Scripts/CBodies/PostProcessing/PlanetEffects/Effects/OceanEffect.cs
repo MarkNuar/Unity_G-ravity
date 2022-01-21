@@ -35,6 +35,5 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
         public Material GetMaterial () {
             return _material;
         }
-
     }
 }

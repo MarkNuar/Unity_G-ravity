@@ -40,7 +40,7 @@ namespace CBodies.Settings.Shading
             shadingSettings.smallNoise.SetComputeValues (shadingDataCompute, random, "_small");
         }
         
-        public override void SetTerrainProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
+        public override void SetSurfaceProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
         {
             material.SetVector ("heightMinMax", heightMinMax);
             material.SetFloat ("oceanLevel", oceanLevel);
@@ -95,7 +95,7 @@ namespace CBodies.Settings.Shading
             );
         }
         
-        void ApplyColours (Material material, EarthColors colors) {
+        void ApplyColours (Material material, RockColors colors) {
             material.SetColor ("_ShoreLow", colors.shoreColLow);
             material.SetColor ("_ShoreHigh", colors.shoreColHigh);
 
@@ -113,8 +113,8 @@ namespace CBodies.Settings.Shading
         [Serializable]
         public class RockShadingSettings : ShadingSettings
         {
-            public EarthColors baseColors;
-            public EarthColors randomColors;
+            public RockColors baseColors;
+            public RockColors randomColors;
 
             [Header ("Shading Data")]
             public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
@@ -124,7 +124,7 @@ namespace CBodies.Settings.Shading
         }
         
         [System.Serializable]
-        public struct EarthColors {
+        public struct RockColors {
             public Color shoreColLow;
             public Color shoreColHigh;
             public Color flatColLowA;

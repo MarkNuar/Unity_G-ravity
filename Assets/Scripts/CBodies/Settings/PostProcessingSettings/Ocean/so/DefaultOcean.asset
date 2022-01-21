@@ -13,18 +13,20 @@ MonoBehaviour:
   m_Name: DefaultOcean
   m_EditorClassIdentifier: 
   oceanSettings:
-    randomize: 1
-    seed: -8749
-    hasOcean: 1
+    randomizeColor: 1
+    randomizeHeight: 1
+    colorSeed: 6977
+    heightSeed: 1150
+    hasOcean: 0
     baseOceanLevel: 0.78
-    minOceanLevel: 0
+    minOceanLevel: 0.2
     maxOceanLevel: 1
     depthMultiplier: 60
     alphaMultiplier: 70
     baseShallowCol: {r: 0, g: 0.99, b: 1, a: 1}
     baseDepthCol: {r: 0, g: 0.13, b: 0.43, a: 1}
-    randomShallowCol: {r: 0.15413755, g: 0.72488296, b: 0.46913353, a: 1}
-    randomDepthCol: {r: 0.07891369, g: 0.13479471, b: 0.25396252, a: 1}
+    randomShallowCol: {r: 0.7436702, g: 0.21644488, b: 0.51368237, a: 1}
+    randomDepthCol: {r: 0.21493113, g: 0.05310201, b: 0.28515658, a: 1}
     specularCol: {r: 1, g: 1, b: 1, a: 1}
     waveStrength: 1
     waveScale: 11.1

@@ -80,8 +80,8 @@ namespace Editor
                 Regenerate (sp, sd, ps, os);
             }
 
-            bool randomized = sd.randomize || sp.randomize || os.randomizeColor;
-            randomized |= sd.seed != 0 || sp.seed != 0 || os.colorSeed != 0;
+            var randomized = sd.randomize || sp.randomize || os.randomizeColor || os.randomizeHeight;
+            randomized |= sd.seed != 0 || sp.seed != 0 || os.colorSeed != 0 || os.heightSeed != 0;
             using (new EditorGUI.DisabledGroupScope (!randomized)) {
                 if (GUILayout.Button ("Reset Randomization")) {
                     sd.randomize = false;

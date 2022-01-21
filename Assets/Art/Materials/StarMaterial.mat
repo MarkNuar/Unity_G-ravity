@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: StarMaterial
-  m_Shader: {fileID: 4800000, guid: c7ef4406a15b68d4995e21ee0f4b53c9, type: 3}
+  m_Shader: {fileID: 4800000, guid: b85dbea8b92ca234ebdacb56c7e23a80, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
