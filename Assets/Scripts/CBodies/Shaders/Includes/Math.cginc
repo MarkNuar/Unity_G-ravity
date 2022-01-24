@@ -49,7 +49,7 @@ float Blend(float startHeight, float blendDst, float height) {
 // If inside sphere, dstToSphere will be 0
 // If ray misses sphere, dstToSphere = max float value, dstThroughSphere = 0
 // Given rayDir must be normalized
-float2 raySphere(float3 centre, float radius, float3 rayOrigin, float3 rayDir) {
+float2 ray_sphere(float3 centre, float radius, float3 rayOrigin, float3 rayDir) {
     float3 offset = rayOrigin - centre;
     const float a = 1; // set to dot(rayDir, rayDir) instead if rayDir may not be normalized
     float b = 2 * dot(offset, rayDir);
@@ -119,7 +119,7 @@ float2 intersect_disk(float3 n, float3 p0, float r, float3 l0, float3 l, out flo
 // r_outer = radius of outer disk
 // l0 = ray origin -> view ray origin
 // l = ray direction -> view direction
-// return distance at which intersection occurs and distance from center of ring
+// return distance at which intersection occurs (from point of view) and distance from center of ring
 float2 intersect_ring(float3 n, float3 p0, float r_inner, float r_outer, float3 l0, float3 l)
 {
     float t_outer = 0;

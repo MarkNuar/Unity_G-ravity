@@ -17,23 +17,35 @@ namespace CBodies.Settings.PostProcessingSettings.Ring
             ringMaterial.SetInt("has_ring", ringSettings.hasRing ? 1 : 0);
             if (ringSettings.hasRing)
             {
-                if (ringSettings.randomize)
-                {
-                    int normalSeed = ringSettings.ringNormalSeed;
-                    int radiusSeed = ringSettings.ringRadiusSeed;
+                // do not check if randomize color, the base color is decided by the palette, given a color seed equal to 0
+                PRNG randomColor = new PRNG(ringSettings.colorSeed);
+                PRNG randomShape = new PRNG(ringSettings.shapeSeed);
+                Vector3 a = new Vector3(0.5f, .25f+(Mathf.Sin(randomColor.Range(0.0f,20.0f)*.1f))-.25f+.25f, 0.5f);
+                Vector3 b = new Vector3(0.1f, 0.1f, 0.1f);
+                Vector3 c = new Vector3(1.0f, 1.0f, 1.0f);
+                Vector3 d = new Vector3(0.0f, 0.33f, 0.64f);
                 
-                    var innerRadiusPercent = 1.1f + ColorHelper.Map(radiusSeed, 0, 10000, 0, 0.4f);
-                    var outerRadiusPercent = innerRadiusPercent + ColorHelper.Map(radiusSeed, 0, 10000, 0, 0.5f) + 0.05f;
+                Color ringColor = ColorHelper.Palette( randomColor.Range(0.0f,20.0f) * .1135f, a,  b, c,  d );
+                
+                ringMaterial.SetColor("ring_color", ringColor);
+                ringMaterial.SetFloat("seed", randomShape.Range(0.0f, 1.0f));
+                
+                
+                if (ringSettings.randomizeShape)
+                {
+                    var innerRadiusPercent = 1.05f + randomShape.Range(0.0f, 0.4f);
+                    var outerRadiusPercent = innerRadiusPercent + randomShape.Range(0.2f, 0.5f);
 
-                    var yNormal = 1 - ColorHelper.Map(normalSeed, 0, 10000, 0, 0.4f);
-                    var xNormal = 0.1f + ColorHelper.Map(normalSeed, 0, 10000, -0.2f, 0.2f);
-                    var zNormal = 0.2f + ColorHelper.Map(normalSeed, 0, 10000, 0, 0.3f);
+                    var yNormal = 1 - randomShape.Range(0.0f, 0.4f);
+                    var xNormal = 0.1f + randomShape.Range(-0.2f, 0.2f);
+                    var zNormal = 0.2f + randomShape.Range(0.0f, 0.3f);
                 
                     Vector3 ringNormal = new Vector3(xNormal, yNormal, zNormal);
                 
                     ringMaterial.SetFloat("inner_radius_percent", innerRadiusPercent);
                     ringMaterial.SetFloat("outer_radius_percent", outerRadiusPercent);
                     ringMaterial.SetVector("ring_normal", ringNormal.normalized);
+                    
                 }
                 else
                 {
@@ -47,10 +59,13 @@ namespace CBodies.Settings.PostProcessingSettings.Ring
         [Serializable]
         public class RingSettings
         {
-            public bool randomize;
-            public int ringNormalSeed;
-            public int ringRadiusSeed;
+            // todo ring color
             
+            public bool randomizeColor;
+            public bool randomizeShape;
+            public int colorSeed;
+            public int shapeSeed;
+
             public bool hasRing;
 
             // ring radius percent with respect to planet radius
@@ -61,10 +76,14 @@ namespace CBodies.Settings.PostProcessingSettings.Ring
             // serialize plane normal inclination, quaternion, vector 3, angles?
             public Vector3 baseRingNormal = new Vector3(0.0f, 1.0f, 0.2f);
             
-            public void UpdateSeed(bool rand)
+            public void UpdateColorSeed(bool rand)
             {
-                ringNormalSeed = rand ? _prng.Next(1, 10000) : 0;
-                ringRadiusSeed = rand ? _prng.Next(1, 10000) : 0;
+                colorSeed = rand ? _prng.Next(-10000, 10000) : 0;
+            }
+            
+            public void UpdateShapeSeed(bool rand)
+            {
+                shapeSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }
         

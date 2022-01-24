@@ -9,14 +9,13 @@ namespace StarView
         public int count = 1000;
         const float CalibrationDst = 2000;
         public Vector2 brightnessMinMax;
-
+        
         private Camera _cam;
 
         void Start ()
         {
             _cam = GameManager.Instance.GetMainCamera();
             //var sw = System.Diagnostics.Stopwatch.StartNew ();
-            Debug.Log(GameManager.Instance.GetMainCamera());
             if (_cam) {
                 float starDst = _cam.farClipPlane - radiusMinMax.y;
                 float scale = starDst / CalibrationDst;
@@ -30,7 +29,7 @@ namespace StarView
             }
             //Debug.Log (sw.ElapsedMilliseconds);
         }
-
+        
         float SmallestRandomValue (int iterations) {
             float r = 1;
             for (int i = 0; i < iterations; i++) {
@@ -41,7 +40,7 @@ namespace StarView
 
         void LateUpdate () {
             if (_cam != null) {
-                transform.position = _cam.transform.position;
+                    transform.position = _cam.transform.position;
             }
         }
     }

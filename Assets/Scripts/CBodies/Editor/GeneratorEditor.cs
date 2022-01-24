@@ -61,18 +61,20 @@ namespace Editor
             if (GUILayout.Button ("Randomize Shading")) {
                 sd.randomize = true;
                 os.randomizeColor = true;
+                rs.randomizeColor = true;
                 sd.UpdateSeed(sd.randomize);
                 os.UpdateColorSeed(os.randomizeColor);
+                rs.UpdateColorSeed(rs.randomizeColor);
                 Regenerate (sp, sd, ps, os, rs);
             }
 
             if (GUILayout.Button ("Randomize Shape")) {
                 sp.randomize = true;
                 os.randomizeHeight = true;
-                rs.randomize = true;
+                rs.randomizeShape = true;
                 sp.UpdateSeed(sp.randomize);
                 os.UpdateHeightSeed(os.randomizeColor);
-                rs.UpdateSeed(rs.randomize);
+                rs.UpdateShapeSeed(rs.randomizeShape);
                 Regenerate (sp, sd, ps, os, rs);
             }
 
@@ -81,29 +83,33 @@ namespace Editor
                 sp.randomize = true;
                 os.randomizeColor = true;
                 os.randomizeHeight = true;
-                rs.randomize = true;
+                rs.randomizeColor = true;
+                rs.randomizeShape = true;
                 sd.UpdateSeed(sd.randomize);
                 sp.UpdateSeed(sp.randomize);
                 os.UpdateColorSeed(os.randomizeColor);
                 os.UpdateHeightSeed(os.randomizeColor);
-                rs.UpdateSeed(rs.randomize);
+                rs.UpdateColorSeed(rs.randomizeColor);
+                rs.UpdateShapeSeed(rs.randomizeShape);
                 Regenerate (sp, sd, ps, os, rs);
             }
 
-            var randomized = sd.randomize || sp.randomize || os.randomizeColor || os.randomizeHeight || rs.randomize;
-            randomized |= sd.seed != 0 || sp.seed != 0 || os.colorSeed != 0 || os.heightSeed != 0 || rs.ringNormalSeed != 0;
+            var randomized = sd.randomize || sp.randomize || os.randomizeColor || os.randomizeHeight || rs.randomizeColor;
+            randomized |= sd.seed != 0 || sp.seed != 0 || os.colorSeed != 0 || os.heightSeed != 0 || rs.colorSeed != 0;
             using (new EditorGUI.DisabledGroupScope (!randomized)) {
                 if (GUILayout.Button ("Reset Randomization")) {
                     sd.randomize = false;
                     sp.randomize = false;
                     os.randomizeColor = false;
                     os.randomizeHeight = false;
-                    rs.randomize = false;
+                    rs.randomizeColor = false;
+                    rs.randomizeShape = false;
                     sd.UpdateSeed(sd.randomize);
                     sp.UpdateSeed(sp.randomize);
                     os.UpdateColorSeed(os.randomizeColor);
                     os.UpdateHeightSeed(os.randomizeColor);
-                    rs.UpdateSeed(rs.randomize);
+                    rs.UpdateColorSeed(rs.randomizeColor);
+                    rs.UpdateShapeSeed(rs.randomizeShape);
                     Regenerate (sp, sd, ps, os, rs);
                 }
             }

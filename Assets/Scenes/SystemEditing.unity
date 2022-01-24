@@ -222,7 +222,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects:
   - {fileID: 11400000, guid: deac0839a18e4cad87f7cbc8494cbd3b, type: 2}
-  debugOceanMask: 0
 --- !u!114 &10899156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -547,6 +546,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 910152193250779299, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
+      propertyPath: count
+      value: 2000
+      objectReference: {fileID: 0}
     - target: {fileID: 2241725730448225738, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_Name
       value: StarView
@@ -557,15 +560,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7726828581127354412, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -234.32515
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7726828581127354412, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -115.96636
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7726828581127354412, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 547.4086
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7726828581127354412, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_LocalRotation.w

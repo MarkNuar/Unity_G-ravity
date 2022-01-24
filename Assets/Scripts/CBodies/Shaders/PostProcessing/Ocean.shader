@@ -97,12 +97,12 @@ Shader "Hidden/Ocean"
                     ray_dir = float3(0, 0, 1);
 				}
 
-				const float non_lin_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
-				const float scene_depth = correct_depth(non_lin_depth, view_length);
+				const float raw_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
+				const float scene_depth = correct_depth(raw_depth, view_length);
 
 				// return sceneDepth / 1000;
 				
-				float2 hit_info = raySphere(oceanCentre, oceanRadius, ray_pos, ray_dir);
+				float2 hit_info = ray_sphere(oceanCentre, oceanRadius, ray_pos, ray_dir);
 				const float dst_to_ocean = hit_info.x;
 				const float dst_through_ocean = hit_info.y;
 				const float3 ray_ocean_intersect_pos = ray_pos + ray_dir * dst_to_ocean - oceanCentre;
