@@ -282,9 +282,9 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
-  orthographic: 0
-  orthographic size: 57.89
+  field of view: 25.7
+  orthographic: 1
+  orthographic size: 99.79
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -308,7 +308,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230531906}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -161}
+  m_LocalPosition: {x: 0, y: 0, z: -218.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -328,7 +328,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects:
   - {fileID: 11400000, guid: deac0839a18e4cad87f7cbc8494cbd3b, type: 2}
-  debugOceanMask: 0
 --- !u!1001 &1543013574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -340,6 +339,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SystemUtils
       objectReference: {fileID: 0}
+    - target: {fileID: 8676827195406535785, guid: 38e72167f59125a4496a8bbafc2a6210, type: 3}
+      propertyPath: baseRing
+      value: 
+      objectReference: {fileID: 11400000, guid: 01fb4e632483e2a47bd1c6cb2d063467, type: 2}
     - target: {fileID: 8676827195406535785, guid: 38e72167f59125a4496a8bbafc2a6210, type: 3}
       propertyPath: createCopyOfSettings
       value: 0
@@ -408,7 +411,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cBody: {fileID: 743628649}
-  type: 1
+  type: 0
 --- !u!1 &2111931551
 GameObject:
   m_ObjectHideFlags: 0

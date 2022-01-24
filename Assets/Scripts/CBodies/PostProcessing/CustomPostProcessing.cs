@@ -10,7 +10,7 @@ namespace CBodies.PostProcessing
 		private Shader _defaultShader;
 		private Material _defaultMat;
 		private readonly List<RenderTexture> _temporaryTextures = new List<RenderTexture> ();
-		public bool debugOceanMask;
+		// public bool debugOceanMask;
 
 		public event System.Action<RenderTexture> onPostProcessingComplete;
 		public event System.Action<RenderTexture> onPostProcessingBegin;

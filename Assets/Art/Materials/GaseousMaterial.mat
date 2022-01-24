@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GaseousMaterial
-  m_Shader: {fileID: 4800000, guid: c881b988859a78f4d8bed2a760b2f5ba, type: 3}
+  m_Shader: {fileID: 4800000, guid: eb9513db7df84cf1b5a68482454c4224, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -38,6 +38,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ColorTex:
+        m_Texture: {fileID: 2800000, guid: 5f306c7818167fe4e80fae529e2fdc98, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:

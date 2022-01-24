@@ -1,9 +1,8 @@
 ﻿using System;
-using JetBrains.Annotations;
 using UnityEngine;
 using Utilities;
 
-namespace CBodies.Settings.Ocean
+namespace CBodies.Settings.PostProcessingSettings.Ocean
 {
     [Serializable][CreateAssetMenu]
     public class Ocean : ScriptableObject 
@@ -22,11 +21,11 @@ namespace CBodies.Settings.Ocean
         {
             if (oceanSettings.hasOcean)
             {
-                SetProperties(oceanMaterial, oceanSettings.colorSeed, oceanSettings.randomizeColor);
+                SetProperties(oceanMaterial);
             }
         }
         
-        public void SetProperties (Material material, int seed, bool randomize) {
+        public void SetProperties (Material material) {
             material.SetFloat ("depthMultiplier", oceanSettings.depthMultiplier);
             material.SetFloat ("alphaMultiplier", oceanSettings.alphaMultiplier);
 
@@ -38,8 +37,8 @@ namespace CBodies.Settings.Ocean
             material.SetFloat ("smoothness", oceanSettings.smoothness);
             material.SetVector ("params", oceanSettings.testParams);
             
-            if (randomize) {
-                PRNG random = new PRNG (seed);
+            if (oceanSettings.randomizeColor) {
+                PRNG random = new PRNG (oceanSettings.colorSeed);
                 oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
                 oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
                     random.SignedValue() * 0.2f,

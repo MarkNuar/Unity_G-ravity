@@ -43,5 +43,36 @@ namespace Utilities
             val = (val < 0.5f) ? random.Range (val + 0.2f, 0.9f) : random.Range (0.1f, val - 0.2f);
             return Color.HSVToRGB (hue, sat, val);
         }
+        
+        public static float Map (float x, float x1, float x2, float y1,  float y2)
+        {
+            var m = (y2 - y1) / (x2 - x1);
+            var c = y1 - m * x1; // point of interest: c is also equal to y2 - m * x2, though float math might lead to slightly different results.
+ 
+            return m * x + c;
+        }
+
+        public static Color Vector3ToColor(Vector3 v)
+        {
+            return new Color(v.x, v.y, v.z);
+        }
+        
+        // cosine based palette, 4 vec3 params
+        // Inigo Quilez Palette colors
+        public static Color Palette(float t, Vector3 a, Vector3 b, Vector3 c, Vector3 d )
+        {
+            Vector3 twoPiCtd = 6.28318f * (c * t + d);
+            Vector3 r = new Vector3(
+                Mathf.Cos(twoPiCtd.x),
+                Mathf.Cos(twoPiCtd.y),
+                Mathf.Cos(twoPiCtd.z)
+            );
+            Vector3 p = new Vector3(
+                b.x * r.x,
+                b.y * r.y,
+                b.z * r.z
+            );
+            return Vector3ToColor(a + p);
+        }
     }
 }

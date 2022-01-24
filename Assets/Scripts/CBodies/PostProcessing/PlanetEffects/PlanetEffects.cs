@@ -14,8 +14,10 @@ namespace CBodies.PostProcessing.PlanetEffects
 
 		public Shader oceanShader;
 		//public Shader atmosphereShader;
+		public Shader ringShader;
 		public bool displayOceans = true;
 		//public bool displayAtmospheres = true;
+		public bool displayRings = true;
 
 		List<EffectHolder> _effectHolders;
 		List<float> _sortDistances;
@@ -79,6 +81,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 							}
 						}
 					}
+					
 					// // Atmospheres
 					// if (displayAtmospheres) {
 					// 	if (effectHolder.atmosphereEffect != null) {
@@ -86,6 +89,16 @@ namespace CBodies.PostProcessing.PlanetEffects
 					// 		postProcessingMaterials.Add (effectHolder.atmosphereEffect.GetMaterial ());
 					// 	}
 					// }
+					
+					// Rings 
+					if (displayRings)
+					{
+						if (effectHolder.ringEffect != null)
+						{
+							effectHolder.ringEffect.UpdateSettings(effectHolder.generator, ringShader);
+							_postProcessingMaterials.Add(effectHolder.ringEffect.GetMaterial());
+						}
+					}
 
 					if (underwaterMaterial != null) {
 						_postProcessingMaterials.Add (underwaterMaterial);
@@ -100,15 +113,21 @@ namespace CBodies.PostProcessing.PlanetEffects
 			public CBodyGenerator generator;
 			public OceanEffect oceanEffect;
 			//public AtmosphereEffect atmosphereEffect;
-
+			public RingEffect ringEffect;
+			
 			public EffectHolder (CBodyGenerator generator) {
 				this.generator = generator;
-				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky && generator.cBodySettings.ocean.GetSettings().hasOcean) {
+				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky)// && generator.cBodySettings.ocean.GetSettings().hasOcean) 
+				{
 					oceanEffect = new OceanEffect ();
 				}
 				// if (generator.body.shading.hasAtmosphere && generator.body.shading.atmosphereSettings) {
 				// 	atmosphereEffect = new AtmosphereEffect ();
 				// }
+				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Gaseous)// && generator.cBodySettings.ring.GetSettings().hasRing)
+				{
+					ringEffect = new RingEffect();
+				}
 			}
 
 			public float DstFromSurface (Vector3 viewPos) {

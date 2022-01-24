@@ -27,7 +27,8 @@ namespace Utilities
                 };
                 _ss.AddNewCBody(type);
             }
-        
+            
+            
             _cs = _ss.cBodiesSettings[0];
             _cs.Subscribe(cBody.cBodyGenerator);
 

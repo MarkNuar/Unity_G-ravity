@@ -1,4 +1,6 @@
 using System;
+using CBodies.Settings.PostProcessingSettings.Ocean;
+using CBodies.Settings.PostProcessingSettings.Ring;
 using Newtonsoft.Json;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,7 +18,9 @@ namespace CBodies.Settings
         [JsonIgnore] public Shape.Shape shape;
         [JsonIgnore] public Shading.Shading shading; 
         [JsonIgnore] public Physics.Physics physics;
-        [JsonIgnore] public Ocean.Ocean ocean;
+        [JsonIgnore] public Ocean ocean;
+        // atmosphere
+        [JsonIgnore] public Ring ring;
         
         private static readonly string[] BaseNames = {"Plutu", "Merci", "Nanastria", "Regemonia", "Mah", "Craxis"};
         
@@ -46,20 +50,28 @@ namespace CBodies.Settings
         public void UpdateCBodyType(CBodyType newType)
         {
             cBodyType = newType;
-            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph, Ocean.Ocean oc) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
+            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph, Ocean oc, Ring ri) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);
             shape = sp;
             shading = sd;
             physics = ph;
             ocean = oc;
+
+            ring = ri;
+            
             sp.InitSettings();
             sd.InitSettings();
             ph.InitSettings();
             oc.InitSettings();
-
-            // Enable ocean by default only on rocky planets
-            Ocean.Ocean.OceanSettings os = ocean.GetSettings();
-            os.hasOcean = cBodyType == CBodyType.Rocky;
             
+            ri.InitSettings();
+            
+            // // Enable ocean by default only on rocky planets
+            // Ocean.OceanSettings os = ocean.GetSettings();
+            // os.hasOcean = cBodyType == CBodyType.Rocky;
+            //
+            // // Enable ring by default only on gaseous planets
+            // Ring.RingSettings rs = ring.GetSettings();
+            // rs.hasRing = cBodyType == CBodyType.Gaseous;
         }
 
         [Serializable]

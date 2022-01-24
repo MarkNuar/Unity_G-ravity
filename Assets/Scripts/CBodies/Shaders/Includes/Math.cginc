@@ -71,3 +71,66 @@ float2 raySphere(float3 centre, float radius, float3 rayOrigin, float3 rayDir) {
 	 // Ray did not intersect sphere
     return float2(maxFloat, 0);
 }
+
+// source
+// https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
+// n = plane normal -> inclination of planet
+// p0 = point on plane -> center of planet
+// l0 = ray origin -> view ray origin
+// l = ray direction -> view direction
+// t = distance from l0 to intersection with plane
+// return if ray intersects plane 
+float intersect_plane(float3 n, float3 p0, float3 l0, float3 l, out float t)
+{
+    const float denominator = dot(n, l);
+    if(abs(denominator) > 1e-6)
+    {
+        const float3 p0_l0 = p0 - l0;
+        t = dot(p0_l0, n) / denominator;
+        return (t >= 0);
+    }
+    return false;
+}
+
+// n = plane normal -> inclination of planet
+// p0 = point on plane -> center of planet
+// r = radius of the disk
+// l0 = ray origin -> view ray origin
+// l = ray direction -> view direction
+// t = distance from l0 to intersection with plane
+// return if ray intersects disk 
+float2 intersect_disk(float3 n, float3 p0, float r, float3 l0, float3 l, out float t, out float d)
+{
+    if(intersect_plane(n, p0, l0, l, t))
+    {
+        const float3 p = l0 + l * t;
+        const float3 v = p - p0;
+        d = length(v);
+        const float d2 = dot(v, v);
+        const float r2 = r * r;
+        return (d2 <= r2);
+    }
+    return false;
+}
+
+// n = plane normal -> inclination of planet
+// p0 = point on plane -> center of planet
+// r_inner = radius of inner disk
+// r_outer = radius of outer disk
+// l0 = ray origin -> view ray origin
+// l = ray direction -> view direction
+// return distance at which intersection occurs and distance from center of ring
+float2 intersect_ring(float3 n, float3 p0, float r_inner, float r_outer, float3 l0, float3 l)
+{
+    float t_outer = 0;
+    float t_inner = 0;
+    float d_outer = 0;
+    float d_inner = 0;
+    const bool intersect_outer_disk = intersect_disk(n, p0, r_outer, l0, l, t_outer, d_outer);
+    const bool intersect_inner_disk = intersect_disk(n, p0, r_inner, l0, l, t_inner, d_inner);
+    if(intersect_outer_disk && !intersect_inner_disk)
+    {
+        return float2(t_outer, d_outer);
+    }
+    return float2(maxFloat, maxFloat);
+}

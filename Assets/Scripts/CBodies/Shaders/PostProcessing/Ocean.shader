@@ -39,8 +39,8 @@ Shader "Hidden/Ocean"
 				output.uv = v.uv;
 				// Camera space matches OpenGL convention where cam forward is -z. In unity forward is positive z
 				// (https://docs.unity3d.com/ScriptReference/Camera-cameraToWorldMatrix.html)
-				float3 viewVector = mul(unity_CameraInvProjection, float4(v.uv * 2 -1, 0, -1));
-				output.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
+				float3 view_vector = mul(unity_CameraInvProjection, float4(v.uv * 2 -1, 0, -1));
+				output.viewVector = mul(unity_CameraToWorld, float4(view_vector,0));
 				return output;
 			}
 
@@ -66,83 +66,83 @@ Shader "Hidden/Ocean"
 			float oceanRadius;
 			float3 dirToSun;
 
-			float correctDepth(float rawDepth, float viewLength)
+			float correct_depth(float rawDepth, float viewLength)
 			{
-				float persp = LinearEyeDepth(rawDepth) * viewLength;
-				float t = _ProjectionParams.x>0 ? (rawDepth) : (1-rawDepth);
-				float ortho = lerp(_ProjectionParams.y, _ProjectionParams.z, t);
-	            return lerp(persp,ortho,unity_OrthoParams.w);
-	        }
+			    float persp = LinearEyeDepth(rawDepth) * viewLength;
+			    float t = _ProjectionParams.x>0 ? (rawDepth) : (1-rawDepth);
+			    float ortho = lerp(_ProjectionParams.y, _ProjectionParams.z, t);
+			    return lerp(persp,ortho,unity_OrthoParams.w);
+			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed4 originalCol = tex2D(_MainTex, i.uv);
+				fixed4 original_col = tex2D(_MainTex, i.uv);
 
-				float3 rayPos;
-				float viewLength;
-				float3 rayDir;
+				float3 ray_pos;
+				float view_length;
+				float3 ray_dir;
 				if(unity_OrthoParams.w == 0)
 				{
-					rayPos = _WorldSpaceCameraPos;
-					viewLength = length(i.viewVector);
-					rayDir = i.viewVector / viewLength;
+					ray_pos = _WorldSpaceCameraPos;
+					view_length = length(i.viewVector);
+					ray_dir = i.viewVector / view_length;
 				}
 				else
 				{
 					const float hw = unity_OrthoParams.x;
 					const float hh = unity_OrthoParams.y;
                     float2 uv = i.uv * 2 - 1;
-                    rayPos = float3(_WorldSpaceCameraPos.x + uv.x * hw, _WorldSpaceCameraPos.y + uv.y * hh, _WorldSpaceCameraPos.z);
-                    viewLength = length(i.viewVector);
-                    rayDir = float3(0, 0, 1);
+                    ray_pos = float3(_WorldSpaceCameraPos.x + uv.x * hw, _WorldSpaceCameraPos.y + uv.y * hh, _WorldSpaceCameraPos.z);
+                    view_length = length(i.viewVector);
+                    ray_dir = float3(0, 0, 1);
 				}
 
-				float nonlin_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
-				float sceneDepth = correctDepth(nonlin_depth, viewLength);
+				const float non_lin_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
+				const float scene_depth = correct_depth(non_lin_depth, view_length);
 
 				// return sceneDepth / 1000;
 				
-				float2 hitInfo = raySphere(oceanCentre, oceanRadius, rayPos, rayDir);
-				float dstToOcean = hitInfo.x;
-				float dstThroughOcean = hitInfo.y;
-				float3 rayOceanIntersectPos = rayPos + rayDir * dstToOcean - oceanCentre;
+				float2 hit_info = raySphere(oceanCentre, oceanRadius, ray_pos, ray_dir);
+				const float dst_to_ocean = hit_info.x;
+				const float dst_through_ocean = hit_info.y;
+				const float3 ray_ocean_intersect_pos = ray_pos + ray_dir * dst_to_ocean - oceanCentre;
 
 				// dst that view ray travels through ocean (before hitting terrain / exiting ocean)
-				float oceanViewDepth = min(dstThroughOcean, sceneDepth - dstToOcean);
+				const float ocean_view_depth = min(dst_through_ocean, scene_depth - dst_to_ocean);
 
 
-				if (oceanViewDepth > 0) {
+				if (ocean_view_depth > 0) {
 					// return 1;
-					
-					float3 clipPlanePos = rayPos + i.viewVector * _ProjectionParams.y;
 
-					float dstAboveWater = length(clipPlanePos - oceanCentre) - oceanRadius;
+					const float3 clip_plane_pos = ray_pos + i.viewVector * _ProjectionParams.y;
 
-					float t = 1 - exp(-oceanViewDepth / planetScale * depthMultiplier);
-					float alpha =  1-exp(-oceanViewDepth / planetScale * alphaMultiplier);
-					float4 oceanCol = lerp(colA, colB, t);
+					const float dst_above_water = length(clip_plane_pos - oceanCentre) - oceanRadius;
 
-					float3 oceanSphereNormal = normalize(rayOceanIntersectPos);
+					const float t = 1 - exp(-ocean_view_depth / planetScale * depthMultiplier);
+					const float alpha =  1-exp(-ocean_view_depth / planetScale * alphaMultiplier);
+					float4 ocean_col = lerp(colA, colB, t);
 
-					float2 waveOffsetA = float2(_Time.x * waveSpeed, _Time.x * waveSpeed * 0.8);
-					float2 waveOffsetB = float2(_Time.x * waveSpeed * - 0.8, _Time.x * waveSpeed * -0.3);
-					float3 waveNormal = triplanarNormal(rayOceanIntersectPos, oceanSphereNormal, waveNormalScale / planetScale, waveOffsetA, waveNormalA);
-					waveNormal = triplanarNormal(rayOceanIntersectPos, waveNormal, waveNormalScale / planetScale, waveOffsetB, waveNormalB);
-					waveNormal = normalize(lerp(oceanSphereNormal, waveNormal, waveStrength));
+					const float3 ocean_sphere_normal = normalize(ray_ocean_intersect_pos);
+
+					const float2 wave_offset_a = float2(_Time.x * waveSpeed, _Time.x * waveSpeed * 0.8);
+					const float2 wave_offset_b = float2(_Time.x * waveSpeed * - 0.8, _Time.x * waveSpeed * -0.3);
+					float3 wave_normal = triplanarNormal(ray_ocean_intersect_pos, ocean_sphere_normal, waveNormalScale / planetScale, wave_offset_a, waveNormalA);
+					wave_normal = triplanarNormal(ray_ocean_intersect_pos, wave_normal, waveNormalScale / planetScale, wave_offset_b, waveNormalB);
+					wave_normal = normalize(lerp(ocean_sphere_normal, wave_normal, waveStrength));
 					//return float4(oceanNormal * .5 + .5,1);
-					float diffuseLighting = saturate(dot(oceanSphereNormal, dirToSun));
-					float specularAngle = acos(dot(normalize(dirToSun - rayDir), waveNormal));
-					float specularExponent = specularAngle / (1 - smoothness);
-					float specularHighlight = exp(-specularExponent * specularExponent);
+					const float diffuse_lighting = saturate(dot(ocean_sphere_normal, dirToSun));
+					const float specular_angle = acos(dot(normalize(dirToSun - ray_dir), wave_normal));
+					const float specular_exponent = specular_angle / (1 - smoothness);
+					const float specular_highlight = exp(-specular_exponent * specular_exponent);
 				
-					oceanCol *= diffuseLighting;
-					oceanCol += specularHighlight * (dstAboveWater > 0) * specularCol;
+					ocean_col *= diffuse_lighting;
+					ocean_col += specular_highlight * (dst_above_water > 0) * specularCol;
 					
 					//return float4(oceanSphereNormal,1);
-					float4 finalCol =  originalCol * (1-alpha) + oceanCol * alpha;
-					return float4(finalCol.xyz, params.x);
+					float4 final_col =  original_col * (1-alpha) + ocean_col * alpha;
+					return float4(final_col.xyz, params.x);
 				}
-				return originalCol;
+				return original_col;
 			}
 			ENDCG
 		}
