@@ -21,12 +21,13 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
             float radius = generator.cBodySettings.physics.GetSettings().radius;
             _material.SetVector ("c_body_center", centre);
             _material.SetFloat ("c_body_radius", radius);
-
-            if (_light) {
+            
+            if (_light)
+            {
+                _material.SetInt("receive_shadow", 1);
                 _material.SetVector ("light_direction", -_light.transform.forward);
             } else {
-                _material.SetVector ("light_direction", Vector3.up);
-                Debug.Log ("No SunShadowCaster found");
+                _material.SetInt("receive_shadow", 0);
             }
             
             generator.cBodySettings.ring.SetRingProperties (_material);

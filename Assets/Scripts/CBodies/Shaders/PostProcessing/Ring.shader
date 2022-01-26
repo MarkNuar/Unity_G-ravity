@@ -58,6 +58,7 @@ Shader "Hidden/Ring"
 			float3 ring_color;
 
 			// todo : add shadows to the ring
+			int receive_shadow;
 			float3 light_direction;
 
 
@@ -137,11 +138,13 @@ Shader "Hidden/Ring"
 					const float alpha = smoothstep(-0.2, 1.0, fbm1(0.2 * (hit_info.y + 3.0 * fbm1(sin(_Time.y * 0.005f)))));
 					//const float alpha = smoothstep(-0.2, 1.0, fbm1(0.5 * (hit_info.y + 3.0 * seed)));
 
-					const float3 vertex_pos = ray_pos + hit_info.x * ray_dir;
-					float sphere_hit_info = ray_sphere(c_body_center, c_body_radius, vertex_pos, light_direction);
-					if(sphere_hit_info.x < maxFloat)
-						ring_color *= 0.1;
-					
+					if(receive_shadow)
+					{
+						const float3 vertex_pos = ray_pos + hit_info.x * ray_dir;
+						float sphere_hit_info = ray_sphere(c_body_center, c_body_radius, vertex_pos, light_direction);
+						if(sphere_hit_info.x < maxFloat)
+							ring_color *= 0.1;
+					}
 					
 					
 					return float4(lerp(originalCol, ring_color, alpha), 1);

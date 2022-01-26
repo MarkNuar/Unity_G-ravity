@@ -15,9 +15,9 @@ MonoBehaviour:
   ringSettings:
     randomizeColor: 1
     randomizeShape: 1
-    colorSeed: 8822
-    shapeSeed: 790
-    hasRing: 1
+    colorSeed: 2827
+    shapeSeed: 2024
+    hasRing: 0
     baseInnerRadiusPercent: 1.33
     baseOuterRadiusPercent: 2
     baseRingNormal: {x: -0.22, y: 2.54, z: 0.2}
