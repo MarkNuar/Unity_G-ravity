@@ -2,7 +2,7 @@
 using UnityEngine;
 using Utilities;
 
-namespace CBodies.Settings.PostProcessingSettings.Ocean
+namespace CBodies.Settings.PostProcessing.Ocean
 {
     [Serializable][CreateAssetMenu]
     public class Ocean : ScriptableObject 
@@ -16,16 +16,11 @@ namespace CBodies.Settings.PostProcessingSettings.Ocean
         public Texture2D waveNormalA;
         public Texture2D waveNormalB;
         
+        public bool hasPhysicChanged;
         
-        public void SetOceanProperties(Material oceanMaterial)
-        {
-            if (oceanSettings.hasOcean)
-            {
-                SetProperties(oceanMaterial);
-            }
-        }
-        
-        public void SetProperties (Material material) {
+        public void SetOceanProperties (Material material) {
+            if(!oceanSettings.hasOcean) return;
+            
             material.SetFloat ("depthMultiplier", oceanSettings.depthMultiplier);
             material.SetFloat ("alphaMultiplier", oceanSettings.alphaMultiplier);
 

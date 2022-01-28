@@ -603,6 +603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 0
   cBodyGenerator: {fileID: 0}
+  surfaceMaterial: {fileID: 0}
 --- !u!1 &4932631801748688305
 GameObject:
   m_ObjectHideFlags: 0

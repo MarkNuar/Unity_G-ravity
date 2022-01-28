@@ -59,4 +59,5 @@ MonoBehaviour:
   starShading: {fileID: 11400000, guid: 65dd7af6b9e592a4d8f3874471939859, type: 2}
   basePhysics: {fileID: 11400000, guid: 532ce74a8c832f341a9fff79de77292f, type: 2}
   baseOcean: {fileID: 11400000, guid: 6314a74249f5be94abf438ff4a252395, type: 2}
+  baseAtmosphere: {fileID: 11400000, guid: 9e7e9375ec7d6b0489bf2bc7698d257a, type: 2}
   baseRing: {fileID: 11400000, guid: 01fb4e632483e2a47bd1c6cb2d063467, type: 2}

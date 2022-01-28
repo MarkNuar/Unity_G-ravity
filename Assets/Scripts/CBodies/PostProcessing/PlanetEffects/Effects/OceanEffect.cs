@@ -8,7 +8,11 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
         private Light _light;
         private Material _material;
 
-        public void UpdateSettings (CBodyGenerator generator, Shader shader) {
+        public void UpdateSettings (CBodyGenerator generator, Shader shader) 
+        {
+            // if (!generator.cBodySettings.ocean.hasPhysicChanged) return;
+            // generator.cBodySettings.ocean.hasPhysicChanged = false;
+            
             if (_material == null || _material.shader != shader) {
                 _material = new Material (shader);
             }
@@ -29,7 +33,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
                 _material.SetVector ("dirToSun", Vector3.up);
                 Debug.Log ("No SunShadowCaster found");
             }
-            generator.cBodySettings.ocean.SetOceanProperties (_material);
+            generator.cBodySettings.ocean.SetOceanProperties(_material);
         }
 
         public Material GetMaterial () {

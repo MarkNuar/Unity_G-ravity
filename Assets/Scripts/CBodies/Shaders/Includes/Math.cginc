@@ -99,7 +99,7 @@ float intersect_plane(float3 n, float3 p0, float3 l0, float3 l, out float t)
 // l = ray direction -> view direction
 // t = distance from l0 to intersection with plane
 // return if ray intersects disk 
-float2 intersect_disk(float3 n, float3 p0, float r, float3 l0, float3 l, out float t, out float d)
+bool intersect_disk(float3 n, float3 p0, float r, float3 l0, float3 l, out float t, out float d)
 {
     if(intersect_plane(n, p0, l0, l, t))
     {

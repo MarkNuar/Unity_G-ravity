@@ -2,7 +2,7 @@
 using UnityEngine;
 using Utilities;
 
-namespace CBodies.Settings.PostProcessingSettings.Ring
+namespace CBodies.Settings.PostProcessing.Ring
 {
     [Serializable][CreateAssetMenu]
     public class Ring : ScriptableObject 
@@ -11,6 +11,8 @@ namespace CBodies.Settings.PostProcessingSettings.Ring
         
         // MEMENTO
         [SerializeField] private RingSettings ringSettings;
+        
+        public bool hasPhysicChanged;
         
         public void SetRingProperties(Material ringMaterial)
         {

@@ -143,7 +143,7 @@ Shader "Hidden/Ring"
 						const float3 vertex_pos = ray_pos + hit_info.x * ray_dir;
 						float sphere_hit_info = ray_sphere(c_body_center, c_body_radius, vertex_pos, light_direction);
 						if(sphere_hit_info.x < maxFloat)
-							ring_color *= 0.1;
+							ring_color *= 0.05;
 					}
 					
 					

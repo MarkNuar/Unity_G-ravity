@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DefaultPhysics
   m_EditorClassIdentifier: 
   physicsSettings:
-    radius: 40
+    radius: 106.37
     surfaceGravity: 0.1
     rotationSpeed: 0
-    initialPosition: {x: 126.03, y: 0, z: 0}
+    initialPosition: {x: 0, y: 0, z: 0}
     initialVelocity: {x: 0, y: 0.1, z: 0}

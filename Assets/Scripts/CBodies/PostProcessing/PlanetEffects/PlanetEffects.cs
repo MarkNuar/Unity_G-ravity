@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CBodies.PostProcessing.PlanetEffects.Effects;
 using CBodies.Settings;
 using UnityEngine;
@@ -13,10 +14,10 @@ namespace CBodies.PostProcessing.PlanetEffects
 	public class PlanetEffects : PostProcessingEffect {
 
 		public Shader oceanShader;
-		//public Shader atmosphereShader;
+		public Shader atmosphereShader;
 		public Shader ringShader;
 		public bool displayOceans = true;
-		//public bool displayAtmospheres = true;
+		public bool displayAtmospheres = true;
 		public bool displayRings = true;
 
 		List<EffectHolder> _effectHolders;
@@ -51,7 +52,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 			_postProcessingMaterials.Clear ();
 		}
 
-		public List<Material> GetMaterials () {
+		private List<Material> GetMaterials () {
 
 			if (!active) {
 				return null;
@@ -82,13 +83,13 @@ namespace CBodies.PostProcessing.PlanetEffects
 						}
 					}
 					
-					// // Atmospheres
-					// if (displayAtmospheres) {
-					// 	if (effectHolder.atmosphereEffect != null) {
-					// 		effectHolder.atmosphereEffect.UpdateSettings (effectHolder.generator);
-					// 		postProcessingMaterials.Add (effectHolder.atmosphereEffect.GetMaterial ());
-					// 	}
-					// }
+					// Atmospheres
+					if (displayAtmospheres) {
+						if (effectHolder.atmosphereEffect != null) {
+							effectHolder.atmosphereEffect.UpdateSettings (effectHolder.generator, atmosphereShader);
+							_postProcessingMaterials.Add (effectHolder.atmosphereEffect.GetMaterial ());
+						}
+					}
 					
 					// Rings 
 					if (displayRings)
@@ -112,21 +113,24 @@ namespace CBodies.PostProcessing.PlanetEffects
 		public class EffectHolder {
 			public CBodyGenerator generator;
 			public OceanEffect oceanEffect;
-			//public AtmosphereEffect atmosphereEffect;
+			public AtmosphereEffect atmosphereEffect;
 			public RingEffect ringEffect;
 			
 			public EffectHolder (CBodyGenerator generator) {
 				this.generator = generator;
-				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Rocky)// && generator.cBodySettings.ocean.GetSettings().hasOcean) 
+				switch (generator.cBodySettings.cBodyType)
 				{
-					oceanEffect = new OceanEffect ();
-				}
-				// if (generator.body.shading.hasAtmosphere && generator.body.shading.atmosphereSettings) {
-				// 	atmosphereEffect = new AtmosphereEffect ();
-				// }
-				if (generator.cBodySettings.cBodyType == CBodySettings.CBodyType.Gaseous)// && generator.cBodySettings.ring.GetSettings().hasRing)
-				{
-					ringEffect = new RingEffect();
+					case CBodySettings.CBodyType.Rocky:
+						oceanEffect = new OceanEffect ();
+						atmosphereEffect = new AtmosphereEffect ();
+						break;
+					case CBodySettings.CBodyType.Gaseous:
+						ringEffect = new RingEffect();
+						break;
+					case CBodySettings.CBodyType.Star:
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
 				}
 			}
 

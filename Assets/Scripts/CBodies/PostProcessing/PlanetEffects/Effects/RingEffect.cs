@@ -8,7 +8,11 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
         private Light _light;
         private Material _material;
 
-        public void UpdateSettings (CBodyGenerator generator, Shader shader) {
+        public void UpdateSettings (CBodyGenerator generator, Shader shader) 
+        {
+            // if (!generator.cBodySettings.ring.hasPhysicChanged) return;
+            // generator.cBodySettings.ring.hasPhysicChanged = false;
+            
             if (_material == null || _material.shader != shader) {
                 _material = new Material (shader);
             }

@@ -100,7 +100,7 @@ Shader "Hidden/Ocean"
 				const float raw_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
 				const float scene_depth = correct_depth(raw_depth, view_length);
 
-				// return sceneDepth / 1000;
+				//return scene_depth / 1000;
 				
 				float2 hit_info = ray_sphere(oceanCentre, oceanRadius, ray_pos, ray_dir);
 				const float dst_to_ocean = hit_info.x;
@@ -112,7 +112,7 @@ Shader "Hidden/Ocean"
 
 
 				if (ocean_view_depth > 0) {
-					// return 1;
+					//return 1;
 
 					const float3 clip_plane_pos = ray_pos + i.viewVector * _ProjectionParams.y;
 
@@ -135,7 +135,7 @@ Shader "Hidden/Ocean"
 					const float specular_exponent = specular_angle / (1 - smoothness);
 					const float specular_highlight = exp(-specular_exponent * specular_exponent);
 				
-					ocean_col *= diffuse_lighting;
+					ocean_col *= diffuse_lighting + 0.05;
 					ocean_col += specular_highlight * (dst_above_water > 0) * specularCol;
 					
 					//return float4(oceanSphereNormal,1);

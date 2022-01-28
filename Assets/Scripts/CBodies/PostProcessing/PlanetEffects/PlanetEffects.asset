@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: PlanetEffects
   m_EditorClassIdentifier: 
   oceanShader: {fileID: 4800000, guid: 76b122c65cc9423fb8727c7d4a9b09d9, type: 3}
+  atmosphereShader: {fileID: 4800000, guid: 9c276344978141b4af62a4f0825b97f7, type: 3}
   ringShader: {fileID: 4800000, guid: add28f4659c4466cb2b4331bd04bfdc6, type: 3}
   displayOceans: 1
+  displayAtmospheres: 1
   displayRings: 1

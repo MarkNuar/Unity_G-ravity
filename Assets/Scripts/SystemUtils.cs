@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using CBodies.Settings;
-using CBodies.Settings.PostProcessingSettings.Ocean;
-using CBodies.Settings.PostProcessingSettings.Ring;
+using CBodies.Settings.PostProcessing.Atmosphere;
+using CBodies.Settings.PostProcessing.Ocean;
+using CBodies.Settings.PostProcessing.Ring;
 using CBodies.Settings.Shading;
 using CBodies.Settings.Shape;
 using JsonSubTypes;
@@ -42,6 +43,9 @@ public class SystemUtils : MonoBehaviour
     // OCEAN
     [Header("Ocean")] public Ocean baseOcean;
 
+    // ATMOSPHERE
+    [Header("Atmosphere")] public Atmosphere baseAtmosphere;
+    
     // RING 
     [Header("Ring")] public Ring baseRing;
     
@@ -130,6 +134,7 @@ public class SystemUtils : MonoBehaviour
             toStoreCBodiesSettings.shadingSettingsList.Add(cBodySettings.shading.GetSettings());
             toStoreCBodiesSettings.physicsSettingsList.Add(cBodySettings.physics.GetSettings());
             toStoreCBodiesSettings.oceanSettingsList.Add(cBodySettings.ocean.GetSettings());
+            toStoreCBodiesSettings.atmosphereSettingsList.Add(cBodySettings.atmosphere.GetSettings());
             toStoreCBodiesSettings.ringSettingsList.Add(cBodySettings.ring.GetSettings());
         }
 
@@ -185,7 +190,7 @@ public class SystemUtils : MonoBehaviour
 
                 for (int i = 0; i < loadedCBodiesTypes.types.Length; i ++)
                 {
-                    (Shape shape, Shading shading, Physics physics, Ocean ocean, Ring ring) = Instance.GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
+                    (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) = Instance.GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
                     
                     shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
                     loadedSystemSettings.cBodiesSettings[i].shape = shape;
@@ -195,6 +200,8 @@ public class SystemUtils : MonoBehaviour
                     loadedSystemSettings.cBodiesSettings[i].physics = physics;
                     ocean.SetSettings(loadedCBodiesSettings.oceanSettingsList[i]);
                     loadedSystemSettings.cBodiesSettings[i].ocean = ocean;
+                    atmosphere.SetSettings(loadedCBodiesSettings.atmosphereSettingsList[i]);
+                    loadedSystemSettings.cBodiesSettings[i].atmosphere = atmosphere;
                     ring.SetSettings(loadedCBodiesSettings.ringSettingsList[i]);
                     loadedSystemSettings.cBodiesSettings[i].ring = ring;
                 }
@@ -226,20 +233,21 @@ public class SystemUtils : MonoBehaviour
         // delete the files containing system types and system settings 
     }
 
-    public (Shape shape, Shading shading, Physics physics, Ocean ocean, Ring ring) GetShapeShadingPhysics(CBodySettings.CBodyType type)
+    public (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) GetShapeShadingPhysics(CBodySettings.CBodyType type)
     {
         // todo return atmosphere too
         Shape shape = null;
         Shading shading = null;
         Physics physics = null;
         Ocean ocean = null;
-
+        Atmosphere atmosphere = null;
         Ring ring = null;
         
         if (createCopyOfSettings)
         {
             physics = Instantiate(basePhysics);
             ocean = Instantiate(baseOcean);
+            atmosphere = Instantiate(baseAtmosphere);
             ring = Instantiate(baseRing);
             
             switch (type)
@@ -264,7 +272,9 @@ public class SystemUtils : MonoBehaviour
         {
             physics = (basePhysics);
             ocean = (baseOcean);
+            atmosphere = (baseAtmosphere);
             ring = (baseRing);
+            
             switch (type)
             {
                 case CBodySettings.CBodyType.Rocky:
@@ -285,7 +295,7 @@ public class SystemUtils : MonoBehaviour
         }
         
 
-        return (shape, shading, physics, ocean, ring);
+        return (shape, shading, physics, ocean, atmosphere, ring);
     }
 
     public List<string> GetSystemNames()
@@ -312,6 +322,7 @@ public class SystemUtils : MonoBehaviour
         public List<Shading.ShadingSettings> shadingSettingsList = new List<Shading.ShadingSettings>();
         public List<Physics.PhysicsSettings> physicsSettingsList = new List<Physics.PhysicsSettings>();
         public List<Ocean.OceanSettings> oceanSettingsList = new List<Ocean.OceanSettings>();
+        public List<Atmosphere.AtmosphereSettings> atmosphereSettingsList = new List<Atmosphere.AtmosphereSettings>();
         public List<Ring.RingSettings> ringSettingsList = new List<Ring.RingSettings>();
     }
 
