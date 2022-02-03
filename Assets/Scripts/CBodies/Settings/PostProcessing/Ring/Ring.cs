@@ -20,7 +20,7 @@ namespace CBodies.Settings.PostProcessing.Ring
             if (ringSettings.hasRing)
             {
                 // do not check if randomize color, the base color is decided by the palette, given a color seed equal to 0
-                PRNG randomColor = new PRNG(ringSettings.colorSeed);
+                PRNG randomColor = new PRNG(ringSettings.shadingSeed);
                 PRNG randomShape = new PRNG(ringSettings.shapeSeed);
                 Vector3 a = new Vector3(0.5f, .25f+(Mathf.Sin(randomColor.Range(0.0f,20.0f)*.1f))-.25f+.25f, 0.5f);
                 Vector3 b = new Vector3(0.1f, 0.1f, 0.1f);
@@ -63,9 +63,9 @@ namespace CBodies.Settings.PostProcessing.Ring
         {
             // todo ring color
             
-            public bool randomizeColor;
+            public bool randomizeShading;
             public bool randomizeShape;
-            public int colorSeed;
+            public int shadingSeed;
             public int shapeSeed;
 
             public bool hasRing;
@@ -78,13 +78,15 @@ namespace CBodies.Settings.PostProcessing.Ring
             // serialize plane normal inclination, quaternion, vector 3, angles?
             public Vector3 baseRingNormal = new Vector3(0.0f, 1.0f, 0.2f);
             
-            public void UpdateColorSeed(bool rand)
+            public void RandomizeShading(bool rand)
             {
-                colorSeed = rand ? _prng.Next(-10000, 10000) : 0;
+                randomizeShading = rand;
+                shadingSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
             
-            public void UpdateShapeSeed(bool rand)
+            public void RandomizeShape(bool rand)
             {
+                randomizeShape = rand;
                 shapeSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }

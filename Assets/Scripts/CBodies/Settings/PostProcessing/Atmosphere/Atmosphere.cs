@@ -34,9 +34,9 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             material.SetFloat ("densityFalloff", atmosphereSettings.densityFalloff);
 
             // Strength of (rayleigh) scattering is inversely proportional to wavelength^4
-            PRNG random = new PRNG (atmosphereSettings.colorSeed);
+            PRNG random = new PRNG (atmosphereSettings.shadingSeed);
             Vector3 wv = atmosphereSettings.wavelengths;
-            if (atmosphereSettings.randomizeColor)
+            if (atmosphereSettings.randomizeShading)
             {
                 wv += new Vector3(random.Range(-500, 500), random.Range(-100, 100), random.Range(-50, 50));
             }
@@ -75,8 +75,8 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         [Serializable]
         public class AtmosphereSettings
         {
-            public bool randomizeColor;
-            public int colorSeed = 0;
+            public bool randomizeShading;
+            public int shadingSeed = 0;
 
             public bool hasAtmosphere;
             
@@ -97,9 +97,10 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             [Range (0, 10)]
             public float atmosphereScale = 0.322f;
             
-            public void UpdateColorSeed(bool rand)
+            public void RandomizeShading(bool rand)
             {
-                colorSeed = rand ? _prng.Next(-10000, 10000) : 0;
+                randomizeShading = rand;
+                shadingSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }
         

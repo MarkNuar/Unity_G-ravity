@@ -73,8 +73,9 @@ namespace CBodies.Settings.Shape
             public bool perturbVertices = false;
             [Range (0, 1)] public float perturbStrength = 0.36f;
 
-            public void UpdateSeed(bool rand)
+            public void RandomizeShape(bool rand)
             {
+                randomize = rand;
                 seed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }

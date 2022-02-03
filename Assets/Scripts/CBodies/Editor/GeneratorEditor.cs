@@ -30,12 +30,12 @@ namespace CBodies.Editor
 
         public override void OnInspectorGUI()
         {
-            Shading.ShadingSettings sd = _cBodyGenerator.cBodySettings.shading.GetSettings();
-            Shape.ShapeSettings sp = _cBodyGenerator.cBodySettings.shape.GetSettings();
-            Physics.PhysicsSettings ps = _cBodyGenerator.cBodySettings.physics.GetSettings();
-            Ocean.OceanSettings os = _cBodyGenerator.cBodySettings.ocean.GetSettings();
-            Atmosphere.AtmosphereSettings aa = _cBodyGenerator.cBodySettings.atmosphere.GetSettings();
-            Ring.RingSettings rs = _cBodyGenerator.cBodySettings.ring.GetSettings();
+            Shading.ShadingSettings shadingS = _cBodyGenerator.cBodySettings.shading.GetSettings();
+            Shape.ShapeSettings shapeS = _cBodyGenerator.cBodySettings.shape.GetSettings();
+            Physics.PhysicsSettings physicsS = _cBodyGenerator.cBodySettings.physics.GetSettings();
+            Ocean.OceanSettings oceanS = _cBodyGenerator.cBodySettings.ocean.GetSettings();
+            Atmosphere.AtmosphereSettings atmosphereS = _cBodyGenerator.cBodySettings.atmosphere.GetSettings();
+            Ring.RingSettings ringS = _cBodyGenerator.cBodySettings.ring.GetSettings();
 
             CBodySettings.CBodyType newValue =
                 (CBodySettings.CBodyType) EditorGUILayout.EnumPopup(_cBodyGenerator.cBodySettings.cBodyType);
@@ -43,84 +43,63 @@ namespace CBodies.Editor
             if (newValue != _cBodyGenerator.cBodySettings.cBodyType)
             {
                 _cBodyGenerator.cBodySettings.UpdateCBodyType(newValue);
-                sd = _cBodyGenerator.cBodySettings.shading.GetSettings();
-                sp = _cBodyGenerator.cBodySettings.shape.GetSettings();
-                ps = _cBodyGenerator.cBodySettings.physics.GetSettings();
-                os = _cBodyGenerator.cBodySettings.ocean.GetSettings();
-                aa = _cBodyGenerator.cBodySettings.atmosphere.GetSettings();
-                rs = _cBodyGenerator.cBodySettings.ring.GetSettings();
+                shadingS = _cBodyGenerator.cBodySettings.shading.GetSettings();
+                shapeS = _cBodyGenerator.cBodySettings.shape.GetSettings();
+                physicsS = _cBodyGenerator.cBodySettings.physics.GetSettings();
+                oceanS = _cBodyGenerator.cBodySettings.ocean.GetSettings();
+                atmosphereS = _cBodyGenerator.cBodySettings.atmosphere.GetSettings();
+                ringS = _cBodyGenerator.cBodySettings.ring.GetSettings();
                 // link the new settings to the generator
                 _cBodyGenerator.cBodySettings.Subscribe(_cBodyGenerator);
-                Regenerate(sp,sd,ps, os, aa, rs);
+                Regenerate(shapeS,shadingS,physicsS, oceanS, atmosphereS, ringS);
             }
 
             using (var check = new EditorGUI.ChangeCheckScope ()) {
                 DrawDefaultInspector ();
                 DrawSettings();
                 if (check.changed) {
-                    Regenerate (sp, sd, ps, os, aa, rs);
+                    Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
                 }
             }
 
             if (GUILayout.Button ("Randomize Shading")) {
-                sd.randomize = true;
-                os.randomizeColor = true;
-                aa.randomizeColor = true;
-                rs.randomizeColor = true;
-                sd.UpdateSeed(sd.randomize);
-                os.UpdateColorSeed(os.randomizeColor);
-                aa.UpdateColorSeed(aa.randomizeColor);
-                rs.UpdateColorSeed(rs.randomizeColor);
-                Regenerate (sp, sd, ps, os, aa, rs);
+                shadingS.RandomizeShading(true);
+                oceanS.RandomizeShading(true);
+                atmosphereS.RandomizeShading(true);
+                ringS.RandomizeShading(true);
+                Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
             }
 
             if (GUILayout.Button ("Randomize Shape")) {
-                sp.randomize = true;
-                os.randomizeHeight = true;
-                rs.randomizeShape = true;
-                sp.UpdateSeed(sp.randomize);
-                os.UpdateHeightSeed(os.randomizeColor);
-                rs.UpdateShapeSeed(rs.randomizeShape);
-                Regenerate (sp, sd, ps, os, aa, rs);
+                shapeS.RandomizeShape(true);
+                oceanS.RandomizeShape(true);
+                ringS.RandomizeShape(true);
+                Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
             }
 
             if (GUILayout.Button ("Randomize All")) {
-                sd.randomize = true;
-                sp.randomize = true;
-                os.randomizeColor = true;
-                os.randomizeHeight = true;
-                aa.randomizeColor = true;
-                rs.randomizeColor = true;
-                rs.randomizeShape = true;
-                sd.UpdateSeed(sd.randomize);
-                sp.UpdateSeed(sp.randomize);
-                os.UpdateColorSeed(os.randomizeColor);
-                os.UpdateHeightSeed(os.randomizeColor);
-                aa.UpdateColorSeed(aa.randomizeColor);
-                rs.UpdateColorSeed(rs.randomizeColor);
-                rs.UpdateShapeSeed(rs.randomizeShape);
-                Regenerate (sp, sd, ps, os, aa, rs);
+                shadingS.RandomizeShading(true);
+                shapeS.RandomizeShape(true);
+                oceanS.RandomizeShading(true);
+                oceanS.RandomizeShape(true);
+                atmosphereS.RandomizeShading(true);
+                ringS.RandomizeShading(true);
+                ringS.RandomizeShape(true);
+                Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
             }
 
-            var randomized = sd.randomize || sp.randomize || os.randomizeColor || os.randomizeHeight || rs.randomizeColor;
-            randomized |= sd.seed != 0 || sp.seed != 0 || os.colorSeed != 0 || os.heightSeed != 0 || rs.colorSeed != 0;
+            var randomized = shadingS.randomize || shapeS.randomize || oceanS.randomizeShading || oceanS.randomizeHeight || ringS.randomizeShading;
+            randomized |= shadingS.seed != 0 || shapeS.seed != 0 || oceanS.shadingSeed != 0 || oceanS.heightSeed != 0 || ringS.shadingSeed != 0;
             using (new EditorGUI.DisabledGroupScope (!randomized)) {
                 if (GUILayout.Button ("Reset Randomization")) {
-                    sd.randomize = false;
-                    sp.randomize = false;
-                    os.randomizeColor = false;
-                    os.randomizeHeight = false;
-                    aa.randomizeColor = false;
-                    rs.randomizeColor = false;
-                    rs.randomizeShape = false;
-                    sd.UpdateSeed(sd.randomize);
-                    sp.UpdateSeed(sp.randomize);
-                    os.UpdateColorSeed(os.randomizeColor);
-                    os.UpdateHeightSeed(os.randomizeColor);
-                    aa.UpdateColorSeed(aa.randomizeColor);
-                    rs.UpdateColorSeed(rs.randomizeColor);
-                    rs.UpdateShapeSeed(rs.randomizeShape);
-                    Regenerate (sp, sd, ps, os, aa, rs);
+                    shadingS.RandomizeShading(false);
+                    shapeS.RandomizeShape(false);
+                    oceanS.RandomizeShading(false);
+                    oceanS.RandomizeShape(false);
+                    atmosphereS.RandomizeShading(false);
+                    ringS.RandomizeShading(false);
+                    ringS.RandomizeShape(false);
+                    Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
                 }
             }
 

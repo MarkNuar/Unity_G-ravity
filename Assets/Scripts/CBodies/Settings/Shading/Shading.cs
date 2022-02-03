@@ -87,8 +87,9 @@ namespace CBodies.Settings.Shading
             public bool randomize;
             public int seed = 0;
             
-            public void UpdateSeed(bool rand)
+            public void RandomizeShading(bool rand)
             {
+                randomize = rand;
                 seed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }

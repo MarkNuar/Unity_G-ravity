@@ -57,6 +57,14 @@ namespace CBodies
 
 		private static Dictionary<int, SphereMesh> _sphereGenerators;
 
+		public enum UpdateType
+		{
+			Shape,
+			Shading,
+			Physics,
+			All
+		}
+
 		private void Start()
 		{
 			_cam = GameManager.Instance.GetMainCamera();

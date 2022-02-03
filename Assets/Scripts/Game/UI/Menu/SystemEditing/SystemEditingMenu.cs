@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using CBodies;
 using CBodies.Settings;
+using CBodies.Settings.PostProcessing.Atmosphere;
+using CBodies.Settings.PostProcessing.Ocean;
+using CBodies.Settings.PostProcessing.Ring;
 using CBodies.Settings.Shading;
 using CBodies.Settings.Shape;
 using Game.UI.Menu.SystemEditing.Preview;
@@ -37,12 +41,24 @@ namespace Game.UI.Menu.SystemEditing
         // SHAPE & SHADING
         [SerializeField] private TMP_Text systemName = null;
         [SerializeField] private TMP_InputField inputCBodyName = null;
-        [SerializeField] private ColorPicker colorPicker = null;
-        [SerializeField] private Button cBodyColorButton = null;
+        //[SerializeField] private ColorPicker colorPicker = null;
+        // [SerializeField] private Button bRandomizeColor = null;
+        // [SerializeField] private Button bRandomizeShape = null;
+        // [SerializeField] private Button bRandomizeAll = null;
+        [SerializeField] private Button bResetRandomization = null;
 
         [SerializeField] private RectTransform colorHandle = null;
         
         [SerializeField] private CameraController cameraController;
+
+
+        private Shading.ShadingSettings _shadingS = null;
+        private Shape.ShapeSettings _shapeS = null;
+        private Physics.PhysicsSettings _physicsS = null;
+        private Ocean.OceanSettings _oceanS = null;
+        private Atmosphere.AtmosphereSettings _atmosphereS = null;
+        private Ring.RingSettings _ringS = null;
+        
         
         private void Start()
         {
@@ -97,6 +113,8 @@ namespace Game.UI.Menu.SystemEditing
 
             // sometimes the color handle is spawned in the wrong position
             colorHandle.anchoredPosition = new Vector2(0, 0);
+
+            bResetRandomization.interactable = false;
         }
 
         private void SetSystemName(string sysName)
@@ -159,21 +177,6 @@ namespace Game.UI.Menu.SystemEditing
             _cBodyPreviews.Add(preview);
         }
 
-        private void UpdateInitialVelocity(Vector3 d, float p)
-        {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.initialVelocity =
-                d * ((ps.maxSpeed - ps.minSpeed) * p + ps.minSpeed);
-            SetCurrentPhysicsSettings(ps);
-        }
-
-        private void UpdateInitialPosition(Vector3 p)
-        {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.initialPosition = p;
-            SetCurrentPhysicsSettings(ps);
-        }
-
         // This method sets the current cBody index
         private void OpenContextualMenu(int currentCBodyIndex)
         {
@@ -181,6 +184,9 @@ namespace Game.UI.Menu.SystemEditing
             if (cameraController.isDragging) return;
             
             _currentCBodyIndex = currentCBodyIndex;
+            
+            FetchCurrentSettings();
+            
             SelectCurrentCBody();
 
             SetDragHandlePosition();
@@ -192,38 +198,90 @@ namespace Game.UI.Menu.SystemEditing
             ShowPanel(1);
         }
 
+        private void FetchCurrentSettings()
+        {
+            _shapeS = GetCurrentCBodySettings().shape.GetSettings();
+            _shadingS = GetCurrentCBodySettings().shading.GetSettings();
+            _physicsS = GetCurrentCBodySettings().physics.GetSettings();
+            _oceanS = GetCurrentCBodySettings().ocean.GetSettings();
+            _atmosphereS = GetCurrentCBodySettings().atmosphere.GetSettings();
+            _ringS = GetCurrentCBodySettings().ring.GetSettings();
+        }
+
+        private void SetCurrentSettings(CBodyGenerator.UpdateType updateType)
+        {
+            CBodySettings cb = GetCurrentCBodySettings();
+            switch(updateType)
+            {
+                case CBodyGenerator.UpdateType.Shape:
+                    cb.ring.SetSettings(_ringS);
+                    cb.shape.SetSettings(_shapeS);
+                    break;
+                case CBodyGenerator.UpdateType.Shading:
+                    cb.ocean.SetSettings(_oceanS);
+                    cb.ring.SetSettings(_ringS);
+                    cb.atmosphere.SetSettings(_atmosphereS);
+                    cb.shading.SetSettings(_shadingS);
+                    break;
+                case CBodyGenerator.UpdateType.Physics:
+                    cb.physics.SetSettings(_physicsS);
+                    break;
+                case CBodyGenerator.UpdateType.All:
+                    cb.ocean.SetSettings(_oceanS);
+                    cb.ring.SetSettings(_ringS);
+                    cb.atmosphere.SetSettings(_atmosphereS);
+                    cb.shape.SetSettings(_shapeS);
+                    cb.shading.SetSettings(_shadingS);
+                    // cb.physics.SetSettings(_physicsS);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(updateType), updateType, null);
+            }
+        }
+
+        private void UpdateInitialVelocity(Vector3 d, float p)
+        {
+            _physicsS.initialVelocity =
+                d * ((_physicsS.maxSpeed - _physicsS.minSpeed) * p + _physicsS.minSpeed);
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
+        }
+
+        private void UpdateInitialPosition(Vector3 p)
+        {
+            _physicsS.initialPosition = p;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
+        }
+        
         public void SetCBodyRadius()
         {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.radius = radiusSlider.value * (ps.maxRadius - ps.minRadius) + ps.minRadius;
-            SetCurrentPhysicsSettings(ps);
+            _physicsS.radius = radiusSlider.value * (_physicsS.maxRadius - _physicsS.minRadius) 
+                               + _physicsS.minRadius;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
         public void SetCBodyGravity()
         {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.surfaceGravity = gravitySlider.value * (ps.maxSurfaceGravity - ps.minSurfaceGravity) + ps.minSurfaceGravity;
-            SetCurrentPhysicsSettings(ps);
+            _physicsS.surfaceGravity = gravitySlider.value * (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity) + 
+                                       _physicsS.minSurfaceGravity;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
         public void SetCBodyRotation()
         {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.rotationSpeed = rotationSlider.value * (ps.maxRotationSpeed - ps.minRotationSpeed) + ps.minRotationSpeed;
-            SetCurrentPhysicsSettings(ps);
+            _physicsS.rotationSpeed = rotationSlider.value * (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed) 
+                                      + _physicsS.minRotationSpeed;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
         
         public void OpenEditMenu(bool fromCreation)
         {
             Vector3 pos = _cBodyPreviews[_currentCBodyIndex].cBody.transform.position;
-            var cBodyRadius = GetCurrentPhysicsSettings().radius;
-            
-            cameraController.LockCamAt(pos, cBodyRadius, fromCreation);
+
+            cameraController.LockCamAt(pos, _physicsS.radius, fromCreation);
             
             DisableCBodyButtons();
             
             inputCBodyName.text = GetCurrentCBodySettings().cBodyName;
-            //todo SetButtonColor(cBodyColorButton, GetCurrentShadingSettings().color);
 
             HideCurrentCBodySelectionHUD();
 
@@ -252,29 +310,71 @@ namespace Game.UI.Menu.SystemEditing
             GetCurrentCBodySettings().cBodyName = cbName;
         }
 
-        public void BeginPickColor()
+        public void RandomizeColor()
         {
-            // todo coloring
-            // OverlayPanel(3,true);
-            // colorPicker.CurrentColor = GetCurrentShadingSettings().color;
-            // colorPicker.onValueChanged.AddListener(SetCBodyColor);
+            bResetRandomization.interactable = true;
+            _oceanS.RandomizeShading(true);
+            _atmosphereS.RandomizeShading(true);
+            _ringS.RandomizeShading(true);
+            _shadingS.RandomizeShading(true);
+            SetCurrentSettings(CBodyGenerator.UpdateType.Shading);
         }
 
-        private void SetCBodyColor(Color color)
+        public void RandomizeShape()
         {
-            // todo coloring
-            // Shading.ShadingSettings ss = GetCurrentShadingSettings();
-            // ss.color = color;
-            // SetCurrentShadingSettings(ss);
-            //
-            // SetButtonColor(cBodyColorButton, color);
+            bResetRandomization.interactable = true;
+            _ringS.RandomizeShape(true);
+            _shapeS.RandomizeShape(true);
+            SetCurrentSettings(CBodyGenerator.UpdateType.Shape);
         }
 
-        public void EndPickColor()
+        public void RandomizeColorAndShape()
         {
-            colorPicker.onValueChanged.RemoveListener(SetCBodyColor);
-            OverlayPanel(3, false);
+            bResetRandomization.interactable = true;
+            _oceanS.RandomizeShading(true);
+            _oceanS.RandomizeShape(true);
+            _atmosphereS.RandomizeShading(true);
+            _ringS.RandomizeShading(true);
+            _ringS.RandomizeShape(true);
+            _shadingS.RandomizeShading(true);
+            _shapeS.RandomizeShape(true);
+            SetCurrentSettings(CBodyGenerator.UpdateType.All);
         }
+
+        public void ResetRandomization()
+        {
+            bResetRandomization.interactable = false;
+            _oceanS.RandomizeShading(false);
+            _oceanS.RandomizeShape(false);
+            _atmosphereS.RandomizeShading(false);
+            _ringS.RandomizeShading(false);
+            _ringS.RandomizeShape(false);
+            _shadingS.RandomizeShading(false);
+            _shapeS.RandomizeShape(false);
+            SetCurrentSettings(CBodyGenerator.UpdateType.All);
+        }
+        
+        // public void BeginPickColor()
+        // {
+        //     // OverlayPanel(3,true);
+        //     // colorPicker.CurrentColor = GetCurrentShadingSettings().color;
+        //     // colorPicker.onValueChanged.AddListener(SetCBodyColor);
+        // }
+        //
+        // private void SetCBodyColor(Color color)
+        // {
+        //     // Shading.ShadingSettings ss = GetCurrentShadingSettings();
+        //     // ss.color = color;
+        //     // SetCurrentShadingSettings(ss);
+        //     //
+        //     // SetButtonColor(cBodyColorButton, color);
+        // }
+        //
+        // public void EndPickColor()
+        // {
+        //     colorPicker.onValueChanged.RemoveListener(SetCBodyColor);
+        //     OverlayPanel(3, false);
+        // }
 
         private void DestroyCurrentCBody()
         {
@@ -296,13 +396,13 @@ namespace Game.UI.Menu.SystemEditing
         {
             panels[position].SetActive(overlay);
         }
-
-        private static void SetButtonColor(Button button, Color color)
-        {
-            ColorBlock buttonColors = button.colors;
-            buttonColors.normalColor = color;
-            button.colors = buttonColors;
-        }
+        
+        // private static void SetButtonColor(Button button, Color color)
+        // {
+        //     ColorBlock buttonColors = button.colors;
+        //     buttonColors.normalColor = color;
+        //     button.colors = buttonColors;
+        // }
 
         private void SelectCurrentCBody()
         {
@@ -350,12 +450,11 @@ namespace Game.UI.Menu.SystemEditing
 
         private void SetArrowHeadPosition()
         {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
             var percent = 
-                (ps.initialVelocity.magnitude - ps.minSpeed) /
-                          (ps.maxSpeed - ps.minSpeed);
+                (_physicsS.initialVelocity.magnitude - _physicsS.minSpeed) /
+                          (_physicsS.maxSpeed - _physicsS.minSpeed);
             _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
-                ps.initialVelocity.normalized,percent);
+                _physicsS.initialVelocity.normalized,percent);
         }
 
         private void SetDragHandlePosition()
@@ -365,13 +464,12 @@ namespace Game.UI.Menu.SystemEditing
 
         private void UpdateContextualSliders()
         {
-            Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            var radius = (ps.radius - ps.minRadius) /
-                    (ps.maxRadius - ps.minRadius);
-            var gravity = (ps.surfaceGravity - ps.minSurfaceGravity) /
-                    (ps.maxSurfaceGravity - ps.minSurfaceGravity);
-            var rotationSpeed = (ps.rotationSpeed - ps.minRotationSpeed) /
-                                (ps.maxRotationSpeed - ps.minRotationSpeed);
+            var radius = (_physicsS.radius - _physicsS.minRadius) /
+                         (_physicsS.maxRadius - _physicsS.minRadius);
+            var gravity = (_physicsS.surfaceGravity - _physicsS.minSurfaceGravity) /
+                    (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity);
+            var rotationSpeed = (_physicsS.rotationSpeed - _physicsS.minRotationSpeed) /
+                                (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed);
             
             radiusSlider.value = radius;
             radiusSlider.onValueChanged.Invoke(radius);
@@ -379,39 +477,8 @@ namespace Game.UI.Menu.SystemEditing
             gravitySlider.onValueChanged.Invoke(gravity);
             rotationSlider.value = rotationSpeed;
             rotationSlider.onValueChanged.Invoke(rotationSpeed);
-
-        }
-
-        private Shape.ShapeSettings GetCurrentShapeSettings()
-        {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.GetSettings();
-        }
-
-        private void SetCurrentShapeSettings(Shape.ShapeSettings ss)
-        {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].shape.SetSettings(ss);
         }
         
-        private Shading.ShadingSettings GetCurrentShadingSettings()
-        {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.GetSettings();
-        }
-
-        private void SetCurrentShadingSettings(Shading.ShadingSettings ss)
-        {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].shading.SetSettings(ss);
-        }
-        
-        private Physics.PhysicsSettings GetCurrentPhysicsSettings()
-        {
-            return _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.GetSettings();
-        }
-
-        private void SetCurrentPhysicsSettings(Physics.PhysicsSettings ps)
-        {
-            _systemSettings.cBodiesSettings[_currentCBodyIndex].physics.SetSettings(ps);
-        }
-
         private CBodySettings GetCurrentCBodySettings()
         {
             return _systemSettings.cBodiesSettings[_currentCBodyIndex];

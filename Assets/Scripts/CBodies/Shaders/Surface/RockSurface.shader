@@ -158,16 +158,7 @@ Shader "CBodies/Rock"
 		// Height data:
 		float2 heightMinMax;
 		float oceanLevel;
-
-
-
-		fixed4 LightingNoLighting(SurfaceOutput s, fixed3 lightDir, fixed atten)
-		{
-			fixed4 c;
-			c.rgb = s.Albedo * 0.8; 
-			c.a = s.Alpha;
-			return c;
-		}
+		
 
 		void surf (Input IN, inout SurfaceOutputStandard o)
 		{
@@ -232,7 +223,7 @@ Shader "CBodies/Rock"
 			compositeCol = lerp(compositeCol, snowCol, snowWeight);
 			compositeCol = lerp(compositeCol, _FresnelCol, IN.fresnel);
 			o.Albedo = compositeCol;
-
+			
 			// Glossiness
 			float glossiness = dot(o.Albedo, 1) / 3 * _Glossiness;
 			glossiness = max(glossiness, snowWeight * _SnowSpecular);

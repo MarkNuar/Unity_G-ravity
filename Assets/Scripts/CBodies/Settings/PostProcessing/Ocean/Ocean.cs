@@ -32,8 +32,8 @@ namespace CBodies.Settings.PostProcessing.Ocean
             material.SetFloat ("smoothness", oceanSettings.smoothness);
             material.SetVector ("params", oceanSettings.testParams);
             
-            if (oceanSettings.randomizeColor) {
-                PRNG random = new PRNG (oceanSettings.colorSeed);
+            if (oceanSettings.randomizeShading) {
+                PRNG random = new PRNG (oceanSettings.shadingSeed);
                 oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
                 oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
                     random.SignedValue() * 0.2f,
@@ -54,9 +54,9 @@ namespace CBodies.Settings.PostProcessing.Ocean
         [Serializable]
         public class OceanSettings
         {
-            public bool randomizeColor;
+            public bool randomizeShading;
             public bool randomizeHeight;
-            public int colorSeed = 0;
+            public int shadingSeed = 0;
             public int heightSeed = 0;
         
             public bool hasOcean;
@@ -88,6 +88,7 @@ namespace CBodies.Settings.PostProcessing.Ocean
                 if (hasOcean)
                     return _oceanLevel;
                 return 0;
+                // return _oceanLevel;
             }
 
             public void UpdateOceanLevel()
@@ -104,13 +105,15 @@ namespace CBodies.Settings.PostProcessing.Ocean
                 }
             }
 
-            public void UpdateColorSeed(bool rand)
+            public void RandomizeShading(bool rand)
             {
-                colorSeed = rand ? _prng.Next(-10000, 10000) : 0;
+                randomizeShading = rand;
+                shadingSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
             
-            public void UpdateHeightSeed(bool rand)
+            public void RandomizeShape(bool rand)
             {
+                randomizeHeight = rand;
                 heightSeed = rand ? _prng.Next(-10000, 10000) : 0;
             }
         }
