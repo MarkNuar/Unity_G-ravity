@@ -13,14 +13,17 @@ MonoBehaviour:
   m_Name: defaultAtmosphere
   m_EditorClassIdentifier: 
   atmosphereSettings:
+    randomizeColor: 1
+    colorSeed: -1873
+    hasAtmosphere: 1
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 10
-    densityFalloff: 22.8
+    densityFalloff: 25
     wavelengths: {x: 700, y: 530, z: 460}
-    scatteringStrength: 15.04
+    scatteringStrength: 10
     intensity: 1
-    ditherStrength: 1
+    ditherStrength: 0
     ditherScale: 3.89
     atmosphereScale: 1
   opticalDepthCompute: {fileID: 7200000, guid: 9161c1a99fde39d4998b212573a8bf4c, type: 3}

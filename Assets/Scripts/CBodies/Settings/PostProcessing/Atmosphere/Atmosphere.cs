@@ -23,6 +23,8 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         public void SetAtmosphereProperties(Material material, float cBodyRadius)
         {
             // if (_settingsUpToDate) return;
+            material.SetInt("has_atmosphere", atmosphereSettings.hasAtmosphere ? 1 : 0);
+            
             var atmosphereRadius = (1 + atmosphereSettings.atmosphereScale) * cBodyRadius;
             
             material.SetInt ("numInScatteringPoints", atmosphereSettings.inScatteringPoints);
@@ -32,9 +34,15 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             material.SetFloat ("densityFalloff", atmosphereSettings.densityFalloff);
 
             // Strength of (rayleigh) scattering is inversely proportional to wavelength^4
-            float scatterX = Mathf.Pow (400 / atmosphereSettings.wavelengths.x, 4);
-            float scatterY = Mathf.Pow (400 / atmosphereSettings.wavelengths.y, 4);
-            float scatterZ = Mathf.Pow (400 / atmosphereSettings.wavelengths.z, 4);
+            PRNG random = new PRNG (atmosphereSettings.colorSeed);
+            Vector3 wv = atmosphereSettings.wavelengths;
+            if (atmosphereSettings.randomizeColor)
+            {
+                wv += new Vector3(random.Range(-500, 500), random.Range(-100, 100), random.Range(-50, 50));
+            }
+            float scatterX = Mathf.Pow (400 / wv.x, 4);
+            float scatterY = Mathf.Pow (400 / wv.y, 4);
+            float scatterZ = Mathf.Pow (400 / wv.z, 4);
             material.SetVector ("scatteringCoefficients", new Vector3 (scatterX, scatterY, scatterZ) * atmosphereSettings.scatteringStrength);
             material.SetFloat ("intensity", atmosphereSettings.intensity);
             material.SetFloat ("ditherStrength", atmosphereSettings.ditherStrength);
@@ -67,6 +75,11 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         [Serializable]
         public class AtmosphereSettings
         {
+            public bool randomizeColor;
+            public int colorSeed = 0;
+
+            public bool hasAtmosphere;
+            
             public int textureSize = 256;
 
             public int inScatteringPoints = 10;
@@ -81,8 +94,13 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             public float ditherStrength = 1f;
             public float ditherScale = 3.89f;
             
-            [Range (0, 1)]
+            [Range (0, 10)]
             public float atmosphereScale = 0.322f;
+            
+            public void UpdateColorSeed(bool rand)
+            {
+                colorSeed = rand ? _prng.Next(-10000, 10000) : 0;
+            }
         }
         
         // MEMENTO PATTERN

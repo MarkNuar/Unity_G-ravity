@@ -11,10 +11,11 @@ float densityFalloff;
 float densityAtPoint(float2 densitySamplePoint) {
 	float planetRadius = 1;
 	float2 planetCentre = 0;
-
+	
 	float heightAboveSurface = length(densitySamplePoint - planetCentre) - planetRadius;
 	float height01 = heightAboveSurface / (atmosphereRadius - planetRadius);
 	float localDensity = exp(-height01 * densityFalloff) * (1 - height01);
+	localDensity = clamp(localDensity, 0, 1);
 	return localDensity;
 }
 

@@ -110,7 +110,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 			return _postProcessingMaterials;
 		}
 
-		public class EffectHolder {
+		private class EffectHolder {
 			public CBodyGenerator generator;
 			public OceanEffect oceanEffect;
 			public AtmosphereEffect atmosphereEffect;
@@ -139,14 +139,16 @@ namespace CBodies.PostProcessing.PlanetEffects
 			}
 		}
 
-		void SortFarToNear (Vector3 viewPos) {
-			for (int i = 0; i < _effectHolders.Count; i++) {
-				float dstToSurface = _effectHolders[i].DstFromSurface (viewPos);
+		private void SortFarToNear (Vector3 viewPos)
+		{
+			foreach (EffectHolder t in _effectHolders)
+			{
+				float dstToSurface = t.DstFromSurface (viewPos);
 				_sortDistances.Add (dstToSurface);
 			}
 
-			for (int i = 0; i < _effectHolders.Count - 1; i++) {
-				for (int j = i + 1; j > 0; j--) {
+			for (var i = 0; i < _effectHolders.Count - 1; i++) {
+				for (var j = i + 1; j > 0; j--) {
 					if (_sortDistances[j - 1] < _sortDistances[j]) {
 						float tempDst = _sortDistances[j - 1];
 						var temp = _effectHolders[j - 1];

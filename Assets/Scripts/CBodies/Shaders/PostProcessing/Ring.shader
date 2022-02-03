@@ -135,8 +135,7 @@ Shader "Hidden/Ring"
 				if(scene_depth - hit_info.x > 0)
 				{
 					ring_color = pow( ring_color, ( 0.20 ) );
-					const float alpha = smoothstep(-0.2, 1.0, fbm1(0.2 * (hit_info.y + 3.0 * fbm1(sin(_Time.y * 0.005f)))));
-					//const float alpha = smoothstep(-0.2, 1.0, fbm1(0.5 * (hit_info.y + 3.0 * seed)));
+					const float alpha = smoothstep(-0.2, 1.0, fbm1(0.2 * (15*hit_info.y/(outer_radius - inner_radius) + 3.0 * fbm1(sin(_Time.y * 0.005f)))));
 
 					if(receive_shadow)
 					{

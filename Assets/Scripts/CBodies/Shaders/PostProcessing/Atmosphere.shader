@@ -75,11 +75,14 @@
 			float ditherScale;
 			float densityFalloff;
 
+			int has_atmosphere;
+
 			
 			float densityAtPoint(float3 densitySamplePoint) {
 				float heightAboveSurface = length(densitySamplePoint - planetCentre) - planetRadius;
 				float height01 = heightAboveSurface / (atmosphereRadius - planetRadius);
 				float localDensity = exp(-height01 * densityFalloff) * (1 - height01);
+				localDensity = clamp(localDensity, 0, 1);
 				return localDensity;
 			}
 			
@@ -170,6 +173,9 @@
 			float4 frag (v2f i) : SV_Target
 			{
 				float4 originalCol = tex2D(_MainTex, i.uv);
+
+				if(!has_atmosphere)
+					return originalCol;
 				
 				float3 ray_pos;
 				float view_length;

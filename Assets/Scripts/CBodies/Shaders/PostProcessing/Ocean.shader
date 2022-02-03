@@ -140,7 +140,7 @@ Shader "Hidden/Ocean"
 					
 					//return float4(oceanSphereNormal,1);
 					float4 final_col =  original_col * (1-alpha) + ocean_col * alpha;
-					return float4(final_col.xyz, params.x);
+					return float4(final_col.xyz, 1);
 				}
 				return original_col;
 			}

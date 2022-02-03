@@ -65,9 +65,11 @@ namespace CBodies.Editor
             if (GUILayout.Button ("Randomize Shading")) {
                 sd.randomize = true;
                 os.randomizeColor = true;
+                aa.randomizeColor = true;
                 rs.randomizeColor = true;
                 sd.UpdateSeed(sd.randomize);
                 os.UpdateColorSeed(os.randomizeColor);
+                aa.UpdateColorSeed(aa.randomizeColor);
                 rs.UpdateColorSeed(rs.randomizeColor);
                 Regenerate (sp, sd, ps, os, aa, rs);
             }
@@ -87,12 +89,14 @@ namespace CBodies.Editor
                 sp.randomize = true;
                 os.randomizeColor = true;
                 os.randomizeHeight = true;
+                aa.randomizeColor = true;
                 rs.randomizeColor = true;
                 rs.randomizeShape = true;
                 sd.UpdateSeed(sd.randomize);
                 sp.UpdateSeed(sp.randomize);
                 os.UpdateColorSeed(os.randomizeColor);
                 os.UpdateHeightSeed(os.randomizeColor);
+                aa.UpdateColorSeed(aa.randomizeColor);
                 rs.UpdateColorSeed(rs.randomizeColor);
                 rs.UpdateShapeSeed(rs.randomizeShape);
                 Regenerate (sp, sd, ps, os, aa, rs);
@@ -106,12 +110,14 @@ namespace CBodies.Editor
                     sp.randomize = false;
                     os.randomizeColor = false;
                     os.randomizeHeight = false;
+                    aa.randomizeColor = false;
                     rs.randomizeColor = false;
                     rs.randomizeShape = false;
                     sd.UpdateSeed(sd.randomize);
                     sp.UpdateSeed(sp.randomize);
                     os.UpdateColorSeed(os.randomizeColor);
                     os.UpdateHeightSeed(os.randomizeColor);
+                    aa.UpdateColorSeed(aa.randomizeColor);
                     rs.UpdateColorSeed(rs.randomizeColor);
                     rs.UpdateShapeSeed(rs.randomizeShape);
                     Regenerate (sp, sd, ps, os, aa, rs);

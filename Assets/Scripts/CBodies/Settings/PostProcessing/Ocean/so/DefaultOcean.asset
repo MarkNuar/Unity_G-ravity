@@ -15,18 +15,18 @@ MonoBehaviour:
   oceanSettings:
     randomizeColor: 1
     randomizeHeight: 1
-    colorSeed: 7415
-    heightSeed: 2620
-    hasOcean: 0
+    colorSeed: 9907
+    heightSeed: -9280
+    hasOcean: 1
     baseOceanLevel: 0.78
     minOceanLevel: 0.2
-    maxOceanLevel: 1
+    maxOceanLevel: 0.25
     depthMultiplier: 60
     alphaMultiplier: 70
     baseShallowCol: {r: 0, g: 0.99, b: 1, a: 1}
     baseDepthCol: {r: 0, g: 0.13, b: 0.43, a: 1}
-    randomShallowCol: {r: 0.27221265, g: 0.8788811, b: 0.9173902, a: 1}
-    randomDepthCol: {r: 0.050414413, g: 0.46850234, b: 0.2300531, a: 1}
+    randomShallowCol: {r: 0.22470218, g: 0.8747155, b: 0.46064767, a: 1}
+    randomDepthCol: {r: 0.2879224, g: 0.40116107, b: 0.17120881, a: 1}
     specularCol: {r: 1, g: 1, b: 1, a: 1}
     waveStrength: 1
     waveScale: 11.1
