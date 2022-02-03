@@ -138,6 +138,10 @@ PrefabInstance:
       propertyPath: baseRing
       value: 
       objectReference: {fileID: 11400000, guid: 01fb4e632483e2a47bd1c6cb2d063467, type: 2}
+    - target: {fileID: 8676827195406535785, guid: 38e72167f59125a4496a8bbafc2a6210, type: 3}
+      propertyPath: createCopyOfSettings
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8676827195406535786, guid: 38e72167f59125a4496a8bbafc2a6210, type: 3}
       propertyPath: m_RootOrder
       value: 5

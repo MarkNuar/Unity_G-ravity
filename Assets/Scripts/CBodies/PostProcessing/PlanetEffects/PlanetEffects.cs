@@ -126,6 +126,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 						break;
 					case CBodySettings.CBodyType.Gaseous:
 						ringEffect = new RingEffect();
+						//atmosphereEffect = new AtmosphereEffect ();
 						break;
 					case CBodySettings.CBodyType.Star:
 						break;

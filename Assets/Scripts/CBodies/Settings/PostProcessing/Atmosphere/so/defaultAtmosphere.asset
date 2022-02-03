@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: defaultAtmosphere
   m_EditorClassIdentifier: 
   atmosphereSettings:
-    randomizeColor: 1
-    colorSeed: -1873
+    randomizeColor: 0
+    colorSeed: 0
     hasAtmosphere: 1
     textureSize: 256
     inScatteringPoints: 10
@@ -22,7 +22,7 @@ MonoBehaviour:
     densityFalloff: 25
     wavelengths: {x: 700, y: 530, z: 460}
     scatteringStrength: 10
-    intensity: 1
+    intensity: 0.5
     ditherStrength: 0
     ditherScale: 3.89
     atmosphereScale: 1

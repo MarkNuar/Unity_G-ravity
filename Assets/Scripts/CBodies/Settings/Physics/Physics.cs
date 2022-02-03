@@ -30,11 +30,23 @@ namespace CBodies.Settings.Physics
         [Serializable]
         public class PhysicsSettings
         {
-            public float radius = (ParameterValues.maxRadius - ParameterValues.minRadius)/3;
-            public float surfaceGravity = ParameterValues.minGravity;
+            public float minRadius = 1f;
+            public float maxRadius = 40f;
+            public float radius = 5f;
+            
+            public float minSurfaceGravity = 0.1f;
+            public float maxSurfaceGravity = 20f;
+            public float surfaceGravity = 7;
+
+            public float minRotationSpeed = -30f;
+            public float maxRotationSpeed = 30f;
             public float rotationSpeed = 0;
-            public Vector3 initialPosition = Vector3.zero; 
-            public Vector3 initialVelocity = Vector3.up * ParameterValues.minVelocity;
+
+            public Vector3 initialPosition = Vector3.zero;
+
+            public float minSpeed = 0.1f;
+            public float maxSpeed = 20f;
+            public Vector3 initialVelocity = Vector3.up * 5;
         }
         
         

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831b750f426f485488330c77cce52d7d, type: 3}
+  m_Name: RockPhysics
+  m_EditorClassIdentifier: 
+  physicsSettings:
+    minRadius: 4
+    maxRadius: 15
+    radius: 13
+    minSurfaceGravity: 0.1
+    maxSurfaceGravity: 20
+    surfaceGravity: 0.1
+    minRotationSpeed: -30
+    maxRotationSpeed: 30
+    rotationSpeed: 0
+    initialPosition: {x: 0, y: 0, z: 0}
+    minSpeed: 0.1
+    maxSpeed: 20
+    initialVelocity: {x: 0, y: 0.1, z: 0}

@@ -28,26 +28,35 @@ public class SystemUtils : MonoBehaviour
     public bool createCopyOfSettings = true;
     
     // SHAPES 
-    [Header("Shapes")] public RockShape rockShape;
+    [Header("Shapes")] 
+    public RockShape rockShape;
     public GaseousShape gaseousShape;
     public StarShape starShape;
 
     // SHADING 
-    [Header("Shading")] public RockShading rockShading;
+    [Header("Shading")] 
+    public RockShading rockShading;
     public GaseousShading gaseousShading;
     public StarShading starShading;
 
     // PHYSICS
-    [Header("Physics")] public Physics basePhysics;
+    //[Header("Physics")] public Physics basePhysics;
+    [Header("Physics")] 
+    public Physics rockPhysics;
+    public Physics gaseousPhysics;
+    public Physics starPhysics;
     
     // OCEAN
-    [Header("Ocean")] public Ocean baseOcean;
+    [Header("Ocean")] 
+    public Ocean baseOcean;
 
     // ATMOSPHERE
-    [Header("Atmosphere")] public Atmosphere baseAtmosphere;
+    [Header("Atmosphere")] 
+    public Atmosphere baseAtmosphere;
     
     // RING 
-    [Header("Ring")] public Ring baseRing;
+    [Header("Ring")] 
+    public Ring baseRing;
     
     private void Awake()
     {
@@ -245,7 +254,6 @@ public class SystemUtils : MonoBehaviour
         
         if (createCopyOfSettings)
         {
-            physics = Instantiate(basePhysics);
             ocean = Instantiate(baseOcean);
             atmosphere = Instantiate(baseAtmosphere);
             ring = Instantiate(baseRing);
@@ -255,14 +263,17 @@ public class SystemUtils : MonoBehaviour
                 case CBodySettings.CBodyType.Rocky:
                     shape = Instantiate(rockShape);
                     shading = Instantiate(rockShading);
+                    physics = Instantiate(rockPhysics);
                     break;
                 case CBodySettings.CBodyType.Gaseous:
                     shape = Instantiate(gaseousShape);
                     shading = Instantiate(gaseousShading);
+                    physics = Instantiate(gaseousPhysics);
                     break;
                 case CBodySettings.CBodyType.Star:
                     shape = Instantiate(starShape);
                     shading = Instantiate(starShading);
+                    physics = Instantiate(starPhysics);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -270,7 +281,6 @@ public class SystemUtils : MonoBehaviour
         }
         else
         {
-            physics = (basePhysics);
             ocean = (baseOcean);
             atmosphere = (baseAtmosphere);
             ring = (baseRing);
@@ -280,14 +290,17 @@ public class SystemUtils : MonoBehaviour
                 case CBodySettings.CBodyType.Rocky:
                     shape = (rockShape);
                     shading = (rockShading);
+                    physics = rockPhysics;
                     break;
                 case CBodySettings.CBodyType.Gaseous:
                     shape = (gaseousShape);
                     shading = (gaseousShading);
+                    physics = gaseousPhysics;
                     break;
                 case CBodySettings.CBodyType.Star:
                     shape = (starShape);
                     shading = (starShading);
+                    physics = starPhysics;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

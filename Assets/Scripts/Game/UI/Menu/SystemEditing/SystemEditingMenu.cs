@@ -163,7 +163,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
             ps.initialVelocity =
-                d * ((ParameterValues.maxVelocity - ParameterValues.minVelocity) * p + ParameterValues.minVelocity);
+                d * ((ps.maxSpeed - ps.minSpeed) * p + ps.minSpeed);
             SetCurrentPhysicsSettings(ps);
         }
 
@@ -195,21 +195,21 @@ namespace Game.UI.Menu.SystemEditing
         public void SetCBodyRadius()
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.radius = radiusSlider.value * (ParameterValues.maxRadius - ParameterValues.minRadius) + ParameterValues.minRadius;
+            ps.radius = radiusSlider.value * (ps.maxRadius - ps.minRadius) + ps.minRadius;
             SetCurrentPhysicsSettings(ps);
         }
 
         public void SetCBodyGravity()
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.surfaceGravity = gravitySlider.value * (ParameterValues.maxGravity - ParameterValues.minGravity) + ParameterValues.minGravity;
+            ps.surfaceGravity = gravitySlider.value * (ps.maxSurfaceGravity - ps.minSurfaceGravity) + ps.minSurfaceGravity;
             SetCurrentPhysicsSettings(ps);
         }
 
         public void SetCBodyRotation()
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            ps.rotationSpeed = rotationSlider.value * (ParameterValues.maxRotationSpeed - ParameterValues.minRotationSpeed) + ParameterValues.minRotationSpeed;
+            ps.rotationSpeed = rotationSlider.value * (ps.maxRotationSpeed - ps.minRotationSpeed) + ps.minRotationSpeed;
             SetCurrentPhysicsSettings(ps);
         }
         
@@ -352,8 +352,8 @@ namespace Game.UI.Menu.SystemEditing
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
             var percent = 
-                (ps.initialVelocity.magnitude - ParameterValues.minVelocity) /
-                          (ParameterValues.maxVelocity - ParameterValues.minVelocity);
+                (ps.initialVelocity.magnitude - ps.minSpeed) /
+                          (ps.maxSpeed - ps.minSpeed);
             _cBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
                 ps.initialVelocity.normalized,percent);
         }
@@ -366,12 +366,12 @@ namespace Game.UI.Menu.SystemEditing
         private void UpdateContextualSliders()
         {
             Physics.PhysicsSettings ps = GetCurrentPhysicsSettings();
-            var radius = (ps.radius - ParameterValues.minRadius) /
-                    (ParameterValues.maxRadius - ParameterValues.minRadius);
-            var gravity = (ps.surfaceGravity - ParameterValues.minGravity) /
-                    (ParameterValues.maxGravity - ParameterValues.minGravity);
-            var rotationSpeed = (ps.rotationSpeed - ParameterValues.minRotationSpeed) /
-                                (ParameterValues.maxRotationSpeed - ParameterValues.minRotationSpeed);
+            var radius = (ps.radius - ps.minRadius) /
+                    (ps.maxRadius - ps.minRadius);
+            var gravity = (ps.surfaceGravity - ps.minSurfaceGravity) /
+                    (ps.maxSurfaceGravity - ps.minSurfaceGravity);
+            var rotationSpeed = (ps.rotationSpeed - ps.minRotationSpeed) /
+                                (ps.maxRotationSpeed - ps.minRotationSpeed);
             
             radiusSlider.value = radius;
             radiusSlider.onValueChanged.Invoke(radius);

@@ -57,7 +57,9 @@ MonoBehaviour:
   rockShading: {fileID: 11400000, guid: cbbab0d588e903e4a89dad90bc61b65a, type: 2}
   gaseousShading: {fileID: 11400000, guid: 2262102604554b145ae0c640ac8e1c75, type: 2}
   starShading: {fileID: 11400000, guid: 65dd7af6b9e592a4d8f3874471939859, type: 2}
-  basePhysics: {fileID: 11400000, guid: 532ce74a8c832f341a9fff79de77292f, type: 2}
+  rockPhysics: {fileID: 11400000, guid: 26f954138cb437b4c8ee9dd7fdda4490, type: 2}
+  gaseousPhysics: {fileID: 11400000, guid: e66743414a79bd043928927c1ac759de, type: 2}
+  starPhysics: {fileID: 11400000, guid: 9fc751b2546a27044a94d8d205523294, type: 2}
   baseOcean: {fileID: 11400000, guid: 6314a74249f5be94abf438ff4a252395, type: 2}
   baseAtmosphere: {fileID: 11400000, guid: 9e7e9375ec7d6b0489bf2bc7698d257a, type: 2}
   baseRing: {fileID: 11400000, guid: 01fb4e632483e2a47bd1c6cb2d063467, type: 2}
