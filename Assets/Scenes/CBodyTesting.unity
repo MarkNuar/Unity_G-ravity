@@ -619,7 +619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cBody: {fileID: 743628649}
-  type: 0
+  type: 1
 --- !u!1 &2111931551
 GameObject:
   m_ObjectHideFlags: 0
