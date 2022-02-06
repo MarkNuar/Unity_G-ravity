@@ -154,8 +154,8 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShoreBlend: 0.191
-    - _ShoreHeight: 0.17
+    - _ShoreBlend: 0.072
+    - _ShoreHeight: 0.05
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SnowBlend: 0.1

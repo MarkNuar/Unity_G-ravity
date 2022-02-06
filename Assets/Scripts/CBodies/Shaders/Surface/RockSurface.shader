@@ -56,7 +56,9 @@ Shader "CBodies/Rock"
 	
 
 		_TestParams ("Test Params", Vector) = (0,0,0,0)
-	
+		
+		[NoScaleOffset] _GrassColor ("Grass color", 2D) = "white" {}
+		[NoScaleOffset] _GrassNormal ("Grass normal", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -229,6 +231,10 @@ Shader "CBodies/Rock"
 			glossiness = max(glossiness, snowWeight * _SnowSpecular);
 			o.Smoothness = glossiness;
 			o.Metallic = _Metallic;
+
+
+			
+			//o.Albedo = o.Normal;
 		}
 		ENDCG
 	}

@@ -22,7 +22,7 @@ namespace CBodies
 		}
 
 		public ResolutionSettings resolutionSettings = new ResolutionSettings();
-		public PreviewMode previewMode = PreviewMode.LOD1;
+		public PreviewMode previewMode = PreviewMode.LOD0;
 
 		// CBodySettings
 		public CBodySettings cBodySettings;
@@ -412,12 +412,12 @@ namespace CBodies
         public class ResolutionSettings {
 
             public const int NumLODLevels = 3;
-            const int MAXAllowedResolution = 500;
+            private const int MAXAllowedResolution = 500;
 
-            public int lod0 = 200;
-            public int lod1 = 100;
+            public int lod0 = 150;
+            public int lod1 = 80;
             public int lod2 = 50;
-            public int collider = 100;
+            public int collider = 80;
 
             public int GetLODResolution (int lodLevel)
             {

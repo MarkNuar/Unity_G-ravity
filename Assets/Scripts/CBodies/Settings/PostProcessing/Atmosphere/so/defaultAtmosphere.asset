@@ -15,17 +15,17 @@ MonoBehaviour:
   atmosphereSettings:
     randomizeShading: 0
     shadingSeed: 0
-    hasAtmosphere: 0
+    hasAtmosphere: 1
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 10
     densityFalloff: 25
     wavelengths: {x: 700, y: 530, z: 460}
-    scatteringStrength: 10
+    scatteringStrength: 15
     intensity: 1
     ditherStrength: 0
     ditherScale: 3.89
-    atmosphereScale: 1.4
+    atmosphereScale: 1
   opticalDepthCompute: {fileID: 7200000, guid: 9161c1a99fde39d4998b212573a8bf4c, type: 3}
   blueNoise: {fileID: 2800000, guid: 0102334e98a3b8547ba17ba594bd3ffa, type: 3}
   hasPhysicChanged: 1

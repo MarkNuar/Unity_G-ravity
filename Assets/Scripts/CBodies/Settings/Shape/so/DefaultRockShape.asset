@@ -39,7 +39,7 @@ MonoBehaviour:
       numLayers: 3
       lacunarity: 1.66
       persistence: 0.55
-      scale: 1.09
+      scale: 2
       elevation: 1
       verticalShift: 0
       offset: {x: 0, y: 0, z: 0}
