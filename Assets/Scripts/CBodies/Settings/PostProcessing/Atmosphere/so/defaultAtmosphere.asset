@@ -15,7 +15,7 @@ MonoBehaviour:
   atmosphereSettings:
     randomizeShading: 0
     shadingSeed: 0
-    hasAtmosphere: 1
+    hasAtmosphere: 0
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 10

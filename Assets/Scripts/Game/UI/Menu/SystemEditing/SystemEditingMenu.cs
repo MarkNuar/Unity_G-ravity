@@ -159,6 +159,9 @@ namespace Game.UI.Menu.SystemEditing
             CreateCBodyAndPreview();
 
             SelectCurrentCBody(); 
+            
+            FetchCurrentSettings();
+            
             OpenEditMenu(true);
         }
 

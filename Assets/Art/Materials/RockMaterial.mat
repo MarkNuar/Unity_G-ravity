@@ -60,8 +60,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GrassColor:
+        m_Texture: {fileID: 2800000, guid: b5ec64cc2e7a7fa4c83875d86983f451, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassNormal:
+        m_Texture: {fileID: 2800000, guid: 28fdb30860abbb44daede2d226c479a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 6ecab781f95e38343af0978cc2d0c602, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -70,6 +78,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
         m_Texture: {fileID: 2800000, guid: 506d5e63eca33874ab8aa52b4882c30d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapFlat:
+        m_Texture: {fileID: 2800000, guid: cacc778062e9d7b43908393f689201d4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapSteep:
+        m_Texture: {fileID: 2800000, guid: 9b6b3175283e8b84ba21d07004281146, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -146,16 +162,20 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _MaxFlatHeight: 0.359
+    - _MainTexScale: 10
+    - _MaxFlatHeight: 0.247
     - _Metallic: 0
     - _NoiseScale: 5
     - _NoiseScale2: 50
+    - _NormalMapFlatScale: 10
+    - _NormalMapSteepScale: 10
+    - _NormalMapStrength: 0.681
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShoreBlend: 0.072
-    - _ShoreHeight: 0.05
+    - _ShoreBlend: 0.1
+    - _ShoreHeight: 0.07
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SnowBlend: 0.1

@@ -52,13 +52,17 @@ Shader "CBodies/Rock"
 		_FresnelPow("Fresnel Power", float) = 2
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Metallic ("Metallic", Range(0,1)) = 0.0
-
-	
-
+		
 		_TestParams ("Test Params", Vector) = (0,0,0,0)
 		
-		[NoScaleOffset] _GrassColor ("Grass color", 2D) = "white" {}
-		[NoScaleOffset] _GrassNormal ("Grass normal", 2D) = "white" {}
+		[Header(Normals)]
+		[NoScaleOffset] _MainTex ("Albedo (RGB)", 2D) = "white" {}
+		[NoScaleOffset] _NormalMapFlat ("Normal Map Flat", 2D) = "white" {}
+		[NoScaleOffset] _NormalMapSteep ("Normal Map Steep", 2D) = "white" {}
+		_NormalMapFlatScale ("Normal Map Flat Scale", Float) = 10
+		_NormalMapSteepScale ("Normal Map Steep Scale", Float) = 10
+		_NormalMapStrength ("Normal Map Strength", Range(0,1)) = 0.3
+		_MainTexScale ("Main Tex Scale", Float) = 10
 	}
 	SubShader
 	{
@@ -160,6 +164,15 @@ Shader "CBodies/Rock"
 		// Height data:
 		float2 heightMinMax;
 		float oceanLevel;
+
+		
+		sampler2D _NormalMapFlat;
+		sampler2D _NormalMapSteep;
+		sampler2D _MainTex;
+		float _NormalMapFlatScale;
+		float _NormalMapSteepScale;
+		float _NormalMapStrength;
+		float _MainTexScale;
 		
 
 		void surf (Input IN, inout SurfaceOutputStandard o)
@@ -191,6 +204,7 @@ Shader "CBodies/Rock"
 			float biomeWeight = Blend(_TestParams.x, _TestParams.y,IN.terrainData.x);
 			biomeWeight = Blend(0, _TestParams.z, IN.vertPos.x + IN.terrainData.x * _TestParams.x + IN.terrainData.y * _TestParams.y);
 			float3 flatTerrainCol = lerp(flatTerrainColA, flatTerrainColB, biomeWeight);
+			// flatTerrainCol = grassAlbedo.rgb;
 
 			// Shore
 			float shoreBlendWeight = 1-Blend(_ShoreHeight, _ShoreBlend, flatHeight01);
@@ -233,8 +247,18 @@ Shader "CBodies/Rock"
 			o.Metallic = _Metallic;
 
 
+			float4 n_texNoise = triplanar(IN.vertPos, IN.normal, _MainTexScale, _MainTex);
+			// Sample normal maps:
+			// There are two maps, one for steep slopes like mountains and crater walls, and one for flat regions
+			// Slopes always use the steep map, but flat regions blend between the flat and steep maps to add variety
+			float3 normalMapFlat = triplanarNormalTangentSpace(IN.vertPos, IN.normal, _NormalMapFlatScale, IN.tangent, _NormalMapFlat);
+			float3 normalMapSteep = triplanarNormalTangentSpace(IN.vertPos, IN.normal, _NormalMapSteepScale, IN.tangent, _NormalMapSteep);
+			float normalBlend = lerp(n_texNoise.r, n_texNoise.g, Blend(0, 2, IN.terrainData.z));
+			float3 flatAndSteepNormal = lerp(normalMapFlat, normalMapSteep, normalBlend);
+			float3 normal = lerp(flatAndSteepNormal, normalMapSteep, steepness);
+			normal = lerp(float3(0,0,1), normal, _NormalMapStrength);
+			o.Normal = normal;
 			
-			//o.Albedo = o.Normal;
 		}
 		ENDCG
 	}

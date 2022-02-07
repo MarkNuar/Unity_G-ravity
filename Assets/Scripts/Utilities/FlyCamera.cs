@@ -1,13 +1,16 @@
+using System;
 using UnityEngine;
 
 [RequireComponent( typeof(Camera) )]
 public class FlyCamera : MonoBehaviour {
 	public float acceleration = 50; // how fast you accelerate
+	public float rollSpeed = 0.3f;
 	public float accSprintMultiplier = 4; // how much faster you go when "sprinting"
 	public float lookSensitivity = 1; // mouse look sensitivity
-	public float dampingCoefficient = 5; // how quickly you break to a halt after you stop your input
+	public float dampingCoefficient = 10; // how quickly you break to a halt after you stop your input
 	public bool focusOnEnable = true; // whether or not to focus and lock cursor immediately on enable
 
+	
 	Vector3 velocity; // current velocity
 
 	static bool Focused {
@@ -42,16 +45,25 @@ public class FlyCamera : MonoBehaviour {
 
 		// Rotation
 		Vector2 mouseDelta = lookSensitivity * new Vector2( Input.GetAxis( "Mouse X" ), -Input.GetAxis( "Mouse Y" ) );
-		Quaternion rotation = transform.rotation;
-		Quaternion horiz = Quaternion.AngleAxis( mouseDelta.x, Vector3.up );
-		Quaternion vert = Quaternion.AngleAxis( mouseDelta.y, Vector3.right );
-		transform.rotation = horiz * rotation * vert;
+		float rollDelta = 0;
+		var q = Input.GetKey(KeyCode.Q);
+		var e = Input.GetKey(KeyCode.E);
+		if (q && e)
+			rollDelta = 0;
+		else if (q)
+			rollDelta = 1;
+		else if (e)
+			rollDelta = -1;
 
+		Quaternion rotation = transform.rotation;
+		Quaternion deltaRotation = Quaternion.Euler(mouseDelta.y, mouseDelta.x, rollDelta * rollSpeed);
+		transform.rotation = rotation * deltaRotation;
+		
 		// Leave cursor lock
 		if( Input.GetKeyDown( KeyCode.Escape ) )
 			Focused = false;
 	}
-
+	
 	Vector3 GetAccelerationVector() {
 		Vector3 moveInput = default;
 

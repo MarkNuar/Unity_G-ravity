@@ -499,7 +499,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230531906}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -218.1}
+  m_LocalPosition: {x: 0, y: 0, z: -62.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -517,10 +517,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a70a90606c95f4ab24e30a0f4efd28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 100
-  accSprintMultiplier: 6
+  acceleration: 50
+  rollSpeed: 0.3
+  accSprintMultiplier: 10
   lookSensitivity: 1
-  dampingCoefficient: 5
+  dampingCoefficient: 15
   focusOnEnable: 1
 --- !u!114 &1230531911
 MonoBehaviour:

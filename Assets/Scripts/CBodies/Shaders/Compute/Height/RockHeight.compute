@@ -44,7 +44,7 @@ void CSMain (uint id : SV_DispatchThreadID)
 
     float mask = Blend(0, mountainBlend, simpleNoise(pos, noiseParams_mask));
     // Calculate final height
-    float finalHeight = 1 + (continentShape * 0.01 + ridgeNoise * 0.01 * mask) / 4;
+    float finalHeight = 1 + (continentShape * 0.01 + ridgeNoise * 0.01 * mask) / 3.5;
 
     // Set terrain data
     heights[id] = (finalHeight);

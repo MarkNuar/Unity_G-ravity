@@ -136,9 +136,9 @@ namespace CBodies
 				_shadingUpdated = false;
 
 				_heightMinMax = GenerateShapeAndShading(ref _previewMesh, PickTerrainRes());
-
-				// todo : the material is shared between cbodies, which is wrong
-				var terrainMatInstance = new Material (cBodySettings.shading.terrainMaterial);
+				
+				Material terrainMatInstance = SystemUtils.Instance.createCopyOfSettings ? 
+					new Material (cBodySettings.shading.terrainMaterial) : cBodySettings.shading.terrainMaterial;
 				cBody.surfaceMaterial = terrainMatInstance;
 				_terrainHolder = GetOrCreateMeshObject(_previewMesh, terrainMatInstance);
 			}
@@ -414,10 +414,10 @@ namespace CBodies
             public const int NumLODLevels = 3;
             private const int MAXAllowedResolution = 500;
 
-            public int lod0 = 150;
-            public int lod1 = 80;
+            public int lod0 = 250;
+            public int lod1 = 100;
             public int lod2 = 50;
-            public int collider = 80;
+            public int collider = 100;
 
             public int GetLODResolution (int lodLevel)
             {
