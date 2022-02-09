@@ -518,7 +518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: 50
-  rollSpeed: 0.3
+  rollSpeed: 0.5
   accSprintMultiplier: 10
   lookSensitivity: 1
   dampingCoefficient: 15

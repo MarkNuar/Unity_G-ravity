@@ -54,15 +54,6 @@ Shader "CBodies/Rock"
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		
 		_TestParams ("Test Params", Vector) = (0,0,0,0)
-		
-		[Header(Normals)]
-		[NoScaleOffset] _MainTex ("Albedo (RGB)", 2D) = "white" {}
-		[NoScaleOffset] _NormalMapFlat ("Normal Map Flat", 2D) = "white" {}
-		[NoScaleOffset] _NormalMapSteep ("Normal Map Steep", 2D) = "white" {}
-		_NormalMapFlatScale ("Normal Map Flat Scale", Float) = 10
-		_NormalMapSteepScale ("Normal Map Steep Scale", Float) = 10
-		_NormalMapStrength ("Normal Map Strength", Range(0,1)) = 0.3
-		_MainTexScale ("Main Tex Scale", Float) = 10
 	}
 	SubShader
 	{
@@ -164,34 +155,25 @@ Shader "CBodies/Rock"
 		// Height data:
 		float2 heightMinMax;
 		float oceanLevel;
-
-		
-		sampler2D _NormalMapFlat;
-		sampler2D _NormalMapSteep;
-		sampler2D _MainTex;
-		float _NormalMapFlatScale;
-		float _NormalMapSteepScale;
-		float _NormalMapStrength;
-		float _MainTexScale;
 		
 
-		void surf (Input IN, inout SurfaceOutputStandard o)
+		void surf (Input i, inout SurfaceOutputStandard o)
 		{
 		
 			// Calculate steepness: 0 where totally flat, 1 at max steepness
-			float3 sphereNormal = normalize(IN.vertPos);
-			float steepness = 1 - dot (sphereNormal, IN.normal);
+			float3 sphereNormal = normalize(i.vertPos);
+			float steepness = 1 - dot (sphereNormal, i.normal);
 			steepness = remap01(steepness, 0, 0.65);
 
 			// Calculate heights
-			float terrainHeight = length(IN.vertPos);
+			float terrainHeight = length(i.vertPos);
 			float shoreHeight = lerp(heightMinMax.x, 1, oceanLevel);
 			float aboveShoreHeight01 = remap01(terrainHeight, shoreHeight, heightMinMax.y);
 			float flatHeight01 = remap01(aboveShoreHeight01, 0, _MaxFlatHeight);
 
 			// Sample noise texture at two different scales
-			float4 texNoise = triplanar(IN.vertPos, IN.normal, _NoiseScale, _NoiseTex);
-			float4 texNoise2 = triplanar(IN.vertPos, IN.normal, _NoiseScale2, _NoiseTex);
+			float4 texNoise = triplanar(i.vertPos, i.normal, _NoiseScale, _NoiseTex);
+			float4 texNoise2 = triplanar(i.vertPos, i.normal, _NoiseScale2, _NoiseTex);
 
 			// Flat terrain colour A and B
 			float flatColBlendWeight = Blend(0, _FlatColBlend, (flatHeight01-.5) + (texNoise.b - 0.5) * _FlatColBlendNoise);
@@ -201,8 +183,8 @@ Shader "CBodies/Rock"
 			flatTerrainColB = lerp(flatTerrainColB, (_FlatLowB + _FlatHighB) / 2, texNoise.a);
 
 			// Biome
-			float biomeWeight = Blend(_TestParams.x, _TestParams.y,IN.terrainData.x);
-			biomeWeight = Blend(0, _TestParams.z, IN.vertPos.x + IN.terrainData.x * _TestParams.x + IN.terrainData.y * _TestParams.y);
+			float biomeWeight = Blend(_TestParams.x, _TestParams.y,i.terrainData.x);
+			biomeWeight = Blend(0, _TestParams.z, i.vertPos.x + i.terrainData.x * _TestParams.x + i.terrainData.y * _TestParams.y);
 			float3 flatTerrainCol = lerp(flatTerrainColA, flatTerrainColB, biomeWeight);
 			// flatTerrainCol = grassAlbedo.rgb;
 
@@ -214,7 +196,7 @@ Shader "CBodies/Rock"
 
 			// Steep terrain colour
 			float3 sphereTangent = normalize(float3(-sphereNormal.z, 0, sphereNormal.x));
-			float3 normalTangent = normalize(IN.normal - sphereNormal * dot(IN.normal, sphereNormal));
+			float3 normalTangent = normalize(i.normal - sphereNormal * dot(i.normal, sphereNormal));
 			float banding = dot(sphereTangent, normalTangent) * .5 + .5;
 			banding = (int)(banding * (_SteepBands + 1)) / _SteepBands;
 			banding = (abs(banding - 0.5) * 2 - 0.5) * _SteepBandStrength;
@@ -229,15 +211,15 @@ Shader "CBodies/Rock"
 			// Snowy poles
 			float3 snowCol = 0;
 			float snowWeight = 0;
-			float snowLineNoise = IN.terrainData.y * _SnowNoiseA * 0.01 + (texNoise.b-0.5) * _SnowNoiseB * 0.01;
-			snowWeight = Blend(_SnowLongitude, _SnowBlend, abs(IN.vertPos.y + snowLineNoise)) * _UseSnowyPoles;
+			float snowLineNoise = i.terrainData.y * _SnowNoiseA * 0.01 + (texNoise.b-0.5) * _SnowNoiseB * 0.01;
+			snowWeight = Blend(_SnowLongitude, _SnowBlend, abs(i.vertPos.y + snowLineNoise)) * _UseSnowyPoles;
 			float snowSpeckle = 1 - texNoise2.g * 0.5 * 0.1;
 			snowCol = _SnowCol * lerp (1, _SnowHighlight, aboveShoreHeight01 + banding) * snowSpeckle;
 
 			// Set surface colour
 			float3 compositeCol = lerp(steepTerrainCol, flatTerrainCol, flatStrength);
 			compositeCol = lerp(compositeCol, snowCol, snowWeight);
-			compositeCol = lerp(compositeCol, _FresnelCol, IN.fresnel);
+			compositeCol = lerp(compositeCol, _FresnelCol, i.fresnel);
 			o.Albedo = compositeCol;
 			
 			// Glossiness
@@ -245,19 +227,6 @@ Shader "CBodies/Rock"
 			glossiness = max(glossiness, snowWeight * _SnowSpecular);
 			o.Smoothness = glossiness;
 			o.Metallic = _Metallic;
-
-
-			float4 n_texNoise = triplanar(IN.vertPos, IN.normal, _MainTexScale, _MainTex);
-			// Sample normal maps:
-			// There are two maps, one for steep slopes like mountains and crater walls, and one for flat regions
-			// Slopes always use the steep map, but flat regions blend between the flat and steep maps to add variety
-			float3 normalMapFlat = triplanarNormalTangentSpace(IN.vertPos, IN.normal, _NormalMapFlatScale, IN.tangent, _NormalMapFlat);
-			float3 normalMapSteep = triplanarNormalTangentSpace(IN.vertPos, IN.normal, _NormalMapSteepScale, IN.tangent, _NormalMapSteep);
-			float normalBlend = lerp(n_texNoise.r, n_texNoise.g, Blend(0, 2, IN.terrainData.z));
-			float3 flatAndSteepNormal = lerp(normalMapFlat, normalMapSteep, normalBlend);
-			float3 normal = lerp(flatAndSteepNormal, normalMapSteep, steepness);
-			normal = lerp(float3(0,0,1), normal, _NormalMapStrength);
-			o.Normal = normal;
 			
 		}
 		ENDCG

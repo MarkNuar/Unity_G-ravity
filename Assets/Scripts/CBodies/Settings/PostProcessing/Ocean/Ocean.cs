@@ -34,13 +34,24 @@ namespace CBodies.Settings.PostProcessing.Ocean
             
             if (oceanSettings.randomizeShading) {
                 PRNG random = new PRNG (oceanSettings.shadingSeed);
-                oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
-                oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
-                    random.SignedValue() * 0.2f,
-                    random.SignedValue() * 0.2f,
-                    random.Range (-0.5f, -0.4f)
-                );
-
+                // if (oceanSettings.realisticColors)
+                // {
+                    float deltaH = random.Range(-oceanSettings.hueRange, oceanSettings.hueRange);
+                    oceanSettings.randomShallowCol =
+                        ColorHelper.TweakHSV(oceanSettings.baseShallowCol, deltaH, 0, 0);
+                    oceanSettings.randomDepthCol =
+                        ColorHelper.TweakHSV(oceanSettings.baseDepthCol, deltaH, 0, 0);
+                // }
+                // else
+                // {
+                //     oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
+                //     oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
+                //         random.SignedValue() * 0.2f,
+                //         random.SignedValue() * 0.2f,
+                //         random.Range (-0.5f, -0.4f)
+                //     );
+                // }
+                
                 material.SetColor ("colA", oceanSettings.randomShallowCol);
                 material.SetColor ("colB", oceanSettings.randomDepthCol);
                 material.SetColor ("specularCol", Color.white);
@@ -58,9 +69,12 @@ namespace CBodies.Settings.PostProcessing.Ocean
             public bool randomizeHeight;
             public int shadingSeed = 0;
             public int heightSeed = 0;
-        
-            public bool hasOcean;
+
+            public bool realisticColors = true;
+            public float hueRange = 0.05f;
             
+            public bool hasOcean;
+
             private float _oceanLevel = 0.55f;
             public float baseOceanLevel = 0.5f;
             public float minOceanLevel = 0.3f;

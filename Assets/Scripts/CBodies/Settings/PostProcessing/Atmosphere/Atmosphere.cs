@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
 
@@ -38,7 +39,20 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             Vector3 wv = atmosphereSettings.wavelengths;
             if (atmosphereSettings.randomizeShading)
             {
-                wv += new Vector3(random.Range(-500, 500), random.Range(-100, 100), random.Range(-50, 50));
+                var n = random.Range(0, 3);
+                var d = random.Range(-100f, 100f);
+                if (atmosphereSettings.realisticColors)
+                    n = 0;
+                Vector3 baseWv = atmosphereSettings.wavelengths;
+                wv = n switch
+                {
+                    0 => new Vector3(baseWv.x + d, baseWv.y + d / 5, baseWv.z + d / 10),
+                    1 => new Vector3(baseWv.z + d / 10, baseWv.y + d / 5, baseWv.x + d),
+                    2 => new Vector3(baseWv.x + d, baseWv.z + d / 10, baseWv.y + d / 5),
+                    _ => wv
+                };
+
+                atmosphereSettings.randomWaveLengths = wv;
             }
             float scatterX = Mathf.Pow (400 / wv.x, 4);
             float scatterY = Mathf.Pow (400 / wv.y, 4);
@@ -78,6 +92,8 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             public bool randomizeShading;
             public int shadingSeed = 0;
 
+            public bool realisticColors = true;
+            
             public bool hasAtmosphere;
             
             public int textureSize = 256;
@@ -87,6 +103,7 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             public float densityFalloff = 4.3f;
 
             public Vector3 wavelengths = new Vector3 (700, 530, 460);
+            public Vector3 randomWaveLengths;
             
             public float scatteringStrength = 21.23f;
             public float intensity = 1;

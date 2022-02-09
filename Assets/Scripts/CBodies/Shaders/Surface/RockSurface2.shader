@@ -35,6 +35,8 @@ Shader "CBodies/Rock2"
 		_NoiseZoomL("Noise Zoom Large", Float) = 1
 		_NoiseZoomM("Noise Zoom Medium", Float) = 1
 		_NoiseZoomS("Noise Zoom Small", Float) = 1
+		
+		[NoScaleOffset] _NoiseTex2 ("Noise Texture", 2D) = "white" {}
 
 		[Header(Other)]
 		_FresnelCol("Fresnel Colour", Color) = (1,1,1,1)
@@ -45,21 +47,11 @@ Shader "CBodies/Rock2"
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		
 		[Header(Normals)]
-		[NoScaleOffset] _MainTex ("Albedo (RGB)", 2D) = "white" {}
 		[NoScaleOffset] _NormalMapFlat ("Normal Map Flat", 2D) = "white" {}
 		[NoScaleOffset] _NormalMapSteep ("Normal Map Steep", 2D) = "white" {}
 		_NormalMapFlatScale ("Normal Map Flat Scale", Float) = 10
 		_NormalMapSteepScale ("Normal Map Steep Scale", Float) = 10
 		_NormalMapStrength ("Normal Map Strength", Range(0,1)) = 0.3
-		_MainTexScale ("Main Tex Scale", Float) = 10
-		
-		
-		[Header(Grass)]
-		[NoScaleOffset] _GrassAlbedo ("Albedo (RGB)", 2D) = "white" {}
-		[NoScaleOffset] _GrassNormal ("Normal", 2D) = "white" {}
-		[NoScaleOffset] _GrassRoughness ("Roughness", 2D) = "white" {}
-		[NoScaleOffset] _GrassOcclusion ("Occlusion (RGB)", 2D) = "white" {}
-		_GrassScale ("Scale", Float) = 1
 		
 	}
 	SubShader
@@ -143,7 +135,7 @@ Shader "CBodies/Rock2"
 		float _Metallic;
 
 		sampler2D _NoiseTex;
-		sampler2D _SnowNormal;
+		sampler2D _NoiseTex2;
 		float _NoiseZoomXL;
 		float _NoiseZoomL;
 		float _NoiseZoomM;
@@ -157,38 +149,32 @@ Shader "CBodies/Rock2"
 		
 		sampler2D _NormalMapFlat;
 		sampler2D _NormalMapSteep;
-		sampler2D _MainTex;
 		float _NormalMapFlatScale;
 		float _NormalMapSteepScale;
 		float _NormalMapStrength;
-		float _MainTexScale;
+		
 
-		// grass
-		sampler2D _GrassAlbedo;
-		sampler2D _GrassNormal; 
-		sampler2D _GrassRoughness; 
-		sampler2D _GrassOcclusion;
-		float _GrassScale;
-
-		void surf (Input IN, inout SurfaceOutputStandard o)
+		void surf (Input i, inout SurfaceOutputStandard o)
 		{
 		
 			// Calculate steepness: 0 where totally flat, 1 at max steepness
-			float3 sphereNormal = normalize(IN.vertPos);
-			float steepness = 1 - dot (sphereNormal, IN.normal);
+			float3 sphereNormal = normalize(i.vertPos);
+			float steepness = 1 - dot (sphereNormal, i.normal);
 			steepness = remap01(steepness, 0, 0.65);
 			
 			// Calculate heights
-			float terrainHeight = length(IN.vertPos);
+			float terrainHeight = length(i.vertPos);
 			float shoreHeight = lerp(heightMinMax.x, 1, oceanLevel);
 			float aboveShoreHeight01 = remap01(terrainHeight, shoreHeight, heightMinMax.y);
 			float flatHeight01 = remap01(aboveShoreHeight01, 0, _MaxFlatHeight);
 			
 			// Sample noise texture at 4 different scales
-			float4 texNoiseZoomXL = triplanar(IN.vertPos, IN.normal, _NoiseZoomXL, _NoiseTex);
-			float4 texNoiseZoomL = triplanar(IN.vertPos, IN.normal, _NoiseZoomL, _NoiseTex);
-			float4 texNoiseZoomM = triplanar(IN.vertPos, IN.normal, _NoiseZoomM, _NoiseTex);
-			float4 texNoiseZoomS = triplanar(IN.vertPos, IN.normal, _NoiseZoomS, _NoiseTex);
+			float4 texNoiseZoomXL = triplanar(i.vertPos, i.normal, _NoiseZoomXL, _NoiseTex);
+			float4 texNoiseZoomL = triplanar(i.vertPos, i.normal, _NoiseZoomL, _NoiseTex);
+			float4 texNoiseZoomM = triplanar(i.vertPos, i.normal, _NoiseZoomM, _NoiseTex);
+			float4 texNoiseZoomS = triplanar(i.vertPos, i.normal, _NoiseZoomS, _NoiseTex);
+
+			float4 texNoise2ZoomXL = triplanar(i.vertPos, i.normal, _NoiseZoomXL, _NoiseTex);
 			
 			// Flat terrain colour A and B
 			float flatColBlendWeight = Blend(0, _FlatColBlend, (flatHeight01-.2) + (texNoiseZoomL.b - 0.5) * _FlatColBlendNoise);
@@ -198,7 +184,7 @@ Shader "CBodies/Rock2"
 			flatTerrainColB = lerp(flatTerrainColB, (_FlatLowB + _FlatHighB)/2 , texNoiseZoomM.g);
 			
 			// Biomes
-			float3 flatTerrainCol = lerp(flatTerrainColA, flatTerrainColB, texNoiseZoomXL.b);
+			float3 flatTerrainCol = lerp(flatTerrainColA, flatTerrainColB, i.vertPos.x);
 			
 			// Shore
 			float shoreBlendWeight = 1-Blend(_ShoreHeight, _ShoreBlend, flatHeight01);
@@ -208,7 +194,7 @@ Shader "CBodies/Rock2"
 			
 			// Steep terrain colour
 			float3 sphereTangent = normalize(float3(-sphereNormal.z, 0, sphereNormal.x));
-			float3 normalTangent = normalize(IN.normal - sphereNormal * dot(IN.normal, sphereNormal));
+			float3 normalTangent = normalize(i.normal - sphereNormal * dot(i.normal, sphereNormal));
 			float banding = dot(sphereTangent, normalTangent) * .5 + .5;
 			banding = (int)(banding * (_SteepBands + 1)) / _SteepBands;
 			banding = (abs(banding - 0.5) * 2 - 0.5) * _SteepBandStrength;
@@ -224,7 +210,7 @@ Shader "CBodies/Rock2"
 			
 			// Set surface colour
 			float3 compositeCol = lerp(steepTerrainCol, flatTerrainCol, flatStrength);
-			compositeCol = lerp(compositeCol, _FresnelCol, IN.fresnel);
+			compositeCol = lerp(compositeCol, _FresnelCol, i.fresnel);
 			o.Albedo = compositeCol;
 			
 			// Glossiness
@@ -233,27 +219,19 @@ Shader "CBodies/Rock2"
 			o.Metallic = _Metallic;
 			
 			
-			// // Sample normal maps:
-			// // There are two maps, one for steep slopes like mountains and crater walls, and one for flat regions
-			// // Slopes always use the steep map, but flat regions blend between the flat and steep maps to add variety
-			// float3 normalMapFlat = triplanarNormalTangentSpace(IN.vertPos, IN.normal, _NormalMapFlatScale, IN.tangent, _NormalMapFlat);
-			// float3 normalMapSteep = triplanarNormalTangentSpace(IN.vertPos, IN.normal, _NormalMapSteepScale, IN.tangent, _NormalMapSteep);
-			//
-			// // float normalBlend = lerp(n_texNoise.r, n_texNoise.g, Blend(0, 2, IN.terrainData.z));
-			// // float3 flatAndSteepNormal = lerp(normalMapFlat, normalMapSteep, normalBlend);
-			// // float3 normal = lerp(flatAndSteepNormal, normalMapSteep, steepness);
-			// float3 normal = lerp(normalMapSteep, normalMapFlat, flatStrength);
-			//
-			// normal = lerp(float3(0,0,1), normal, _NormalMapStrength);
-			// o.Normal = normal;
-
-
-			//
-			// o.Albedo = triplanar(IN.vertPos, IN.normal, _GrassScale,  _GrassAlbedo);
-			// o.Normal = triplanar(IN.vertPos, IN.normal, _GrassScale,  _GrassNormal);
-			// o.Occlusion = triplanar(IN.vertPos, IN.normal, _GrassScale,  _GrassOcclusion);
-			// o.Smoothness = triplanar(IN.vertPos, IN.normal, _GrassScale,  _GrassRoughness);
+			// Sample normal maps:
+			// There are two maps, one for steep slopes like mountains and crater walls, and one for flat regions
+			// Slopes always use the steep map, but flat regions blend between the flat and steep maps to add variety
+			float3 normalMapFlat = triplanar(i.vertPos, i.normal, _NormalMapFlatScale, _NormalMapFlat);
+			float3 normalMapSteep = triplanar(i.vertPos, i.normal, _NormalMapSteepScale, _NormalMapSteep);
 			
+			// float normalBlend = lerp(n_texNoise.r, n_texNoise.g, Blend(0, 2, IN.terrainData.z));
+			// float3 flatAndSteepNormal = lerp(normalMapFlat, normalMapSteep, normalBlend);
+			// float3 normal = lerp(flatAndSteepNormal, normalMapSteep, steepness);
+			float3 normal = lerp(normalMapSteep, normalMapFlat, flatStrength);
+			
+			normal = lerp(float3(0,0,1), normal, _NormalMapStrength);
+			o.Normal = normal;
 			
 		}
 		ENDCG

@@ -101,7 +101,33 @@ namespace CBodies.Editor
                     ringS.RandomizeShape(false);
                     Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
                 }
+                
+                var realistic = shadingS.realisticColors && oceanS.realisticColors && atmosphereS.realisticColors;
+                using (new EditorGUI.DisabledGroupScope(!realistic))
+                {
+                    if (GUILayout.Button("Non Realistic Colors"))
+                    {
+                        shadingS.realisticColors = false;
+                        oceanS.realisticColors = false;
+                        atmosphereS.realisticColors = false;
+                        Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
+                    }
+                }
+                using (new EditorGUI.DisabledGroupScope(realistic))
+                {
+                    if (GUILayout.Button("Realistic Colors"))
+                    {
+                        shadingS.realisticColors = true;
+                        oceanS.realisticColors = true;
+                        atmosphereS.realisticColors = true;
+                        Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
+                    }
+                }
             }
+
+            
+            
+
 
             SaveState ();
         }

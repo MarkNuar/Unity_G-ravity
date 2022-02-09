@@ -87,6 +87,8 @@ namespace CBodies.Settings.Shading
             public bool randomize;
             public int seed = 0;
             
+            public bool realisticColors = true;
+            
             public void RandomizeShading(bool rand)
             {
                 randomize = rand;
