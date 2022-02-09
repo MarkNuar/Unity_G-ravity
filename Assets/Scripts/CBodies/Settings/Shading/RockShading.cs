@@ -9,6 +9,8 @@ namespace CBodies.Settings.Shading
     [Serializable][CreateAssetMenu]
     public class RockShading : Shading
     {
+        private int _previousN = -1;
+        
         // MEMENTO
         [SerializeField] protected RockShadingSettings shadingSettings;
 
@@ -53,28 +55,36 @@ namespace CBodies.Settings.Shading
             }
             else
             {
-
-                ApplyColours (material, shadingSettings.baseColors);
+                ApplyColours (material, shadingSettings.baseGreenColors);
             }
         }
-
-
-
+        
+        
         private void SetRandomColors () {
             PRNG random = new PRNG (shadingSettings.seed);
-            // if (shadingSettings.realisticColors)
-            // {
+            if (shadingSettings.realisticColors)
+            {
                 var n = random.Range(0, 3);
-                if (shadingSettings.realisticColors)
-                    n = 0;
-                RockColors colors = n switch
+                var deltaH = 0.0f;
+                RockColors colors;
+                switch(n)
                 {
-                    0 => shadingSettings.baseGreenColors,
-                    1 => shadingSettings.baseRedColors,
-                    2 => shadingSettings.baseBlueColors,
-                    _ => throw new ArgumentOutOfRangeException()
+                    case 0:
+                        colors = shadingSettings.baseGreenColors;
+                        deltaH = random.Range(shadingSettings.greenHRange.x, shadingSettings.greenHRange.y);
+                        break;
+                    case 1:
+                        colors = shadingSettings.baseRedColors;
+                        deltaH = random.Range(shadingSettings.redHRange.x, shadingSettings.redHRange.y);
+                        break;
+                    case 2:
+                        colors = shadingSettings.baseBlueColors;
+                        deltaH = random.Range(shadingSettings.blueHRange.x, shadingSettings.blueHRange.y);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 };
-                var deltaH = random.Range(-shadingSettings.hRange, shadingSettings.hRange);
+
                 shadingSettings.randomColors.shoreColLow =
                     ColorHelper.TweakHSV(colors.shoreColLow, deltaH, 0, 0);
                 shadingSettings.randomColors.shoreColHigh = 
@@ -91,26 +101,26 @@ namespace CBodies.Settings.Shading
                     ColorHelper.TweakHSV(colors.steepLow, deltaH, 0, 0);
                 shadingSettings.randomColors.steepHigh = 
                     ColorHelper.TweakHSV(colors.steepHigh, deltaH, 0, 0);
-            // }
-            // else
-            // {
-            //     shadingSettings.randomColors.flatColLowA = 
-            //         ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f); 
-            //     shadingSettings.randomColors.flatColHighA = 
-            //         ColorHelper.TweakHSV (shadingSettings.randomColors.flatColLowA, random.SignedValue () * 0.2f, random.SignedValue () * 0.15f, random.Range (-0.25f, -0.2f));
-            //     shadingSettings.randomColors.flatColLowB = 
-            //         ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f); 
-            //     shadingSettings.randomColors.flatColHighB = 
-            //         ColorHelper.TweakHSV (shadingSettings.randomColors.flatColLowB, random.SignedValue () * 0.2f, random.SignedValue () * 0.15f, random.Range (-0.25f, -0.2f));
-            //     shadingSettings.randomColors.shoreColLow = 
-            //         ColorHelper.Random (random, 0.2f, 0.3f, 0.9f, 1); 
-            //     shadingSettings.randomColors.shoreColHigh =
-            //         ColorHelper.TweakHSV (shadingSettings.randomColors.shoreColLow, random.SignedValue () * 0.2f, random.SignedValue () * 0.2f, random.Range (-0.3f, -0.2f));
-            //     shadingSettings.randomColors.steepLow = 
-            //         ColorHelper.Random (random, 0.3f, 0.7f, 0.4f, 0.6f); 
-            //     shadingSettings.randomColors.steepHigh = 
-            //         ColorHelper.TweakHSV (shadingSettings.randomColors.steepLow, random.SignedValue () * 0.2f, random.SignedValue () * 0.2f, random.Range (-0.35f, -0.2f));
-            // }
+            }
+            else
+            {
+                shadingSettings.randomColors.flatColLowA = 
+                    ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f); 
+                shadingSettings.randomColors.flatColHighA = 
+                    ColorHelper.TweakHSV (shadingSettings.randomColors.flatColLowA, random.SignedValue () * 0.2f, random.SignedValue () * 0.15f, random.Range (-0.25f, -0.2f));
+                shadingSettings.randomColors.flatColLowB = 
+                    ColorHelper.Random (random, 0.45f, 0.6f, 0.7f, 0.8f); 
+                shadingSettings.randomColors.flatColHighB = 
+                    ColorHelper.TweakHSV (shadingSettings.randomColors.flatColLowB, random.SignedValue () * 0.2f, random.SignedValue () * 0.15f, random.Range (-0.25f, -0.2f));
+                shadingSettings.randomColors.shoreColLow = 
+                    ColorHelper.Random (random, 0.2f, 0.3f, 0.9f, 1); 
+                shadingSettings.randomColors.shoreColHigh =
+                    ColorHelper.TweakHSV (shadingSettings.randomColors.shoreColLow, random.SignedValue () * 0.2f, random.SignedValue () * 0.2f, random.Range (-0.3f, -0.2f));
+                shadingSettings.randomColors.steepLow = 
+                    ColorHelper.Random (random, 0.3f, 0.7f, 0.4f, 0.6f); 
+                shadingSettings.randomColors.steepHigh = 
+                    ColorHelper.TweakHSV (shadingSettings.randomColors.steepLow, random.SignedValue () * 0.2f, random.SignedValue () * 0.2f, random.Range (-0.35f, -0.2f));
+            }
         }
         
         void ApplyColours (Material material, RockColors colors) {
@@ -127,24 +137,21 @@ namespace CBodies.Settings.Shading
             material.SetColor ("_SteepHigh", colors.steepHigh);
         }
         
-
+        
         [Serializable]
         public class RockShadingSettings : ShadingSettings
         {
-            public RockColors baseColors;
-
             public RockColors baseGreenColors;
             public RockColors baseRedColors;
             public RockColors baseBlueColors;
-            public ColorType colorType = ColorType.Green;
-            
+
             public RockColors randomColors;
-
             
-            
-            public float hRange = 0.1f;
-
-                [Header ("Shading Data")]
+            public Vector2 greenHRange;
+            public Vector2 redHRange;
+            public Vector2 blueHRange;
+                
+            [Header ("Shading Data")]
             public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
             public SimpleNoiseSettings detailNoise = new SimpleNoiseSettings();
             public SimpleNoiseSettings largeNoise = new SimpleNoiseSettings();

@@ -16,9 +16,12 @@ namespace CBodies.Settings.PostProcessing.Ocean
         public Texture2D waveNormalA;
         public Texture2D waveNormalB;
         
-        public bool hasPhysicChanged;
+        
+        private bool _settingsUpToDate = false;
         
         public void SetOceanProperties (Material material) {
+            //if(_settingsUpToDate) return;
+            
             if(!oceanSettings.hasOcean) return;
             
             material.SetFloat ("depthMultiplier", oceanSettings.depthMultiplier);
@@ -34,23 +37,23 @@ namespace CBodies.Settings.PostProcessing.Ocean
             
             if (oceanSettings.randomizeShading) {
                 PRNG random = new PRNG (oceanSettings.shadingSeed);
-                // if (oceanSettings.realisticColors)
-                // {
+                if (oceanSettings.realisticColors)
+                {
                     float deltaH = random.Range(-oceanSettings.hueRange, oceanSettings.hueRange);
                     oceanSettings.randomShallowCol =
                         ColorHelper.TweakHSV(oceanSettings.baseShallowCol, deltaH, 0, 0);
                     oceanSettings.randomDepthCol =
                         ColorHelper.TweakHSV(oceanSettings.baseDepthCol, deltaH, 0, 0);
-                // }
-                // else
-                // {
-                //     oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
-                //     oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
-                //         random.SignedValue() * 0.2f,
-                //         random.SignedValue() * 0.2f,
-                //         random.Range (-0.5f, -0.4f)
-                //     );
-                // }
+                }
+                else
+                {
+                    oceanSettings.randomShallowCol = Color.HSVToRGB (random.Value (), random.Range (0.6f, 0.8f), random.Range (0.65f, 1));
+                    oceanSettings.randomDepthCol = ColorHelper.TweakHSV (oceanSettings.randomShallowCol,
+                        random.SignedValue() * 0.2f,
+                        random.SignedValue() * 0.2f,
+                        random.Range (-0.5f, -0.4f)
+                    );
+                }
                 
                 material.SetColor ("colA", oceanSettings.randomShallowCol);
                 material.SetColor ("colB", oceanSettings.randomDepthCol);
@@ -60,6 +63,8 @@ namespace CBodies.Settings.PostProcessing.Ocean
                 material.SetColor ("colB", oceanSettings.baseDepthCol);
                 material.SetColor ("specularCol", oceanSettings.specularCol);
             }
+
+            _settingsUpToDate = true;
         }
 
         [Serializable]
@@ -135,7 +140,7 @@ namespace CBodies.Settings.PostProcessing.Ocean
         // MEMENTO PATTERN
         public void InitSettings()
         {
-
+            _settingsUpToDate = false;
         }
         public OceanSettings GetSettings()
         {
@@ -146,6 +151,7 @@ namespace CBodies.Settings.PostProcessing.Ocean
         {
             oceanSettings = ps;
             oceanSettings.UpdateOceanLevel();
+            _settingsUpToDate = false;
         }
     }
 }

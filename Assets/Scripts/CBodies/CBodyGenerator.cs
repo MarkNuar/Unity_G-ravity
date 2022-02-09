@@ -312,11 +312,7 @@ namespace CBodies
 		public void OnPhysicsUpdate()
 		{
 			_physicsUpdated = true;
-			
-			cBodySettings.atmosphere.hasPhysicChanged = true;
-			cBodySettings.ocean.hasPhysicChanged = true;
-			cBodySettings.ring.hasPhysicChanged = true;
-			
+
 			HandleEditModeGeneration();
 		}
 
@@ -325,11 +321,7 @@ namespace CBodies
 			_shapeUpdated = true;
 			_shadingUpdated = true;
 			_physicsUpdated = true;
-			
-			cBodySettings.atmosphere.hasPhysicChanged = true;
-			cBodySettings.ocean.hasPhysicChanged = true;
-			cBodySettings.ring.hasPhysicChanged = true;
-			
+		
 			switch (GameManager.Instance.gameMode)
 			{
 				case GameManager.GameMode.Editing:

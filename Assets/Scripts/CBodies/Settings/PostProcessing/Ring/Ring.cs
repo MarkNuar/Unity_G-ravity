@@ -11,11 +11,13 @@ namespace CBodies.Settings.PostProcessing.Ring
         
         // MEMENTO
         [SerializeField] private RingSettings ringSettings;
-        
-        public bool hasPhysicChanged;
+
+        private bool _settingsUpToDate = false;
         
         public void SetRingProperties(Material ringMaterial)
         {
+            //if (_settingsUpToDate) return;
+            
             ringMaterial.SetInt("has_ring", ringSettings.hasRing ? 1 : 0);
             if (ringSettings.hasRing)
             {
@@ -56,13 +58,13 @@ namespace CBodies.Settings.PostProcessing.Ring
                     ringMaterial.SetVector("ring_normal", ringSettings.baseRingNormal.normalized);
                 }
             }
+
+            _settingsUpToDate = true;
         }
 
         [Serializable]
         public class RingSettings
         {
-            // todo ring color
-            
             public bool randomizeShading;
             public bool randomizeShape;
             public int shadingSeed;
@@ -94,7 +96,7 @@ namespace CBodies.Settings.PostProcessing.Ring
         // MEMENTO PATTERN
         public void InitSettings()
         {
-
+            _settingsUpToDate = false;
         }
         public RingSettings GetSettings()
         {
@@ -104,6 +106,7 @@ namespace CBodies.Settings.PostProcessing.Ring
         public void SetSettings(RingSettings rs)
         {
             ringSettings = rs;
+            _settingsUpToDate = false;
         }
     }
 }

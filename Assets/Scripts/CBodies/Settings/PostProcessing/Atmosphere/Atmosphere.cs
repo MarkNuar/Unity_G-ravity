@@ -9,7 +9,7 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
     public class Atmosphere : ScriptableObject
     {
         private static System.Random _prng = new System.Random ();
-        
+
         // MEMENTO
         [SerializeField] private AtmosphereSettings atmosphereSettings;
         
@@ -19,11 +19,11 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         
         private RenderTexture _opticalDepthTexture;
 
-        public bool hasPhysicChanged;
+        private bool _settingsUpToDate = false;
 
         public void SetAtmosphereProperties(Material material, float cBodyRadius)
         {
-            // if (_settingsUpToDate) return;
+            //if (_settingsUpToDate) return;
             material.SetInt("has_atmosphere", atmosphereSettings.hasAtmosphere ? 1 : 0);
             
             var atmosphereRadius = (1 + atmosphereSettings.atmosphereScale) * cBodyRadius;
@@ -39,19 +39,23 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             Vector3 wv = atmosphereSettings.wavelengths;
             if (atmosphereSettings.randomizeShading)
             {
-                var n = random.Range(0, 3);
-                var d = random.Range(-100f, 100f);
                 if (atmosphereSettings.realisticColors)
-                    n = 0;
-                Vector3 baseWv = atmosphereSettings.wavelengths;
-                wv = n switch
                 {
-                    0 => new Vector3(baseWv.x + d, baseWv.y + d / 5, baseWv.z + d / 10),
-                    1 => new Vector3(baseWv.z + d / 10, baseWv.y + d / 5, baseWv.x + d),
-                    2 => new Vector3(baseWv.x + d, baseWv.z + d / 10, baseWv.y + d / 5),
-                    _ => wv
-                };
-
+                    var n = random.Range(0, 3);
+                    var d = random.Range(-100f, 100f);
+                    Vector3 baseWv = atmosphereSettings.wavelengths;
+                    wv = n switch
+                    {
+                        0 => new Vector3(baseWv.x + d, baseWv.y + d / 5, baseWv.z + d / 10),
+                        1 => new Vector3(baseWv.z + d / 10, baseWv.y + d / 5, baseWv.x + d),
+                        2 => new Vector3(baseWv.x + d, baseWv.z + d / 10, baseWv.y + d / 5),
+                        _ => wv
+                    };
+                }
+                else
+                {
+                    wv += new Vector3(random.Range(-500, 500), random.Range(-50, 50), random.Range(-10, 10));
+                }
                 atmosphereSettings.randomWaveLengths = wv;
             }
             float scatterX = Mathf.Pow (400 / wv.x, 4);
@@ -62,19 +66,15 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             material.SetFloat ("ditherStrength", atmosphereSettings.ditherStrength);
             material.SetFloat ("ditherScale", atmosphereSettings.ditherScale);
             material.SetTexture ("_BlueNoise", blueNoise);
-
-            // todo check if it has sense
-            if (hasPhysicChanged)
-            {
-                PrecomputeOutScattering ();
-                material.SetTexture ("_BakedOpticalDepth", _opticalDepthTexture);
-            }
             
-            // _settingsUpToDate = true;
+            PrecomputeOutScattering ();
+            material.SetTexture ("_BakedOpticalDepth", _opticalDepthTexture);
+            
+            _settingsUpToDate = true;
         }
-        
-        void PrecomputeOutScattering () {
-            if (hasPhysicChanged || _opticalDepthTexture == null || !_opticalDepthTexture.IsCreated ()) {
+
+        private void PrecomputeOutScattering () {
+            if (_opticalDepthTexture == null || !_opticalDepthTexture.IsCreated ()) {
                 ComputeHelper.CreateRenderTexture (ref _opticalDepthTexture, atmosphereSettings.textureSize);
                 opticalDepthCompute.SetTexture (0, "Result", _opticalDepthTexture);
                 opticalDepthCompute.SetInt ("textureSize", atmosphereSettings.textureSize);
@@ -124,7 +124,7 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         // MEMENTO PATTERN
         public void InitSettings()
         {
-            
+            _settingsUpToDate = false;
         }
         public AtmosphereSettings GetSettings()
         {
@@ -134,7 +134,7 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         public void SetSettings(AtmosphereSettings s)
         {
             atmosphereSettings = s;
-            // _settingsUpToDate = false;
+            _settingsUpToDate = false;
         }
     }
 }
