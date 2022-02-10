@@ -18,3 +18,4 @@ MonoBehaviour:
   displayOceans: 1
   displayAtmospheres: 1
   displayRings: 1
+  active: 1

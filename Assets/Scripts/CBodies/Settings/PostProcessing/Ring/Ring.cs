@@ -16,7 +16,7 @@ namespace CBodies.Settings.PostProcessing.Ring
         
         public void SetRingProperties(Material ringMaterial)
         {
-            //if (_settingsUpToDate) return;
+            if (_settingsUpToDate) return;
             
             ringMaterial.SetInt("has_ring", ringSettings.hasRing ? 1 : 0);
             if (ringSettings.hasRing)

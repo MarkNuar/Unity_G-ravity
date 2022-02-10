@@ -23,15 +23,16 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
 
         public void SetAtmosphereProperties(Material material, float cBodyRadius)
         {
-            //if (_settingsUpToDate) return;
-            material.SetInt("has_atmosphere", atmosphereSettings.hasAtmosphere ? 1 : 0);
-            
+            // radius must always be checked
             var atmosphereRadius = (1 + atmosphereSettings.atmosphereScale) * cBodyRadius;
+            material.SetFloat ("atmosphereRadius", atmosphereRadius);
             
+            if (_settingsUpToDate) return;
+            //Debug.LogError("Updating atmosphere properties");
+            
+            material.SetInt("has_atmosphere", atmosphereSettings.hasAtmosphere ? 1 : 0);
             material.SetInt ("numInScatteringPoints", atmosphereSettings.inScatteringPoints);
             material.SetInt ("numOpticalDepthPoints", atmosphereSettings.opticalDepthPoints);
-            material.SetFloat ("atmosphereRadius", atmosphereRadius);
-            material.SetFloat ("planetRadius", cBodyRadius);
             material.SetFloat ("densityFalloff", atmosphereSettings.densityFalloff);
 
             // Strength of (rayleigh) scattering is inversely proportional to wavelength^4
@@ -46,8 +47,11 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
                     Vector3 baseWv = atmosphereSettings.wavelengths;
                     wv = n switch
                     {
+                        // blue sky
                         0 => new Vector3(baseWv.x + d, baseWv.y + d / 5, baseWv.z + d / 10),
+                        // red sky
                         1 => new Vector3(baseWv.z + d / 10, baseWv.y + d / 5, baseWv.x + d),
+                        // green sky
                         2 => new Vector3(baseWv.x + d, baseWv.z + d / 10, baseWv.y + d / 5),
                         _ => wv
                     };

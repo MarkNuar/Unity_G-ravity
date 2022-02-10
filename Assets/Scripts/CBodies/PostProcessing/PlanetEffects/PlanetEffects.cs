@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CBodies.PostProcessing.PlanetEffects.Effects;
 using CBodies.Settings;
 using UnityEngine;
@@ -20,34 +21,62 @@ namespace CBodies.PostProcessing.PlanetEffects
 		public bool displayAtmospheres = true;
 		public bool displayRings = true;
 
-		List<EffectHolder> _effectHolders;
-		List<float> _sortDistances;
+		private List<EffectHolder> _effectHolders;
+		private List<float> _sortDistances;
 
-		List<Material> _postProcessingMaterials;
-		bool active = true;
+		private List<Material> _postProcessingMaterials;
+
+		private List<CBodyGenerator> _previousGenerators;
+		
+		public bool active = true;
 
 		public override void Render (RenderTexture source, RenderTexture destination) {
-			List<Material> materials = GetMaterials ();
+			var materials = GetMaterials ();
+			//Debug.LogError("materials: " + materials.Count);
 			CustomPostProcessing.RenderMaterials (source, destination, materials);
 		}
 
-		void Init () {
-			if (_effectHolders == null || _effectHolders.Count == 0 || 
-			    // new cBody added, happens only in edit mode
-			    _effectHolders.Count != SystemUtils.Instance.currentSystemSettings.cBodiesSettings.Count) {
-				var generators = FindObjectsOfType<CBodyGenerator> ();
-				_effectHolders = new List<EffectHolder> (generators.Length);
+		private void Init () {
+			if (_effectHolders == null)
+			{
+				var generators = new List<CBodyGenerator>(FindObjectsOfType<CBodyGenerator> ());
+				_effectHolders = new List<EffectHolder>(generators.Count);
 				foreach (CBodyGenerator t in generators)
 				{
 					_effectHolders.Add (new EffectHolder (t));
 				}
+				_previousGenerators = generators;
 			}
-			if (_postProcessingMaterials == null) {
-				_postProcessingMaterials = new List<Material> ();
+
+			if (_effectHolders.Count != SystemUtils.Instance.currentSystemSettings.cBodiesSettings.Count)
+			{
+				var generators = new List<CBodyGenerator>(FindObjectsOfType<CBodyGenerator> ());
+				if (generators.Count > _previousGenerators.Count)
+				{
+					foreach (CBodyGenerator t in generators.Where(t => !_previousGenerators.Contains(t)))
+					{
+						_effectHolders.Add (new EffectHolder (t));
+					}
+				}
+				else
+				{
+					foreach (CBodyGenerator t in _previousGenerators.Where(t => !generators.Contains(t)))
+					{
+						foreach (EffectHolder holder in _effectHolders.Where(holder => holder.generator == t))
+						{
+							_effectHolders.Remove(holder);
+							break;
+						}
+					}
+				}
+				
+				_previousGenerators = generators;
 			}
-			if (_sortDistances == null) {
-				_sortDistances = new List<float> ();
-			}
+
+			_postProcessingMaterials ??= new List<Material>();
+
+			_sortDistances ??= new List<float>();
+			
 			_sortDistances.Clear ();
 			_postProcessingMaterials.Clear ();
 		}
@@ -58,6 +87,8 @@ namespace CBodies.PostProcessing.PlanetEffects
 				return null;
 			}
 			Init ();
+			
+			//Debug.LogError("effect holders: " +_effectHolders.Count);
 
 			if (_effectHolders.Count > 0) {
 				Camera cam = GameManager.Instance.GetMainCamera();
@@ -69,11 +100,11 @@ namespace CBodies.PostProcessing.PlanetEffects
 				{
 					Material underwaterMaterial = null;
 					// Oceans
-					if (displayOceans) {
-						if (effectHolder.oceanEffect != null) {
-
+					if (displayOceans) 
+					{
+						if (effectHolder.oceanEffect != null)
+						{
 							effectHolder.oceanEffect.UpdateSettings (effectHolder.generator, oceanShader);
-
 							float camDstFromCentre = (camPos - effectHolder.generator.transform.position).magnitude;
 							if (camDstFromCentre < effectHolder.generator.GetOceanRadius ()) {
 								underwaterMaterial = effectHolder.oceanEffect.GetMaterial ();
@@ -84,8 +115,10 @@ namespace CBodies.PostProcessing.PlanetEffects
 					}
 					
 					// Atmospheres
-					if (displayAtmospheres) {
-						if (effectHolder.atmosphereEffect != null) {
+					if (displayAtmospheres) 
+					{
+						if (effectHolder.atmosphereEffect != null) 
+						{
 							effectHolder.atmosphereEffect.UpdateSettings (effectHolder.generator, atmosphereShader);
 							_postProcessingMaterials.Add (effectHolder.atmosphereEffect.GetMaterial ());
 						}
@@ -101,7 +134,8 @@ namespace CBodies.PostProcessing.PlanetEffects
 						}
 					}
 
-					if (underwaterMaterial != null) {
+					if (underwaterMaterial != null) 
+					{
 						_postProcessingMaterials.Add (underwaterMaterial);
 					}
 				}
@@ -109,7 +143,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 
 			return _postProcessingMaterials;
 		}
-
+		
 		private class EffectHolder {
 			public CBodyGenerator generator;
 			public OceanEffect oceanEffect;

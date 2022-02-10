@@ -23,6 +23,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
 
             _material.SetVector ("planetCentre", generator.transform.position);
             _material.SetFloat ("oceanRadius", generator.GetOceanRadius ());
+            _material.SetFloat ("planetRadius", generator.BodyScale);
 
             if (_light) {
                 _material.SetVector ("dirToSun", -_light.transform.forward);
