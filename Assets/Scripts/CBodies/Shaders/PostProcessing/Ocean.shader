@@ -110,7 +110,8 @@ Shader "Hidden/Ocean"
 				// dst that view ray travels through ocean (before hitting terrain / exiting ocean)
 				const float ocean_view_depth = min(dst_through_ocean, scene_depth - dst_to_ocean);
 
-
+				//return ocean_view_depth;
+				
 				if (ocean_view_depth > 0) {
 					//return 1;
 

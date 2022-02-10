@@ -177,7 +177,7 @@ Shader "CBodies/Rock2"
 			float4 texNoise2ZoomXL = triplanar(i.vertPos, i.normal, _NoiseZoomXL, _NoiseTex);
 			
 			// Flat terrain colour A and B
-			float flatColBlendWeight = Blend(0, _FlatColBlend, (flatHeight01-.2) + (texNoiseZoomL.b - 0.5) * _FlatColBlendNoise);
+			float flatColBlendWeight = Blend(0, _FlatColBlend, (flatHeight01-.35) + (texNoiseZoomL.b - 0.5) * _FlatColBlendNoise);
 			float3 flatTerrainColA = lerp(_FlatLowA, _FlatHighA, flatColBlendWeight);
 			flatTerrainColA = lerp(flatTerrainColA, (_FlatLowA + _FlatHighA)/2 , texNoiseZoomM.g);
 			float3 flatTerrainColB = lerp(_FlatLowB, _FlatHighB, flatColBlendWeight);

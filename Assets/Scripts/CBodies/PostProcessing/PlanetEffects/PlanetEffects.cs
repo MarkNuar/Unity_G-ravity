@@ -50,19 +50,24 @@ namespace CBodies.PostProcessing.PlanetEffects
 
 			if (_effectHolders.Count != SystemUtils.Instance.currentSystemSettings.cBodiesSettings.Count)
 			{
-				var generators = new List<CBodyGenerator>(FindObjectsOfType<CBodyGenerator> ());
-				if (generators.Count > _previousGenerators.Count)
+				var prevGenerators = _effectHolders.Select(e => e.generator).ToList();
+				var curGenerators = new List<CBodyGenerator>(FindObjectsOfType<CBodyGenerator> ());
+				// CBody added
+				if (curGenerators.Count > _effectHolders.Count)
 				{
-					foreach (CBodyGenerator t in generators.Where(t => !_previousGenerators.Contains(t)))
+					foreach (CBodyGenerator t in curGenerators.Where(
+						t => !prevGenerators.Contains(t)))
 					{
 						_effectHolders.Add (new EffectHolder (t));
 					}
 				}
+				// CBody removed
 				else
 				{
-					foreach (CBodyGenerator t in _previousGenerators.Where(t => !generators.Contains(t)))
+					foreach (CBodyGenerator t in prevGenerators.Where(
+						t => !curGenerators.Contains(t)))
 					{
-						foreach (EffectHolder holder in _effectHolders.Where(holder => holder.generator == t))
+						foreach (EffectHolder holder in _effectHolders.Where(h => h.generator == t))
 						{
 							_effectHolders.Remove(holder);
 							break;
@@ -70,7 +75,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 					}
 				}
 				
-				_previousGenerators = generators;
+				_previousGenerators = curGenerators;
 			}
 
 			_postProcessingMaterials ??= new List<Material>();

@@ -15,8 +15,8 @@ MonoBehaviour:
   oceanSettings:
     randomizeShading: 1
     randomizeHeight: 1
-    shadingSeed: -4319
-    heightSeed: 7880
+    shadingSeed: 5270
+    heightSeed: 3082
     realisticColors: 0
     hueRange: 0.05
     hasOcean: 1
@@ -27,8 +27,8 @@ MonoBehaviour:
     alphaMultiplier: 1000
     baseShallowCol: {r: 0.3137255, g: 0.94117653, b: 0.7568628, a: 1}
     baseDepthCol: {r: 0, g: 0.08689179, b: 0.26415092, a: 1}
-    randomShallowCol: {r: 0.3137255, g: 0.94117653, b: 0.59918755, a: 1}
-    randomDepthCol: {r: 0, g: 0.1532715, b: 0.26415092, a: 1}
+    randomShallowCol: {r: 0.8021564, g: 0.29945457, b: 0.57800454, a: 1}
+    randomDepthCol: {r: 0.302189, g: 0.10847354, b: 0.26118582, a: 1}
     specularCol: {r: 1, g: 1, b: 1, a: 1}
     waveStrength: 1
     waveScale: 11.1
@@ -37,4 +37,3 @@ MonoBehaviour:
     testParams: {x: 0, y: 0, z: 0, w: 0}
   waveNormalA: {fileID: 2800000, guid: 958ac9a3057b60c4e95850265ee08393, type: 3}
   waveNormalB: {fileID: 2800000, guid: 59fb97734ed9e6e4db99cc581b4cba33, type: 3}
-  hasPhysicChanged: 1
