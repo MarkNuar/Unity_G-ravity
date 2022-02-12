@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 10899156}
   - component: {fileID: 10899155}
   - component: {fileID: 10899157}
+  - component: {fileID: 10899158}
   m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -165,7 +166,7 @@ Camera:
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
-  m_FOVAxisMode: 0
+  m_FOVAxisMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
   m_FocalLength: 50
@@ -175,21 +176,21 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
-  far clip plane: 600
-  field of view: 35
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 40
   orthographic: 1
-  orthographic size: 60
-  m_Depth: -1
+  orthographic size: 100
+  m_Depth: -2
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -260,11 +261,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a70a90606c95f4ab24e30a0f4efd28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 50
-  accSprintMultiplier: 10
+  acceleration: 30
+  rollSpeed: 0.5
+  accSprintMultiplier: 30
   lookSensitivity: 1
-  dampingCoefficient: 5
-  focusOnEnable: 1
+  dampingCoefficient: 8
+  focusOnEnable: 0
+--- !u!114 &10899158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10899151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a033e2f629bd494e95e42f374b627a56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 10899153}
+  flyCamera: {fileID: 10899157}
+  editMenu: {fileID: 893004971}
+  pauseMenu: {fileID: 569308563}
+  starView: {fileID: 1171841649}
 --- !u!1001 &470313255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -434,6 +453,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraToTrack: {fileID: 10899154}
   trackCamera: 0
+--- !u!1 &569308563 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5876314823887600494, guid: c104d21ac04bd0640a39962f9023efaa, type: 3}
+  m_PrefabInstance: {fileID: 44665521662198786}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &659018147
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -495,6 +519,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38e72167f59125a4496a8bbafc2a6210, type: 3}
+--- !u!1 &893004971 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5454001955853628323, guid: e8423775baed75645af6d4c7fb39243b, type: 3}
+  m_PrefabInstance: {fileID: 8255892584814146771}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1025511885
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,6 +605,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StarView
       objectReference: {fileID: 0}
+    - target: {fileID: 2241725730448225738, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7726828581127354412, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -622,6 +655,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
+--- !u!1 &1171841649 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2241725730448225738, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
+  m_PrefabInstance: {fileID: 1171841648}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &44665521662198786
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -717,6 +755,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 10899153}
+    - target: {fileID: 1626344806635783051, guid: c104d21ac04bd0640a39962f9023efaa, type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1626344806635783051, guid: c104d21ac04bd0640a39962f9023efaa, type: 3}
       propertyPath: m_SortingOrder
       value: 2

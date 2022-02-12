@@ -88,8 +88,8 @@ namespace CBodies.Editor
                 Regenerate (shapeS, shadingS, physicsS, oceanS, atmosphereS, ringS);
             }
 
-            var randomized = shadingS.randomize || shapeS.randomize || oceanS.randomizeShading || oceanS.randomizeHeight || ringS.randomizeShading;
-            randomized |= shadingS.seed != 0 || shapeS.seed != 0 || oceanS.shadingSeed != 0 || oceanS.heightSeed != 0 || ringS.shadingSeed != 0;
+            var randomized = shadingS.randomize || shapeS.randomize || oceanS.randomizeShading || oceanS.randomizeHeight || ringS.randomizeShading || atmosphereS.randomizeShading ;
+            randomized |= shadingS.seed != 0 || shapeS.seed != 0 || oceanS.shadingSeed != 0 || oceanS.heightSeed != 0 || ringS.shadingSeed != 0 || atmosphereS.shadingSeed != 0;
             using (new EditorGUI.DisabledGroupScope (!randomized)) {
                 if (GUILayout.Button ("Reset Randomization")) {
                     shadingS.RandomizeShading(false);

@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private string _systemToLoad;
     private bool _isNew;
 
+    public bool gamePaused = false;
+
     public enum GameMode {Menu, Editing, Explore, Unknown}
     public GameMode gameMode; 
     

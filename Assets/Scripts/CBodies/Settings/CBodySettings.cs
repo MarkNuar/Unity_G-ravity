@@ -75,6 +75,16 @@ namespace CBodies.Settings
             rs.hasRing = cBodyType == CBodyType.Gaseous;
         }
 
+        public bool IsRandomized()
+        {
+            return shading.GetSettings().randomize ||
+                   shape.GetSettings().randomize ||
+                   ocean.GetSettings().randomizeShading ||
+                   ocean.GetSettings().randomizeHeight ||
+                   atmosphere.GetSettings().randomizeShading ||
+                   ring.GetSettings().randomizeShading;
+        }
+
         [Serializable]
         public enum CBodyType
         {

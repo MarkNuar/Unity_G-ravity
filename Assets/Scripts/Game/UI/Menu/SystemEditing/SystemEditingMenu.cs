@@ -285,6 +285,7 @@ namespace Game.UI.Menu.SystemEditing
             DisableCBodyButtons();
             
             inputCBodyName.text = GetCurrentCBodySettings().cBodyName;
+            bResetRandomization.interactable = GetCurrentCBodySettings().IsRandomized();
 
             HideCurrentCBodySelectionHUD();
 
@@ -315,25 +316,24 @@ namespace Game.UI.Menu.SystemEditing
 
         public void RandomizeColor()
         {
-            bResetRandomization.interactable = true;
             _oceanS.RandomizeShading(true);
             _atmosphereS.RandomizeShading(true);
             _ringS.RandomizeShading(true);
             _shadingS.RandomizeShading(true);
             SetCurrentSettings(CBodyGenerator.UpdateType.Shading);
+            bResetRandomization.interactable = true;
         }
 
         public void RandomizeShape()
         {
-            bResetRandomization.interactable = true;
             _ringS.RandomizeShape(true);
             _shapeS.RandomizeShape(true);
             SetCurrentSettings(CBodyGenerator.UpdateType.Shape);
+            bResetRandomization.interactable = true;
         }
 
         public void RandomizeColorAndShape()
         {
-            bResetRandomization.interactable = true;
             _oceanS.RandomizeShading(true);
             _oceanS.RandomizeShape(true);
             _atmosphereS.RandomizeShading(true);
@@ -342,11 +342,11 @@ namespace Game.UI.Menu.SystemEditing
             _shadingS.RandomizeShading(true);
             _shapeS.RandomizeShape(true);
             SetCurrentSettings(CBodyGenerator.UpdateType.All);
+            bResetRandomization.interactable = true;
         }
 
         public void ResetRandomization()
         {
-            bResetRandomization.interactable = false;
             _oceanS.RandomizeShading(false);
             _oceanS.RandomizeShape(false);
             _atmosphereS.RandomizeShading(false);
@@ -355,6 +355,7 @@ namespace Game.UI.Menu.SystemEditing
             _shadingS.RandomizeShading(false);
             _shapeS.RandomizeShape(false);
             SetCurrentSettings(CBodyGenerator.UpdateType.All);
+            bResetRandomization.interactable = false;
         }
         
         // public void BeginPickColor()

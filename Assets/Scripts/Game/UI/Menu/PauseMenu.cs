@@ -26,6 +26,7 @@ namespace Game.UI.Menu
             pauseMenu.SetActive(true);
             Time.timeScale = 0f;
             _gameIsPaused = true;
+            GameManager.Instance.gamePaused = true;
         }
         
         public void Resume()
@@ -33,6 +34,7 @@ namespace Game.UI.Menu
             pauseMenu.SetActive(false);
             Time.timeScale = 1f;
             _gameIsPaused = false;
+            GameManager.Instance.gamePaused = false;
         }
 
         public void LoadMainMenu()

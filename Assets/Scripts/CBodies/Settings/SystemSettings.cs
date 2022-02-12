@@ -19,18 +19,26 @@ namespace CBodies.Settings
         
         public int AddNewCBody(CBodySettings.CBodyType type)
         {
-            CBodySettings cbd = new CBodySettings();
+            CBodySettings cb = new CBodySettings();
             // Initialize cBodySettings values
-            cbd.Init(type);
+            cb.Init(type);
 
             // todo: position according to the type of planet
-            var count = cBodiesSettings.Count;
-            Vector3 pos = new Vector3( count * 25, 0, 0);
-            Physics.Physics.PhysicsSettings ps = cbd.physics.GetSettings();
+            var posX = 0.0f;
+            foreach (var cbs in cBodiesSettings)
+            {
+                var p = cbs.physics.GetSettings().initialPosition.x + cbs.physics.GetSettings().maxRadius + cb.physics.GetSettings().maxRadius + 55;
+                if (p > posX)
+                {
+                    posX = p;
+                }
+            }
+            Vector3 pos = new Vector3( posX, 0, 0);
+            Physics.Physics.PhysicsSettings ps = cb.physics.GetSettings();
             ps.initialPosition = pos;
-            cbd.physics.SetSettings(ps);
+            cb.physics.SetSettings(ps);
 
-            cBodiesSettings.Add(cbd);
+            cBodiesSettings.Add(cb);
             return cBodiesSettings.Count - 1;
         }
     }

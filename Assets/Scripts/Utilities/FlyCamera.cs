@@ -31,7 +31,7 @@ public class FlyCamera : MonoBehaviour {
 		// Input
 		if( Focused )
 			UpdateInput();
-		else if( Input.GetMouseButtonDown( 0 ) )
+		else if(Input.GetMouseButtonDown( 0 ) && !GameManager.Instance.gamePaused )
 			Focused = true;
 
 		// Physics
