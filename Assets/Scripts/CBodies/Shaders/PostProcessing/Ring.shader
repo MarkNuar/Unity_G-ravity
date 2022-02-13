@@ -64,8 +64,6 @@ Shader "Hidden/Ring"
 
 			// Functions for ring coloring taken from this shader:
 			// https://www.shadertoy.com/view/3scXR7
-
-
 			float hash1(float p) {
 			    p = frac(p * .1031);
 			    p *= p + 33.33;

@@ -15,12 +15,12 @@ MonoBehaviour:
   perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
   heightMapCompute: {fileID: 7200000, guid: 9c2c260115dde784cbfe72d24b70a415, type: 3}
   shapeSettings:
-    randomize: 0
-    seed: 0
+    randomize: 1
+    seed: 9889
     perturbVertices: 1
     perturbStrength: 0.65
     hasOcean: 1
-    oceanDepthMultiplier: 15
+    oceanDepthMultiplier: 5
     oceanFloorDepth: 1.36
     oceanFloorSmoothing: 2
     mountainBlend: 1.16
@@ -41,7 +41,7 @@ MonoBehaviour:
       persistence: 0.55
       scale: 2
       elevation: 1
-      verticalShift: 0
+      verticalShift: 0.047543827
       offset: {x: 0, y: 0, z: 0}
     ridgeNoise:
       numLayers: 5

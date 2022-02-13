@@ -60,8 +60,7 @@ Shader "CBodies/Gaseous"
         UNITY_INSTANCING_BUFFER_END(Props)
 
         
-        // number of octaves of fbm
-        #define NUM_NOISE_OCTAVES 10
+        
 
         // Precision-adjusted variations of https://www.shadertoy.com/view/4djSRW
         float hash(float p) { p = frac(p * 0.011); p *= p + 7.5; p *= p + p; return frac(p); }
@@ -78,14 +77,56 @@ Shader "CBodies/Gaseous"
                            lerp( hash(n + dot(step, float3(0, 1, 1))), hash(n + dot(step, float3(1, 1, 1))), u.x), u.y), u.z);
         }
 
+        
+        // Simplex Noise
+        // Reference
+        // https://thebookofshaders.com/11/
+		// float4 mod289(float4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+		// float4 perm(float4 x){return mod289(((x * 34.0) + 1.0) * x);}
+		// float noise(float3 p){
+		//     float3 a = floor(p);
+		//     float3 d = p - a;
+		//     d = d * d * (3.0 - 2.0 * d);
+		//
+		//     float4 b = a.xxyy + float4(0.0, 1.0, 0.0, 1.0);
+		//     float4 k1 = perm(b.xyxy);
+		//     float4 k2 = perm(k1.xyxy + b.zzww);
+		//
+		//     float4 c = k2 + a.zzzz;
+		//     float4 k3 = perm(c);
+		//     float4 k4 = perm(c + 1.0);
+		//
+		//     float4 o1 = frac(k3 * (1.0 / 41.0));
+		//     float4 o2 = frac(k4 * (1.0 / 41.0));
+		//
+		//     float4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+		//     float2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+		//
+		//     return o4.y * d.y + o4.x * (1.0 - d.y);
+		// }
+
+        // number of octaves of fbm
+        // #define NUM_NOISE_OCTAVES 10
+        #define NUM_NOISE_OCTAVES 3
+        
+        // float fbm(float3 x) {
+	       //  float v = 0.0;
+	       //  float a = 0.5;
+	       //  for (int i = 0; i < NUM_NOISE_OCTAVES; ++i) {
+		      //   v += a * noise(x);
+		      //   x = x * 2.0;
+		      //   a *= 0.5;
+	       //  }
+	       //  return v;
+        // }
+
         float fbm(float3 x) {
 	        float v = 0.0;
 	        float a = 0.5;
-	        const float3 shift = (0);
 	        for (int i = 0; i < NUM_NOISE_OCTAVES; ++i) {
 		        v += a * noise(x);
-		        x = x * 2.0 + shift;
-		        a *= 0.5;
+		        x = x * 4.0;
+		        a *= 0.25;
 	        }
 	        return v;
         }

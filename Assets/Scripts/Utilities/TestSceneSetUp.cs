@@ -16,6 +16,10 @@ namespace Utilities
         // Start is called before the first frame update
         void Start()
         {
+            // enable depth texture mode
+            // https://forum.unity.com/threads/depth-texture-needs-directional-lighting.789557/
+            GameManager.Instance.GetMainCamera().depthTextureMode = DepthTextureMode.Depth;
+            
             _ss = SystemUtils.Instance.LoadTestSystem("Test");
             // If system not loaded or loaded cBody has different type from the one set in the inspector
             // create a new system

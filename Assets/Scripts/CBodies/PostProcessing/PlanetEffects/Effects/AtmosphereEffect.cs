@@ -5,7 +5,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
 {
     public class AtmosphereEffect {
 
-        private Light _light;
+        private SunShadowCaster _light;
         private Material _material;
 
         public void UpdateSettings (CBodyGenerator generator, Shader shader)
@@ -18,7 +18,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
             }
 
             if (_light == null) {
-                _light = Object.FindObjectOfType<SunShadowCaster> ()?.GetComponent<Light> ();
+                _light = Object.FindObjectOfType<SunShadowCaster>();
             }
 
             _material.SetVector ("planetCentre", generator.transform.position);
@@ -26,12 +26,13 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
             _material.SetFloat ("planetRadius", generator.BodyScale);
 
             if (_light) {
-                _material.SetVector ("dirToSun", -_light.transform.forward);
                 
-                // TODO LIGHTING 
-                // Vector3 dirFromPlanetToSun = (_light.transform.position - generator.transform.position).normalized;
-                // //Debug.Log(dirFromPlanetToSun);
-                // _material.SetVector ("dirToSun", dirFromPlanetToSun);
+                //_material.SetVector ("dirToSun", -_light.transform.forward);
+                //TODO LIGHTING 
+                Vector3 dirFromPlanetToSun = (_light.transform.position - generator.transform.position).normalized;
+                //Debug.Log(dirFromPlanetToSun);
+                _material.SetVector ("dirToSun", dirFromPlanetToSun);
+                
             } else {
                 _material.SetVector ("dirToSun", Vector3.up);
                 Debug.Log ("No SunShadowCaster found");

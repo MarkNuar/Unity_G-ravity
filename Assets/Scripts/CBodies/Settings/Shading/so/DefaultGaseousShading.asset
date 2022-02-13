@@ -16,4 +16,5 @@ MonoBehaviour:
   terrainMaterial: {fileID: 2100000, guid: b964f3e57f861f041b2919fc1f8bf0c8, type: 2}
   shadingSettings:
     randomize: 1
-    seed: -6991
+    seed: -6621
+    realisticColors: 1

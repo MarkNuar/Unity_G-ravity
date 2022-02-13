@@ -32,6 +32,8 @@ namespace Game.UI.Menu.SystemEditing
         {
             _initialCameraPosition = cam.transform.position;
             _initialCameraZoom = cam.orthographicSize;
+
+            cam.depthTextureMode = DepthTextureMode.Depth;
         }
 
         private void Update()

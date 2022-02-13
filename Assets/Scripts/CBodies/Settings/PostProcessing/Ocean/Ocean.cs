@@ -80,7 +80,7 @@ namespace CBodies.Settings.PostProcessing.Ocean
             
             public bool hasOcean;
 
-            private float _oceanLevel = 0.55f;
+            public float oceanLevel = 0.55f;
             public float baseOceanLevel = 0.5f;
             public float minOceanLevel = 0.3f;
             public float maxOceanLevel = 0.85f;
@@ -105,7 +105,7 @@ namespace CBodies.Settings.PostProcessing.Ocean
             public float GetOceanLevel()
             {
                 if (hasOcean)
-                    return _oceanLevel;
+                    return oceanLevel;
                 return 0;
                 // return _oceanLevel;
             }
@@ -116,11 +116,11 @@ namespace CBodies.Settings.PostProcessing.Ocean
                 if (randomizeHeight)
                 {
                     PRNG random = new PRNG (heightSeed);
-                    _oceanLevel = random.Range(minOceanLevel, maxOceanLevel);
+                    oceanLevel = random.Range(minOceanLevel, maxOceanLevel);
                 }
                 else
                 {
-                    _oceanLevel = baseOceanLevel;
+                    oceanLevel = baseOceanLevel;
                 }
             }
 

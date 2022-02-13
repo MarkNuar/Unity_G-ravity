@@ -5,7 +5,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
 {
     public class RingEffect
     {
-        private Light _light;
+        private SunShadowCaster _light;
         private Material _material;
 
         public void UpdateSettings (CBodyGenerator generator, Shader shader) 
@@ -18,7 +18,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
             }
 
             if (_light == null) {
-                _light = Object.FindObjectOfType<SunShadowCaster> ()?.GetComponent<Light> ();
+                _light = Object.FindObjectOfType<SunShadowCaster>();
             }
 
             Vector3 centre = generator.transform.position;
@@ -28,8 +28,14 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
             
             if (_light)
             {
+                
                 _material.SetInt("receive_shadow", 1);
-                _material.SetVector ("light_direction", -_light.transform.forward);
+                //_material.SetVector ("light_direction", -_light.transform.forward);
+                //TODO LIGHTING 
+                Vector3 dirFromPlanetToSun = (_light.transform.position - generator.transform.position).normalized;
+                //Debug.Log(dirFromPlanetToSun);
+                _material.SetVector ("light_direction", dirFromPlanetToSun);
+                
             } else {
                 _material.SetInt("receive_shadow", 0);
             }
