@@ -185,7 +185,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: 1
+  m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -261,11 +261,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a70a90606c95f4ab24e30a0f4efd28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 30
+  acceleration: 50
   rollSpeed: 0.5
-  accSprintMultiplier: 30
+  accSprintMultiplier: 20
   lookSensitivity: 1
-  dampingCoefficient: 8
+  dampingCoefficient: 5
   focusOnEnable: 1
 --- !u!114 &10899158
 MonoBehaviour:

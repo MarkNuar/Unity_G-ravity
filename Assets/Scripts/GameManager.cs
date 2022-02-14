@@ -1,14 +1,21 @@
-using System.IO;
-using System.Security.Cryptography;
+// precise frame rate from:
+// https://blog.unity.com/technology/precise-framerates-in-unity
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+using System.Collections;
+using System.Threading;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public float rate = 30.0f;
+    private float _currentFrameTime;
+    
     private string _systemToLoad;
     private bool _isNew;
 
@@ -24,15 +31,38 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(Instance);
 
-            // apply some quality settings 
-            QualitySettings.vSyncCount = 1;
-            Application.targetFrameRate = 30;
+            // // apply some quality settings 
+            // QualitySettings.vSyncCount = 0;
+            // Application.targetFrameRate = 300;
             
             JsonConvert.DefaultSettings().Converters.Add(new ColorConverter());
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 9999;
+        _currentFrameTime = Time.realtimeSinceStartup;
+        StartCoroutine("WaitForNextFrame");
+    }
+
+    private IEnumerator WaitForNextFrame()
+    {
+        while (true)
+        {
+            yield return new WaitForEndOfFrame();
+            _currentFrameTime += 1.0f / rate;
+            var t = Time.realtimeSinceStartup;
+            var sleepTime = _currentFrameTime - t - 0.01f;
+            if (sleepTime > 0)
+                Thread.Sleep((int)(sleepTime * 1000));
+            while (t < _currentFrameTime)
+                t = Time.realtimeSinceStartup;
         }
     }
 

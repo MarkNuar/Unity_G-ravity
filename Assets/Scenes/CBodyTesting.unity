@@ -131,6 +131,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4916227859157875940, guid: 00f87903c907a4143a96981919e92fd5, type: 3}
+      propertyPath: lockFPS
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4916227859157875940, guid: 00f87903c907a4143a96981919e92fd5, type: 3}
       propertyPath: gameMode
       value: 1
       objectReference: {fileID: 0}
@@ -290,7 +294,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: 1
+  m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -329,9 +333,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 50
   rollSpeed: 0.5
-  accSprintMultiplier: 10
+  accSprintMultiplier: 20
   lookSensitivity: 1
-  dampingCoefficient: 15
+  dampingCoefficient: 5
   focusOnEnable: 1
 --- !u!114 &1230531911
 MonoBehaviour:

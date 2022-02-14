@@ -24,7 +24,8 @@ Shader "CBodies/Gaseous"
         
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows vertex:vert
+        // #pragma surface surf Standard vertex:vert fullforwardshadows
+        #pragma surface surf Standard vertex:vert noforwardadd
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.5
@@ -63,74 +64,64 @@ Shader "CBodies/Gaseous"
         UNITY_INSTANCING_BUFFER_END(Props)
 
         
-        
-
-        // Precision-adjusted variations of https://www.shadertoy.com/view/4djSRW
-        float hash(float p) { p = frac(p * 0.011); p *= p + 7.5; p *= p + p; return frac(p); }
-
-        float noise(float3 x) {
-            const float3 step = float3(110, 241, 171);
-            const float3 i = floor(x);
-            const float3 f = frac(x);
-            const float n = dot(i, step);
-            float3 u = f * f * (3.0 - 2.0 * f);
-            return lerp(lerp(lerp( hash(n + dot(step, float3(0, 0, 0))), hash(n + dot(step, float3(1, 0, 0))), u.x),
-                           lerp( hash(n + dot(step, float3(0, 1, 0))), hash(n + dot(step, float3(1, 1, 0))), u.x), u.y),
-                       lerp(lerp( hash(n + dot(step, float3(0, 0, 1))), hash(n + dot(step, float3(1, 0, 1))), u.x),
-                           lerp( hash(n + dot(step, float3(0, 1, 1))), hash(n + dot(step, float3(1, 1, 1))), u.x), u.y), u.z);
-        }
+        // //Precision-adjusted variations of https://www.shadertoy.com/view/4djSRW
+        // float hash(float p) { p = frac(p * 0.011); p *= p + 7.5; p *= p + p; return frac(p); }
+        // float noise(float3 x) {
+        //     const float3 step = float3(110, 241, 171);
+        //     const float3 i = floor(x);
+        //     const float3 f = frac(x);
+        //     const float n = dot(i, step);
+        //     float3 u = f * f * (3.0 - 2.0 * f);
+        //     return lerp(lerp(lerp( hash(n + dot(step, float3(0, 0, 0))), hash(n + dot(step, float3(1, 0, 0))), u.x),
+        //                    lerp( hash(n + dot(step, float3(0, 1, 0))), hash(n + dot(step, float3(1, 1, 0))), u.x), u.y),
+        //                lerp(lerp( hash(n + dot(step, float3(0, 0, 1))), hash(n + dot(step, float3(1, 0, 1))), u.x),
+        //                    lerp( hash(n + dot(step, float3(0, 1, 1))), hash(n + dot(step, float3(1, 1, 1))), u.x), u.y), u.z);
+        // }
 
         
-        // Simplex Noise
-        // Reference
-        // https://thebookofshaders.com/11/
-		// float4 mod289(float4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
-		// float4 perm(float4 x){return mod289(((x * 34.0) + 1.0) * x);}
-		// float noise(float3 p){
-		//     float3 a = floor(p);
-		//     float3 d = p - a;
-		//     d = d * d * (3.0 - 2.0 * d);
-		//
-		//     float4 b = a.xxyy + float4(0.0, 1.0, 0.0, 1.0);
-		//     float4 k1 = perm(b.xyxy);
-		//     float4 k2 = perm(k1.xyxy + b.zzww);
-		//
-		//     float4 c = k2 + a.zzzz;
-		//     float4 k3 = perm(c);
-		//     float4 k4 = perm(c + 1.0);
-		//
-		//     float4 o1 = frac(k3 * (1.0 / 41.0));
-		//     float4 o2 = frac(k4 * (1.0 / 41.0));
-		//
-		//     float4 o3 = o2 * d.z + o1 * (1.0 - d.z);
-		//     float2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
-		//
-		//     return o4.y * d.y + o4.x * (1.0 - d.y);
-		// }
+        
+        // float noise(float3 p)
+        // {
+	       //  return sin(p.x) * sin(p.y) * sin(p.z);
+        // }
 
+
+        
+		// hash based 3d value noise
+		// function taken from https://www.shadertoy.com/view/XslGRr
+		// Created by inigo quilez - iq/2013
+		// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+		// ported from GLSL to HLSL
+        float hash( float n )
+		{
+		    return frac(sin(n)*43758.5453);
+		}
+		float noise( float3 x )
+		{
+		    // The noise function returns a value in the range -1.0f -> 1.0f
+		    float3 p = floor(x);
+		    float3 f = frac(x);
+		    f = f*f*(3.0-2.0*f);
+		    const float n = p.x + p.y*57.0 + 113.0*p.z;
+		    return lerp(lerp(lerp( hash(n+0.0), hash(n+1.0),f.x),
+		                   lerp( hash(n+57.0), hash(n+58.0),f.x),f.y),
+		               lerp(lerp( hash(n+113.0), hash(n+114.0),f.x),
+		                   lerp( hash(n+170.0), hash(n+171.0),f.x),f.y),f.z);
+		}
+        
+        
         // number of octaves of fbm
         // #define NUM_NOISE_OCTAVES 10
-        #define NUM_NOISE_OCTAVES 5
-        
-        // float fbm(float3 x) {
-	       //  float v = 0.0;
-	       //  float a = 0.5;
-	       //  for (int i = 0; i < NUM_NOISE_OCTAVES; ++i) {
-		      //   v += a * noise(x);
-		      //   x = x * 2.0;
-		      //   a *= 0.5;
-	       //  }
-	       //  return v;
-        // }
+        #define NUM_NOISE_OCTAVES 6
 
         float fbm(float3 x) {
 	        float v = 0.0;
 	        float a = 0.5;
-	        for (int i = 0; i < NUM_NOISE_OCTAVES; ++i) {
-		        v += a * noise(x);
-		        x = x * 4.0;
-		        a *= 0.25;
-	        }
+	         for (int i = 0; i < NUM_NOISE_OCTAVES; ++i) {
+		         v += a * noise(x);
+		         x = x * 2.0;
+		         a *= 0.5;
+	         }
 	        return v;
         }
 
