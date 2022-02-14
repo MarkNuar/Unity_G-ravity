@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
             // apply some quality settings 
             QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = 30;
             
             JsonConvert.DefaultSettings().Converters.Add(new ColorConverter());
         }

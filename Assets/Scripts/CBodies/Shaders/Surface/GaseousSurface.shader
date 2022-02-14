@@ -1,4 +1,7 @@
-﻿// Noise functions and most of the implementation based on
+﻿// Shadertoy source:
+// https://www.shadertoy.com/view/tltXWM
+
+// Noise functions and most of the implementation based on
 // https://www.shadertoy.com/view/4dS3Wd by Morgan McGuire @morgan3d!
 
 // see also
@@ -107,7 +110,7 @@ Shader "CBodies/Gaseous"
 
         // number of octaves of fbm
         // #define NUM_NOISE_OCTAVES 10
-        #define NUM_NOISE_OCTAVES 3
+        #define NUM_NOISE_OCTAVES 5
         
         // float fbm(float3 x) {
 	       //  float v = 0.0;
@@ -152,12 +155,12 @@ Shader "CBodies/Gaseous"
             
             // convert noise value into color
             // three colors: top - mid - bottom (mid being constructed by three colors)
-            // const float3 col_top = float3(1.0, 1.0, 1.0);
-            // const float3 col_bot = float3(0.0, 0.0, 0.0);
-            // const float3 col_mid1 = float3(0.1, 0.2, 0.0);
-            // const float3 col_mid2 = float3(0.7, 0.4, 0.3);
-            // const float3 col_mid3 = float3(1.0, 0.4, 0.2);
-
+            // col_top = float3(1.0, 1.0, 1.0);
+            // col_bot = float3(0.0, 0.0, 0.0);
+            // col_mid1 = float3(0.1, 0.2, 0.0);
+            // col_mid2 = float3(0.7, 0.4, 0.3);
+            // col_mid3 = float3(1.0, 0.4, 0.2);
+            
             // lerp mid color based on intermediate results
             float3 col_mid = lerp(col_mid1, col_mid2, clamp(r, 0.0, 1.0));
             col_mid = lerp(col_mid, col_mid3, clamp(q, 0.0, 1.0));

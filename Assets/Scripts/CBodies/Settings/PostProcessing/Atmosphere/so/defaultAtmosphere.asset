@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: defaultAtmosphere
   m_EditorClassIdentifier: 
   atmosphereSettings:
-    randomizeShading: 0
-    shadingSeed: 0
-    realisticColors: 0
+    randomizeShading: 1
+    shadingSeed: 9266
+    realisticColors: 1
     hasAtmosphere: 1
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 5
     densityFalloff: 7
     wavelengths: {x: 700, y: 530, z: 460}
-    randomWaveLengths: {x: 444, y: 480, z: 459}
-    scatteringStrength: 10
+    randomWaveLengths: {x: 713.18427, y: 532.63684, z: 461.31842}
+    scatteringStrength: 4.39
     intensity: 0.6
     ditherStrength: 0
     ditherScale: 3.89

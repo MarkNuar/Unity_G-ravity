@@ -46,15 +46,18 @@ public class FlyCamera : MonoBehaviour {
 		// Rotation
 		Vector2 mouseDelta = lookSensitivity * new Vector2( Input.GetAxis( "Mouse X" ), -Input.GetAxis( "Mouse Y" ) );
 		float rollDelta = 0;
-		var q = Input.GetKey(KeyCode.Q);
-		var e = Input.GetKey(KeyCode.E);
-		if (q && e)
-			rollDelta = 0;
-		else if (q)
-			rollDelta = 1;
-		else if (e)
-			rollDelta = -1;
-
+		if (! Input.GetKey(KeyCode.Space))
+		{
+			var q = Input.GetKey(KeyCode.Q);
+            var e = Input.GetKey(KeyCode.E);
+            if (q && e)
+            	rollDelta = 0;
+            else if (q)
+            	rollDelta = 1;
+            else if (e)
+            	rollDelta = -1;
+		}
+		
 		Quaternion rotation = transform.rotation;
 		Quaternion deltaRotation = Quaternion.Euler(mouseDelta.y, mouseDelta.x, rollDelta * rollSpeed);
 		transform.rotation = rotation * deltaRotation;
@@ -76,8 +79,12 @@ public class FlyCamera : MonoBehaviour {
 		AddMovement( KeyCode.S, Vector3.back );
 		AddMovement( KeyCode.D, Vector3.right );
 		AddMovement( KeyCode.A, Vector3.left );
-		AddMovement( KeyCode.Space, Vector3.up );
-		AddMovement( KeyCode.LeftControl, Vector3.down );
+		if (Input.GetKey(KeyCode.Space))
+		{
+			AddMovement( KeyCode.E, Vector3.up );
+			AddMovement( KeyCode.Q, Vector3.down );
+		}
+		
 		Vector3 direction = transform.TransformVector( moveInput.normalized );
 
 		if( Input.GetKey( KeyCode.LeftShift ) )

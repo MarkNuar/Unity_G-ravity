@@ -42,9 +42,9 @@ namespace CBodies.Settings.Shading
             
             Color colorTop = Color.white;
             Color colorBottom = Color.black;
-            Color colorMid1 = ColorHelper.Palette( randomVal * .1135f, a,  b, c,  d ) * 0.33f;
-            Color colorMid2 = ColorHelper.Palette( randomVal * -.1135f, d,  c, b,  a ) * 0.33f;
-            Color colorMid3 = ColorHelper.Palette( randomVal * -.114f, c,  d, c,  b ) * 0.33f;
+            Color colorMid1 = ColorHelper.TweakHSV(ColorHelper.Palette( randomVal * .1135f, a,  b, c,  d ) * 0.33f, 0, 0.3f, 0);
+            Color colorMid2 = ColorHelper.TweakHSV(ColorHelper.Palette( randomVal * -.1135f, d,  c, b,  a ) * 0.33f, 0, 0.3f, 0);
+            Color colorMid3 = ColorHelper.TweakHSV(ColorHelper.Palette( randomVal * -.114f, c,  d, c,  b ) * 0.33f, 0, 0.3f, 0);
 
             material.SetColor("col_top", colorTop);
             material.SetColor("col_bot", colorBottom);
