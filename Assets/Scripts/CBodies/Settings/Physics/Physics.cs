@@ -34,9 +34,9 @@ namespace CBodies.Settings.Physics
             public float maxRadius = 40f;
             public float radius = 5f;
             
-            public float minSurfaceGravity = 0.1f;
-            public float maxSurfaceGravity = 20f;
-            public float surfaceGravity = 7;
+            public float minSurfaceGravity = 5f;
+            public float maxSurfaceGravity = 50f;
+            public float surfaceGravity = 10;
 
             public float minRotationSpeed = -30f;
             public float maxRotationSpeed = 30f;

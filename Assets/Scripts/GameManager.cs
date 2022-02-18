@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public float rate = 30.0f;
+    [Tooltip("Target frame rate of the game")]
+    public float targetRate = 30.0f;
     private float _currentFrameTime;
     
     private string _systemToLoad;
@@ -46,9 +47,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 9999;
-        _currentFrameTime = Time.realtimeSinceStartup;
-        StartCoroutine("WaitForNextFrame");
+        Application.targetFrameRate = 30;
+        // _currentFrameTime = Time.realtimeSinceStartup;
+        // StartCoroutine("WaitForNextFrame");
     }
 
     private IEnumerator WaitForNextFrame()
@@ -56,7 +57,7 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
-            _currentFrameTime += 1.0f / rate;
+            _currentFrameTime += 1.0f / targetRate;
             var t = Time.realtimeSinceStartup;
             var sleepTime = _currentFrameTime - t - 0.01f;
             if (sleepTime > 0)

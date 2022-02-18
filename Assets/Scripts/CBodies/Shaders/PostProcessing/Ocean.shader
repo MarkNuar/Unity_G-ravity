@@ -119,8 +119,8 @@ Shader "Hidden/Ocean"
 
 					const float dst_above_water = length(clip_plane_pos - oceanCentre) - oceanRadius;
 
-					const float t = 1 - exp(-ocean_view_depth / planetScale * depthMultiplier);
-					const float alpha =  1-exp(-ocean_view_depth / planetScale * alphaMultiplier);
+					const float t = 1 - exp(- ocean_view_depth / (planetScale) * depthMultiplier);
+					const float alpha =  1-exp(- ocean_view_depth / (planetScale) * alphaMultiplier);
 					float4 ocean_col = lerp(colA, colB, t);
 
 					const float3 ocean_sphere_normal = normalize(ray_ocean_intersect_pos);

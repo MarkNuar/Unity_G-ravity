@@ -46,4 +46,5 @@ MonoBehaviour:
   starPrefab: {fileID: 1557662550303686523, guid: 202c78f5114ec914b9bc118e38111085, type: 3}
   radiusMinMax: {x: 1, y: 3}
   count: 2000
+  calibrationDst: 3000
   brightnessMinMax: {x: 0.25, y: 0.9}

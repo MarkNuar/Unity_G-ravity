@@ -31,7 +31,7 @@ namespace Game.UI.Menu.SystemEditing
         // Index of the currently selected cbody
         private int _currentCBodyIndex = -1;
 
-        public int maxCBodyElements = 10;
+        public int maxCBodyElements = 6;
         
         // PHYSICS
         [SerializeField] private Slider radiusSlider = null;
@@ -83,7 +83,7 @@ namespace Game.UI.Menu.SystemEditing
                     SetSystemName(systemToLoad);
                     // Start by adding always a star to the system
                     // TODO : ADD A STAR, NOT A ROCK PLANET AT THE BEGINNING
-                    _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Rocky);
+                    _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Star);
                     CreateCBodyAndPreview();
                 }
                 else
@@ -115,6 +115,19 @@ namespace Game.UI.Menu.SystemEditing
             colorHandle.anchoredPosition = new Vector2(0, 0);
 
             bResetRandomization.interactable = false;
+
+
+            CBody sun = _cBodyPreviews[0].cBody;
+            Light l = sun.gameObject.AddComponent<Light>();
+            l.type = LightType.Point;
+            l.color = Color.white;
+            l.range = 40000;
+            l.shadows = LightShadows.Soft;
+            SunShadowCaster ssc = sun.gameObject.AddComponent<SunShadowCaster>();
+            ssc.cameraToTrack = GameManager.Instance.GetMainCamera().transform;
+            OrbitDisplay od = FindObjectOfType<OrbitDisplay>();
+            od.centralBody = _cBodyPreviews[0].cBody;
+            od.relativeToBody = true;
         }
 
         private void SetSystemName(string sysName)

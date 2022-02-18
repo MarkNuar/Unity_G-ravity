@@ -82,9 +82,8 @@ namespace Game.UI.Menu.SystemEditing
 
                     var scrollDelta = Input.mouseScrollDelta.y;
                     if (scrollDelta == 0) return;
-                    {
-                        ZoomCamera(scrollDelta);
-                    }
+                    ZoomCamera(scrollDelta);
+                    
                 }
             }
             // CAMERA NOT CONTROLLED, zooming into a planet
@@ -114,7 +113,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             var orthographicSize = cam.orthographicSize;
             
-            var amount = scrollDelta > 0 ? zoomSpeed : -zoomSpeed;
+            var amount = scrollDelta > 0 ? zoomSpeed * orthographicSize/40 : -zoomSpeed * orthographicSize/40;
 
             if (Mathf.Abs(orthographicSize - minZoom) > Mathf.Epsilon
                 && Mathf.Abs(maxZoom - orthographicSize) > Mathf.Epsilon)

@@ -102,7 +102,7 @@ MonoBehaviour:
   cam: {fileID: 7645408000976412507}
   panSensitivity: 20
   minZoom: 1
-  maxZoom: 300
+  maxZoom: 600
   zoomSpeed: 4
   cinematicPrecision: 0.1
   isDragging: 0

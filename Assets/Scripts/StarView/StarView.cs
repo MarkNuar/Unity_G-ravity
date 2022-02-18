@@ -7,7 +7,7 @@ namespace StarView
         public MeshRenderer starPrefab;
         public Vector2 radiusMinMax;
         public int count = 1000;
-        const float CalibrationDst = 2000;
+        public float calibrationDst = 2000;
         public Vector2 brightnessMinMax;
         
         private Camera _cam;
@@ -18,7 +18,7 @@ namespace StarView
             //var sw = System.Diagnostics.Stopwatch.StartNew ();
             if (_cam) {
                 float starDst = _cam.farClipPlane - radiusMinMax.y;
-                float scale = starDst / CalibrationDst;
+                float scale = starDst / calibrationDst;
 
                 for (int i = 0; i < count; i++) {
                     MeshRenderer star = Instantiate (starPrefab, Random.onUnitSphere * starDst, Quaternion.identity, transform);

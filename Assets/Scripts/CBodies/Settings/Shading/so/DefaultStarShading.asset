@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: DefaultStarShading
   m_EditorClassIdentifier: 
   shadingDataCompute: {fileID: 0}
-  terrainMaterial: {fileID: 2100000, guid: 2555cb87bd0f35748a191be17b233b0f, type: 2}
+  terrainMaterial: {fileID: 2100000, guid: 486c101b6b4f2d34a9f1b59dbdc32db2, type: 2}
   shadingSettings:
     randomize: 0
     seed: 0
+    realisticColors: 1

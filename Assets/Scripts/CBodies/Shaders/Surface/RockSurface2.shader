@@ -62,7 +62,7 @@ Shader "CBodies/Rock2"
 		CGPROGRAM
 
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows vertex:vert
+		#pragma surface surf Standard vertex:vert 
 		#pragma target 3.5
 
 		#include "../Includes/Triplanar.cginc"
