@@ -525,6 +525,10 @@ PrefabInstance:
       propertyPath: count
       value: 2000
       objectReference: {fileID: 0}
+    - target: {fileID: 910152193250779299, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
+      propertyPath: calibrationDst
+      value: 5000
+      objectReference: {fileID: 0}
     - target: {fileID: 2241725730448225738, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_Name
       value: StarView
@@ -645,7 +649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawOrbits: 0
   numSteps: 1000
-  timeStep: 5
+  timeStep: 0.5
   relativeToBody: 0
   centralBody: {fileID: 0}
   width: 1
@@ -953,6 +957,10 @@ PrefabInstance:
     - target: {fileID: 7645408000976412504, guid: 49d305ddfc0b7444da4e9d4f795af077, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645408000976412507, guid: 49d305ddfc0b7444da4e9d4f795af077, type: 3}
+      propertyPath: far clip plane
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 7645408000976412508, guid: 49d305ddfc0b7444da4e9d4f795af077, type: 3}
       propertyPath: editMenu

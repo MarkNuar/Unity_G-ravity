@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Game.UI.Menu.SystemEditing.Preview;
 using UnityEngine;
 using Physics = CBodies.Settings.Physics.Physics;
@@ -16,93 +17,126 @@ namespace CBodies
         public CBody centralBody;
         public float width = 100;
         public bool useThickLines;
+
+        private CBodyPreview[] _previews;
+        private VirtualBody[] _virtualBodies;
+        private Vector3[][] _drawPoints;
+        private int _referenceFrameIndex;
+        private Vector3 _referenceBodyInitialPosition;
+        
         
         private void Update () {
-            if (drawOrbits)
+            // if (drawOrbits)
+            // {
+            //     DrawOrbits();
+            // }
+            // else
+            // {
+            //     HideOrbits();
+            // }
+
+            if (Input.GetKeyDown(KeyCode.T))
             {
-                DrawOrbits();
-            }
-            else
-            {
-                HideOrbits();
+                drawOrbits = !drawOrbits;
+                if (drawOrbits)
+                {
+                    DrawOrbits();
+                }
+                else
+                {
+                    HideOrbits();
+                }
             }
 
-            // if (Input.GetKeyDown(KeyCode.T))
+            // if (drawOrbits)
             // {
-            //     // show trajectory
+            //     DrawOrbits();
             // }
-            //
-            // if (Input.GetKeyDown(KeyCode.H))
+            // else
             // {
-            //     // hide trajectory
+            //     HideOrbits();
             // }
         }
 
         private void DrawOrbits () {
-            var previews = FindObjectsOfType<CBodyPreview> ();
-            var virtualBodies = new VirtualBody[previews.Length];
-            var drawPoints = new Vector3[previews.Length][];
-            var referenceFrameIndex = 0;
-            Vector3 referenceBodyInitialPosition = Vector3.zero;
+            // Hides previous drawn orbits
+            HideOrbits();
+            
+            _previews = FindObjectsOfType<CBodyPreview> ();
+            _virtualBodies = new VirtualBody[_previews.Length];
+            _drawPoints = new Vector3[_previews.Length][];
+            _referenceFrameIndex = 0;
+            _referenceBodyInitialPosition = Vector3.zero;
 
             // Initialize virtual bodies (don't want to move the actual bodies)
-            for (var i = 0; i < virtualBodies.Length; i++) {
-                virtualBodies[i] = new VirtualBody (previews[i].cBody);
-                drawPoints[i] = new Vector3[numSteps];
+            for (var i = 0; i < _virtualBodies.Length; i++) {
+                _virtualBodies[i] = new VirtualBody (_previews[i].cBody);
+                _drawPoints[i] = new Vector3[numSteps];
 
-                if (previews[i].cBody == centralBody && relativeToBody) {
-                    referenceFrameIndex = i;
-                    referenceBodyInitialPosition = virtualBodies[i].Position;
+                if (_previews[i].cBody == centralBody && relativeToBody) {
+                    _referenceFrameIndex = i;
+                    _referenceBodyInitialPosition = _virtualBodies[i].Position;
                 }
+                
+                // setup line renderer
+                Color pathColour = Color.white;
+                var lineRenderer = _previews[i].lineRenderer;
+                lineRenderer.enabled = true;
+                lineRenderer.positionCount = numSteps;
+                lineRenderer.startColor = pathColour;
+                lineRenderer.endColor = pathColour;
+                lineRenderer.widthMultiplier = width;
             }
 
+            StartCoroutine(DrawOrbitsCoroutine(null));
+        }
+
+        IEnumerator DrawOrbitsCoroutine(Action callback)
+        {
+            Debug.LogError("Drawing");
             // Simulate
-            for (var step = 0; step < numSteps; step++) {
-                Vector3 referenceBodyPosition = (relativeToBody) ? virtualBodies[referenceFrameIndex].Position : Vector3.zero;
+            // int count = 0;
+            for (var step = 0; step < numSteps; step++) 
+            // while(true)
+            {
+                
+                Vector3 referenceBodyPosition = (relativeToBody) ? _virtualBodies[_referenceFrameIndex].Position : Vector3.zero;
                 // Update velocities
-                for (var i = 0; i < virtualBodies.Length; i++) {
-                    virtualBodies[i].Velocity += CalculateAcceleration (i, virtualBodies) * timeStep;
+                for (var i = 0; i < _virtualBodies.Length; i++) {
+                    _virtualBodies[i].Velocity += CalculateAcceleration (i, _virtualBodies) * timeStep;
                 }
                 // Update positions
-                for (var i = 0; i < virtualBodies.Length; i++) {
-                    Vector3 newPos = virtualBodies[i].Position + virtualBodies[i].Velocity * timeStep;
-                    virtualBodies[i].Position = newPos;
+                for (var i = 0; i < _virtualBodies.Length; i++) {
+                    Vector3 newPos = _virtualBodies[i].Position + _virtualBodies[i].Velocity * timeStep;
+                    _virtualBodies[i].Position = newPos;
                     if (relativeToBody) {
-                        Vector3 referenceFrameOffset = referenceBodyPosition - referenceBodyInitialPosition;
+                        Vector3 referenceFrameOffset = referenceBodyPosition - _referenceBodyInitialPosition;
                         newPos -= referenceFrameOffset;
                     }
-                    if (relativeToBody && i == referenceFrameIndex) {
-                        newPos = referenceBodyInitialPosition;
+                    if (relativeToBody && i == _referenceFrameIndex) {
+                        newPos = _referenceBodyInitialPosition;
                     }
-                    drawPoints[i][step] = newPos;
+                    // _drawPoints[i][step] = newPos;
+
+                    // if (step < (2 * 3.14 * _previews[i].cBody.transform.position.x))
+                    // {
+                        _previews[i].lineRenderer.SetPosition(step, newPos);
+                        // if (count >= numSteps)
+                        // {
+                        //     _previews[i].lineRenderer.positionCount = 0;
+                        //     _previews[i].lineRenderer.positionCount = numSteps;
+                        //     
+                        // }
+                        // _previews[i].lineRenderer.SetPosition(count % numSteps, newPos);
+                    // }
+
+
                 }
-            }
 
-            // Draw paths
-            for (var bodyIndex = 0; bodyIndex < virtualBodies.Length; bodyIndex++) {
-                // Color pathColour = bodies[bodyIndex].gameObject.GetComponentInChildren<MeshRenderer> ().sharedMaterial.color; //
-
-                Color pathColour = Color.white;
-
-                if (useThickLines) {
-                    var lineRenderer = previews[bodyIndex].gameObject.GetComponentInChildren<LineRenderer> ();
-                    lineRenderer.enabled = true;
-                    lineRenderer.positionCount = drawPoints[bodyIndex].Length;
-                    lineRenderer.SetPositions (drawPoints[bodyIndex]);
-                    lineRenderer.startColor = pathColour;
-                    lineRenderer.endColor = pathColour;
-                    lineRenderer.widthMultiplier = width;
-                } else {
-                    for (var i = 0; i < drawPoints[bodyIndex].Length - 1; i++) {
-                        Debug.DrawLine (drawPoints[bodyIndex][i], drawPoints[bodyIndex][i + 1], pathColour);
-                    }
-
-                    // Hide renderer
-                    var lineRenderer = previews[bodyIndex].gameObject.GetComponentInChildren<LineRenderer> ();
-                    if (lineRenderer) {
-                        lineRenderer.enabled = false;
-                    }
-                }
+                // count++;
+                if(step % 5 == 0 )
+                // if(count % 10 == 0 )
+                    yield return null;
             }
         }
 
@@ -119,25 +153,18 @@ namespace CBodies
             return acceleration;
         }
 
-        private static void HideOrbits ()
+        private void HideOrbits ()
         {
+            StopAllCoroutines();
             var previews = FindObjectsOfType<CBodyPreview> ();
 
             // Draw paths
             foreach (CBodyPreview p in previews)
             {
-                var lineRenderer = p.gameObject.GetComponentInChildren<LineRenderer> ();
-                lineRenderer.positionCount = 0;
+                p.lineRenderer.positionCount = 0;
             }
         }
 
-        
-        
-        
-        
-        
-        
-        
         
         private class VirtualBody {
             public Vector3 Position;
@@ -151,6 +178,33 @@ namespace CBodies
                 Velocity = ps.initialVelocity;
                 Mass = body.mass;
             }
+        }
+        
+        public void OnPhysicsUpdate()
+        {
+            // if (drawOrbits)
+            // {
+            //     DrawOrbits();
+            // }
+            // else
+            // {
+            //     HideOrbits();
+            // }
+        }
+
+        public void OnShapeUpdate()
+        {
+            return;
+        }
+
+        public void OnShadingUpdate()
+        {
+            return;
+        }
+
+        public void OnInitialUpdate()
+        {
+            return;
         }
     }
 }

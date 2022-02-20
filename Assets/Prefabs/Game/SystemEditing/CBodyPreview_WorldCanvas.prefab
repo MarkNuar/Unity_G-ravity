@@ -783,6 +783,7 @@ MonoBehaviour:
   selectButton: {fileID: 2508042552702048869}
   velocityArrow: {fileID: 3537158682048850353}
   positionDrag: {fileID: 255106661827717679}
+  lineRenderer: {fileID: 8654549263028482643}
   cBody: {fileID: 3503594601842755883}
 --- !u!1 &6846253806894353666
 GameObject:

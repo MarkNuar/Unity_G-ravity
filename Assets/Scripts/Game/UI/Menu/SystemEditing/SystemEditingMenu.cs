@@ -489,11 +489,11 @@ namespace Game.UI.Menu.SystemEditing
                                 (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed);
             
             radiusSlider.value = radius;
-            radiusSlider.onValueChanged.Invoke(radius);
+            //radiusSlider.onValueChanged.Invoke(radius);
             gravitySlider.value = gravity;
-            gravitySlider.onValueChanged.Invoke(gravity);
+            //gravitySlider.onValueChanged.Invoke(gravity);
             rotationSlider.value = rotationSpeed;
-            rotationSlider.onValueChanged.Invoke(rotationSpeed);
+            //rotationSlider.onValueChanged.Invoke(rotationSpeed);
         }
         
         private CBodySettings GetCurrentCBodySettings()

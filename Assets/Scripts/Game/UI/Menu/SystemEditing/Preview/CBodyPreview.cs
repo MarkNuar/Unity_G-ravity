@@ -12,6 +12,8 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public CBodyArrow velocityArrow;
         public CBodyDrag positionDrag;
 
+        public LineRenderer lineRenderer;
+        
         public CBody cBody;
 
         public void SelectCBody()
