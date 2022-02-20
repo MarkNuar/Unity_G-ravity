@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Game.UI.Menu.SystemEditing;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -9,20 +10,20 @@ namespace CBodies.Settings.Physics
     public class Physics : ScriptableObject
     {
         // OBSERVER
-        [CanBeNull] private CBodyGenerator _observer;
+        [CanBeNull] private List<ICBodyObserver> _observers = new List<ICBodyObserver>();
         // MEMENTO
         [SerializeField] private PhysicsSettings physicsSettings;
         
         
         // OBSERVER PATTERN
-        public void Subscribe(CBodyGenerator observer)
+        public void Subscribe(ICBodyObserver observer)
         {
-            _observer = observer;
+            _observers?.Add(observer);
         }
 
-        public void Unsubscribe()
+        public void UnsubscribeAll()
         {
-            _observer = null;
+            _observers = null;
         }
         // END OBSERVER
         
@@ -53,8 +54,11 @@ namespace CBodies.Settings.Physics
         // MEMENTO PATTERN
         public void InitSettings()
         {
-            if(_observer)
-                _observer.OnPhysicsUpdate();
+            if (_observers == null) return;
+            foreach (ICBodyObserver o in _observers)
+            {
+                o.OnPhysicsUpdate();
+            }
         }
         public PhysicsSettings GetSettings()
         {
@@ -64,8 +68,12 @@ namespace CBodies.Settings.Physics
         public void SetSettings(PhysicsSettings ps)
         {
             physicsSettings = ps;
-            if(_observer)
-                _observer.OnPhysicsUpdate();
+            
+            if (_observers == null) return;
+            foreach (ICBodyObserver o in _observers)
+            {
+                o.OnPhysicsUpdate();
+            }
         }
     }
 }

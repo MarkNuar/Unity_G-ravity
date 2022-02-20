@@ -9,7 +9,7 @@ using Physics = CBodies.Settings.Physics.Physics;
 
 namespace CBodies
 {
-	public class CBodyGenerator : MonoBehaviour
+	public class CBodyGenerator : MonoBehaviour, ICBodyObserver
 	{
 		public CBody cBody;
 

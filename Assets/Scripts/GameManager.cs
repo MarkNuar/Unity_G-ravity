@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 30;
-        // _currentFrameTime = Time.realtimeSinceStartup;
-        // StartCoroutine("WaitForNextFrame");
+        Application.targetFrameRate = 9999;
+        _currentFrameTime = Time.realtimeSinceStartup;
+        StartCoroutine(nameof(WaitForNextFrame));
     }
 
     private IEnumerator WaitForNextFrame()

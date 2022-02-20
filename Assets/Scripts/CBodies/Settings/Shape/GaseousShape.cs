@@ -13,8 +13,11 @@ namespace CBodies.Settings.Shape
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            if(Observer)
-                Observer.OnShapeUpdate();
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShapeUpdate();
+            }
         }
         public override ShapeSettings GetSettings()
         {
@@ -23,8 +26,12 @@ namespace CBodies.Settings.Shape
         public override void SetSettings (ShapeSettings ss)
         {
             shapeSettings = (GaseousShapeSettings)ss;
-            if(Observer)
-                Observer.OnShapeUpdate();
+            
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShapeUpdate();
+            }
         }
         // END MEMENTO
 

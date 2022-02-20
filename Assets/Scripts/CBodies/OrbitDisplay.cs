@@ -1,70 +1,65 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using Game.UI.Menu.SystemEditing;
 using Game.UI.Menu.SystemEditing.Preview;
 using UnityEngine;
 using Physics = CBodies.Settings.Physics.Physics;
 
 namespace CBodies
 {
-    public class OrbitDisplay : MonoBehaviour
+    public class OrbitDisplay : MonoBehaviour, ICBodyObserver
     {
         public bool drawOrbits;
         
         public int numSteps = 1000;
         public float timeStep = 0.1f;
 
+        [Tooltip("When simulation speed is set to 1, the number of points computed per second is equal to " +
+                 "the framerate of the game")]
+        [Range(1, 100)] public int simulationSpeed = 5;
+        
         public bool relativeToBody;
         public CBody centralBody;
         public float width = 100;
         public bool useThickLines;
 
-        private CBodyPreview[] _previews;
+        private List<CBodyPreview> _previews;
         private VirtualBody[] _virtualBodies;
         private Vector3[][] _drawPoints;
         private int _referenceFrameIndex;
         private Vector3 _referenceBodyInitialPosition;
-        
-        
-        private void Update () {
-            // if (drawOrbits)
-            // {
-            //     DrawOrbits();
-            // }
-            // else
-            // {
-            //     HideOrbits();
-            // }
 
-            if (Input.GetKeyDown(KeyCode.T))
+        public SystemEditingMenu systemEditingMenu;
+        
+        private void Update ()
+        {
+            if (!Input.GetKeyDown(KeyCode.T)) return;
+            drawOrbits = !drawOrbits;
+            if (drawOrbits)
             {
-                drawOrbits = !drawOrbits;
-                if (drawOrbits)
-                {
-                    DrawOrbits();
-                }
-                else
-                {
-                    HideOrbits();
-                }
+                DrawOrbits();
             }
-
-            // if (drawOrbits)
-            // {
-            //     DrawOrbits();
-            // }
-            // else
-            // {
-            //     HideOrbits();
-            // }
+            else
+            {
+                HideOrbits();
+            }
         }
 
+        private IEnumerator BeforeDrawTimer(float time)
+        {
+            yield return new WaitForSeconds(time);
+            DrawOrbits();
+        }
+        
         private void DrawOrbits () {
             // Hides previous drawn orbits
             HideOrbits();
             
-            _previews = FindObjectsOfType<CBodyPreview> ();
-            _virtualBodies = new VirtualBody[_previews.Length];
-            _drawPoints = new Vector3[_previews.Length][];
+            // _previews = FindObjectsOfType<CBodyPreview> ();
+            _previews = systemEditingMenu.CBodyPreviews;
+            _virtualBodies = new VirtualBody[_previews.Count];
+            _drawPoints = new Vector3[_previews.Count][];
             _referenceFrameIndex = 0;
             _referenceBodyInitialPosition = Vector3.zero;
 
@@ -79,8 +74,8 @@ namespace CBodies
                 }
                 
                 // setup line renderer
-                Color pathColour = Color.white;
-                var lineRenderer = _previews[i].lineRenderer;
+                Color pathColour = _previews[i].cBody.cBodyGenerator.cBodySettings.shading.GetSettings().mainColor;
+                LineRenderer lineRenderer = _previews[i].lineRenderer;
                 lineRenderer.enabled = true;
                 lineRenderer.positionCount = numSteps;
                 lineRenderer.startColor = pathColour;
@@ -88,12 +83,11 @@ namespace CBodies
                 lineRenderer.widthMultiplier = width;
             }
 
-            StartCoroutine(DrawOrbitsCoroutine(null));
+            StartCoroutine(DrawOrbitsCoroutine());
         }
 
-        IEnumerator DrawOrbitsCoroutine(Action callback)
+        IEnumerator DrawOrbitsCoroutine()
         {
-            Debug.LogError("Drawing");
             // Simulate
             // int count = 0;
             for (var step = 0; step < numSteps; step++) 
@@ -134,8 +128,7 @@ namespace CBodies
                 }
 
                 // count++;
-                if(step % 5 == 0 )
-                // if(count % 10 == 0 )
+                if(step % simulationSpeed == 0 )
                     yield return null;
             }
         }
@@ -156,15 +149,25 @@ namespace CBodies
         private void HideOrbits ()
         {
             StopAllCoroutines();
-            var previews = FindObjectsOfType<CBodyPreview> ();
-
+            _previews = systemEditingMenu.CBodyPreviews;
             // Draw paths
-            foreach (CBodyPreview p in previews)
+            foreach (CBodyPreview p in _previews)
             {
                 p.lineRenderer.positionCount = 0;
             }
         }
 
+        private void UpdateColors()
+        {
+            _previews = systemEditingMenu.CBodyPreviews;
+            foreach (CBodyPreview p in _previews)
+            {
+                if (!p.Selected) continue;
+                Color pathColour = p.cBody.cBodyGenerator.cBodySettings.shading.GetSettings().mainColor;
+                p.lineRenderer.startColor = pathColour;
+                p.lineRenderer.endColor = pathColour;
+            }
+        }
         
         private class VirtualBody {
             public Vector3 Position;
@@ -182,14 +185,17 @@ namespace CBodies
         
         public void OnPhysicsUpdate()
         {
-            // if (drawOrbits)
-            // {
-            //     DrawOrbits();
-            // }
-            // else
-            // {
-            //     HideOrbits();
-            // }
+            if (drawOrbits)
+            {
+                HideOrbits();
+                StopAllCoroutines();
+                StartCoroutine(BeforeDrawTimer(0.2f));
+                //DrawOrbits();
+            }
+            else
+            {
+                HideOrbits();
+            }
         }
 
         public void OnShapeUpdate()
@@ -199,12 +205,12 @@ namespace CBodies
 
         public void OnShadingUpdate()
         {
-            return;
+            UpdateColors();
         }
 
         public void OnInitialUpdate()
         {
-            return;
+            OnPhysicsUpdate();
         }
     }
 }

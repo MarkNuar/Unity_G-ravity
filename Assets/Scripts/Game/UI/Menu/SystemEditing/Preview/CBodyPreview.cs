@@ -16,8 +16,12 @@ namespace Game.UI.Menu.SystemEditing.Preview
         
         public CBody cBody;
 
+        public bool Selected { get; set; }
+
         public void SelectCBody()
         {
+            Selected = true;
+            
             velocityArrow.arrowHead.enabled = true;
             velocityArrow.arrowBody.enabled = true;
 
@@ -37,6 +41,8 @@ namespace Game.UI.Menu.SystemEditing.Preview
 
         public void DeselectCBody()
         {
+            Selected = false;
+            
             velocityArrow.arrowHead.enabled = false;
             velocityArrow.arrowBody.enabled = false;
 

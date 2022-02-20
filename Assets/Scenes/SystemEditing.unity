@@ -650,10 +650,12 @@ MonoBehaviour:
   drawOrbits: 0
   numSteps: 1000
   timeStep: 0.5
+  simulationSpeed: 1
   relativeToBody: 0
   centralBody: {fileID: 0}
   width: 1
   useThickLines: 1
+  systemEditingMenu: {fileID: 0}
 --- !u!4 &1801598567
 Transform:
   m_ObjectHideFlags: 0

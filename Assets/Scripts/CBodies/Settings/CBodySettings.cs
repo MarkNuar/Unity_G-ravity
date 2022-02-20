@@ -31,9 +31,9 @@ namespace CBodies.Settings
             UpdateCBodyType(type);
         }
 
-        public void Subscribe(CBodyGenerator observer)
+        public void Subscribe(ICBodyObserver observer)
         {
-            observer.cBodySettings = this;
+            //observer.cBodySettings = this;
             shape.Subscribe(observer);
             shading.Subscribe(observer);
             physics.Subscribe(observer);
@@ -43,9 +43,9 @@ namespace CBodies.Settings
 
         public void Unsubscribe()
         {
-            shape.Unsubscribe();
-            shading.Unsubscribe();
-            physics.Unsubscribe();
+            shape.UnsubscribeAll();
+            shading.UnsubscribeAll();
+            physics.UnsubscribeAll();
         }
 
         public void UpdateCBodyType(CBodyType newType)

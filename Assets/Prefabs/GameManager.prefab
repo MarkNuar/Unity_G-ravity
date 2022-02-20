@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf082e09fa0c8f14992429da980f7e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rate: 30
+  targetRate: 30
   gamePaused: 0
   gameMode: 2

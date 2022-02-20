@@ -20,8 +20,11 @@ namespace CBodies.Settings.Shading
             SetRandomColors();
             // todo: eventually remove customized colors if players cannot choose directly every single color
             // shadingSettings.baseColors = shadingSettings.randomColors;
-            if(Observer)
-                Observer.OnShadingUpdate();
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShadingUpdate();
+            }
         }
         public override ShadingSettings GetSettings()
         {
@@ -30,8 +33,12 @@ namespace CBodies.Settings.Shading
         public override void SetSettings(ShadingSettings ss)
         {
             shadingSettings = (RockShadingSettings)ss;
-            if(Observer)
-                Observer.OnShadingUpdate();
+            
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShadingUpdate();
+            }
         }
         
         protected override void SetShadingDataComputeProperties () {
@@ -52,10 +59,14 @@ namespace CBodies.Settings.Shading
             {
                 SetRandomColors ();
                 ApplyColours (material, shadingSettings.randomColors);
+
+                shadingSettings.mainColor = shadingSettings.randomColors.flatColLowA;
             }
             else
             {
                 ApplyColours (material, shadingSettings.baseGreenColors);
+                
+                shadingSettings.mainColor = shadingSettings.baseGreenColors.flatColLowA;
             }
         }
         
@@ -121,6 +132,8 @@ namespace CBodies.Settings.Shading
                 shadingSettings.randomColors.steepHigh = 
                     ColorHelper.TweakHSV (shadingSettings.randomColors.steepLow, random.SignedValue () * 0.2f, random.SignedValue () * 0.2f, random.Range (-0.35f, -0.2f));
             }
+
+            shadingSettings.mainColor = shadingSettings.randomColors.flatColLowA;
         }
         
         void ApplyColours (Material material, RockColors colors) {

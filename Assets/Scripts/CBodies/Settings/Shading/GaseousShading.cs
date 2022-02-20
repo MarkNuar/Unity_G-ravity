@@ -14,8 +14,11 @@ namespace CBodies.Settings.Shading
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            if(Observer)
-                Observer.OnShadingUpdate();
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShadingUpdate();
+            }
         }
         public override ShadingSettings GetSettings()
         {
@@ -25,8 +28,12 @@ namespace CBodies.Settings.Shading
         public override void SetSettings(ShadingSettings ss)
         {
             shadingSettings = (GaseousShadingSettings)ss;
-            if(Observer)
-                Observer.OnShadingUpdate();
+            
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShadingUpdate();
+            }
         }
 
         public override void SetSurfaceProperties(Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel)
@@ -56,6 +63,8 @@ namespace CBodies.Settings.Shading
             material.SetColor("col_mid3", colorMid3);
             
             material.SetFloat("random_val", randomVal);
+
+            shadingSettings.mainColor = colorMid1;
         }
 
         [Serializable]

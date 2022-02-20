@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using Utilities;
@@ -10,7 +11,7 @@ namespace CBodies.Settings.Shape
     public abstract class Shape : ScriptableObject
     {
         // OBSERVER
-        [CanBeNull] protected CBodyGenerator Observer;
+        [CanBeNull] protected List<ICBodyObserver> Observers = new List<ICBodyObserver>();
         
         public ComputeShader perturbCompute;
         public ComputeShader heightMapCompute;
@@ -47,14 +48,14 @@ namespace CBodies.Settings.Shape
         }
         
         // OBSERVER PATTERN
-        public void Subscribe(CBodyGenerator observer)
+        public void Subscribe(ICBodyObserver observer)
         {
-            Observer = observer;
+            Observers?.Add(observer);
         }
             
-        public void Unsubscribe()
+        public void UnsubscribeAll()
         {
-            Observer = null;
+            Observers = null;
         }
 
         

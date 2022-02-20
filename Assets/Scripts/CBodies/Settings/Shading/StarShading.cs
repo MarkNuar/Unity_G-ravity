@@ -13,8 +13,11 @@ namespace CBodies.Settings.Shading
         // MEMENTO PATTERN
         public override void InitSettings()
         {
-            if(Observer)
-                Observer.OnShadingUpdate();
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShadingUpdate();
+            }
         }
         public override ShadingSettings GetSettings()
         {
@@ -23,8 +26,12 @@ namespace CBodies.Settings.Shading
         public override void SetSettings(ShadingSettings ss)
         {
             shadingSettings = (StarShadingSettings)ss;
-            if(Observer)
-                Observer.OnShadingUpdate();
+            
+            if (Observers == null) return;
+            foreach (ICBodyObserver o in Observers)
+            {
+                o.OnShadingUpdate();
+            }
         }
 
         [Serializable]

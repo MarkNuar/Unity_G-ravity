@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CBodies.Settings.Shape;
 using JetBrains.Annotations;
 using JsonSubTypes;
@@ -13,7 +14,7 @@ namespace CBodies.Settings.Shading
     public abstract class Shading : ScriptableObject
     {
         // OBSERVER
-        [CanBeNull] protected CBodyGenerator Observer;
+        [CanBeNull] protected List<ICBodyObserver> Observers = new List<ICBodyObserver>();
 
         public ComputeShader shadingDataCompute;
         public Material terrainMaterial = null;
@@ -65,14 +66,14 @@ namespace CBodies.Settings.Shading
         }
         
         // OBSERVER PATTERN
-        public void Subscribe(CBodyGenerator observer)
+        public void Subscribe(ICBodyObserver observer)
         {
-            Observer = observer;
+            Observers?.Add(observer);
         }
         
-        public void Unsubscribe()
+        public void UnsubscribeAll()
         {
-            Observer = null;
+            Observers = null;
         }
         
         // MEMENTO PATTERN
@@ -88,6 +89,8 @@ namespace CBodies.Settings.Shading
             public int seed = 0;
             
             public bool realisticColors = true;
+
+            public Color mainColor = Color.white;
             
             public void RandomizeShading(bool rand)
             {

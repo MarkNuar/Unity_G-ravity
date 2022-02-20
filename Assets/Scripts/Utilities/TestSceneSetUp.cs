@@ -34,6 +34,7 @@ namespace Utilities
             
             
             _cs = _ss.cBodiesSettings[0];
+            cBody.cBodyGenerator.cBodySettings = _cs;
             _cs.Subscribe(cBody.cBodyGenerator);
 
             Physics.PhysicsSettings ps = _cs.physics.GetSettings();
