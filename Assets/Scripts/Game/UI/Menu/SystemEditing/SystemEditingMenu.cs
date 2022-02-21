@@ -196,6 +196,9 @@ namespace Game.UI.Menu.SystemEditing
             preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemSettings.cBodiesSettings.IndexOf(cBodySettings)));
             preview.velocityArrow.onDrag.AddListener(UpdateInitialVelocity);
             preview.positionDrag.onDrag.AddListener(UpdateInitialPosition);
+
+            preview.cBodyName.text = cBodySettings.cBodyName;
+            preview.cBodyName.color = cBodySettings.shading.GetSettings().mainColor;
             
             CBodyPreviews.Add(preview);
         }
@@ -336,6 +339,8 @@ namespace Game.UI.Menu.SystemEditing
         public void SetCBodyName(string cbName)
         {
             // store the new data 
+            CBodyPreviews[_currentCBodyIndex].cBodyName.text = cbName;
+            CBodyPreviews[_currentCBodyIndex].cBodyName.color = GetCurrentCBodySettings().shading.GetSettings().mainColor;
             GetCurrentCBodySettings().cBodyName = cbName;
         }
 

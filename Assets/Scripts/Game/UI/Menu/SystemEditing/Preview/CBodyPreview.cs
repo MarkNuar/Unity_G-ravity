@@ -1,4 +1,5 @@
 using CBodies;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,8 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public CBodyArrow velocityArrow;
         public CBodyDrag positionDrag;
 
+        public TMP_Text cBodyName;
+        
         public LineRenderer lineRenderer;
         
         public CBody cBody;

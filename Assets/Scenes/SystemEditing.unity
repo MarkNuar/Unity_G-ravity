@@ -648,13 +648,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawOrbits: 0
-  numSteps: 1000
-  timeStep: 0.5
-  simulationSpeed: 1
-  relativeToBody: 0
+  lengthIncrement: 1
+  timeStep: 0.1
+  simulationSpeed: 5
+  relativeToBody: 1
   centralBody: {fileID: 0}
   width: 1
-  useThickLines: 1
   systemEditingMenu: {fileID: 0}
 --- !u!4 &1801598567
 Transform:
