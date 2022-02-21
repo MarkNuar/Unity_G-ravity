@@ -17,7 +17,7 @@ MonoBehaviour:
   shadingSettings:
     randomize: 0
     seed: 0
-    realisticColors: 0
+    realisticColors: 1
     mainColor: {r: 1, g: 1, b: 1, a: 1}
     baseGreenColors:
       shoreColLow: {r: 0.79215693, g: 0.6666667, b: 0.5137255, a: 1}

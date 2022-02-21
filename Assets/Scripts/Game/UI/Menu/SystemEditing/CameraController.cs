@@ -15,7 +15,7 @@ namespace Game.UI.Menu.SystemEditing
 
         private bool _enableControl = true;
         private bool _restoringControl = false;
-        private float _cinematicMinZoo = 0;
+        private float _cinematicMinZoom = 0;
         private Vector3 _cinematicTarget;
         private Vector3 _initialCameraPosition;
         private float _initialCameraZoom;
@@ -90,7 +90,7 @@ namespace Game.UI.Menu.SystemEditing
             else
             {
                 Vector3 posDifference =  _cinematicTarget - cam.transform.position;
-                var zoomDifference = cam.orthographicSize - _cinematicMinZoo;
+                var zoomDifference = cam.orthographicSize - _cinematicMinZoom;
                 if (posDifference.magnitude > cinematicPrecision || Mathf.Abs(zoomDifference) > cinematicPrecision)
                 {
                     CinematicZoom(posDifference/5, zoomDifference/4);
@@ -150,7 +150,7 @@ namespace Game.UI.Menu.SystemEditing
         
         public void LockCamAt(Vector3 pos, float cBodyRadius, bool fromCreation)
         {
-            _cinematicMinZoo = cBodyRadius + 3;
+            _cinematicMinZoom = cBodyRadius + 4;
             _enableControl = false;
             _restoringControl = false; 
             Transform camTransform = cam.transform;

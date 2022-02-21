@@ -12,9 +12,8 @@ namespace CBodies
         public bool drawOrbits;
         
         [Tooltip("Increment in the lenght of the line. When 1 the line is as long as the circle with radius the distance of the planet from the centre")]
-        // [Range(1, 5)]public int lengthIncrement = 2;
-        [Range(0.01f, 5)]public float lengthIncrement = 2;
-        
+        [Range(1, 5)]public int lengthIncrement = 2;
+
         [Tooltip("Time step of the simulation, the smaller, the more accurate the simulation is")]
         [Range(0.1f, 10)]public float timeStep = 0.1f;
 
@@ -89,7 +88,7 @@ namespace CBodies
                 Color pathColour = _previews[i].cBody.cBodyGenerator.cBodySettings.shading.GetSettings().mainColor;
                 LineRenderer lineRenderer = _previews[i].lineRenderer;
                 lineRenderer.enabled = true;
-                lineRenderer.positionCount = _sizes[i];
+                // lineRenderer.positionCount = _sizes[i];
                 lineRenderer.startColor = Color.black;
                 lineRenderer.endColor = pathColour;
                 lineRenderer.widthMultiplier = width;
@@ -127,14 +126,10 @@ namespace CBodies
                         _points[i].Dequeue();
                     }
                     _points[i].Enqueue(newPos);
-                    // // _previews[i].lineRenderer.SetPosition(step, newPos);
-                    // List<Vector3> curPoints = _points[i].ToList();
-                    // curPoints.Insert(curPoints.Count, _referenceBodyInitialPosition);
-                    // var ps = _points[i].ToArray();
+  
                     _previews[i].lineRenderer.positionCount = _points[i].Count + 1;
                     _previews[i].lineRenderer.SetPositions(_points[i].ToArray());
                     _previews[i].lineRenderer.SetPosition(_points[i].Count, _referenceBodyInitialPosition);
-                    
                 }
 
                 count++;

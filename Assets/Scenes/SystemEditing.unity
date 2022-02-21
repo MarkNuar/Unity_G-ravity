@@ -535,7 +535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2241725730448225738, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7726828581127354412, guid: 48a6330b32be6f44788a85343ff851e4, type: 3}
       propertyPath: m_RootOrder
@@ -648,7 +648,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawOrbits: 0
-  lengthIncrement: 1
+  lengthIncrement: 2
   timeStep: 0.1
   simulationSpeed: 5
   relativeToBody: 1

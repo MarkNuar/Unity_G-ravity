@@ -38,7 +38,6 @@ namespace Utilities
             _cs.Subscribe(cBody.cBodyGenerator);
 
             Physics.PhysicsSettings ps = _cs.physics.GetSettings();
-            ps.rotationSpeed = 0;
             _cs.physics.SetSettings(ps);
 
             // Set current system settings, available to whole program

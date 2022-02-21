@@ -36,7 +36,7 @@ namespace Game.UI.Menu.SystemEditing
         // PHYSICS
         [SerializeField] private Slider radiusSlider = null;
         [SerializeField] private Slider gravitySlider = null;
-        [SerializeField] private Slider rotationSlider = null;
+        // [SerializeField] private Slider speedSlider = null;
         
         // SHAPE & SHADING
         [SerializeField] private TMP_Text systemName = null;
@@ -282,7 +282,6 @@ namespace Game.UI.Menu.SystemEditing
         {
             _physicsS.radius = radiusSlider.value * (_physicsS.maxRadius - _physicsS.minRadius) 
                                + _physicsS.minRadius;
-            Debug.LogError("Setting radius");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
@@ -290,17 +289,16 @@ namespace Game.UI.Menu.SystemEditing
         {
             _physicsS.surfaceGravity = gravitySlider.value * (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity) + 
                                        _physicsS.minSurfaceGravity;
-            Debug.LogError("Setting gravity");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
-        public void SetCBodyRotation()
-        {
-            _physicsS.rotationSpeed = rotationSlider.value * (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed) 
-                                      + _physicsS.minRotationSpeed;
-            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
-        }
-        
+        // public void SetCBodySpeed()
+        // {
+        //     _physicsS.initialVelocity.y = speedSlider.value * (_physicsS.maxSpeed - _physicsS.minSpeed) + 
+        //                                   _physicsS.minSpeed;
+        //     SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
+        // }
+
         public void OpenEditMenu(bool fromCreation)
         {
             Vector3 pos = CBodyPreviews[_currentCBodyIndex].cBody.transform.position;
@@ -387,28 +385,6 @@ namespace Game.UI.Menu.SystemEditing
             SetCurrentSettings(CBodyGenerator.UpdateType.All);
             bResetRandomization.interactable = false;
         }
-        
-        // public void BeginPickColor()
-        // {
-        //     // OverlayPanel(3,true);
-        //     // colorPicker.CurrentColor = GetCurrentShadingSettings().color;
-        //     // colorPicker.onValueChanged.AddListener(SetCBodyColor);
-        // }
-        //
-        // private void SetCBodyColor(Color color)
-        // {
-        //     // Shading.ShadingSettings ss = GetCurrentShadingSettings();
-        //     // ss.color = color;
-        //     // SetCurrentShadingSettings(ss);
-        //     //
-        //     // SetButtonColor(cBodyColorButton, color);
-        // }
-        //
-        // public void EndPickColor()
-        // {
-        //     colorPicker.onValueChanged.RemoveListener(SetCBodyColor);
-        //     OverlayPanel(3, false);
-        // }
 
         private void DestroyCurrentCBody()
         {
@@ -430,13 +406,6 @@ namespace Game.UI.Menu.SystemEditing
         {
             panels[position].SetActive(overlay);
         }
-        
-        // private static void SetButtonColor(Button button, Color color)
-        // {
-        //     ColorBlock buttonColors = button.colors;
-        //     buttonColors.normalColor = color;
-        //     button.colors = buttonColors;
-        // }
 
         private void SelectCurrentCBody()
         {
@@ -502,15 +471,12 @@ namespace Game.UI.Menu.SystemEditing
                          (_physicsS.maxRadius - _physicsS.minRadius);
             var gravity = (_physicsS.surfaceGravity - _physicsS.minSurfaceGravity) /
                     (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity);
-            var rotationSpeed = (_physicsS.rotationSpeed - _physicsS.minRotationSpeed) /
-                                (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed);
+            // var speed = (_physicsS.initialVelocity.y - _physicsS.minSpeed) /
+            //             (_physicsS.maxSpeed - _physicsS.minSpeed);
             
             radiusSlider.SetValueWithoutNotify(radius);
-            //radiusSlider.onValueChanged.Invoke(radius);
             gravitySlider.SetValueWithoutNotify(gravity);
-            //gravitySlider.onValueChanged.Invoke(gravity);
-            rotationSlider.SetValueWithoutNotify(rotationSpeed);
-            //rotationSlider.onValueChanged.Invoke(rotationSpeed);
+            // speedSlider.SetValueWithoutNotify(speed);
         }
         
         private CBodySettings GetCurrentCBodySettings()

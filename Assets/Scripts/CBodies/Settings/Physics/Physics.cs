@@ -38,11 +38,7 @@ namespace CBodies.Settings.Physics
             public float minSurfaceGravity = 5f;
             public float maxSurfaceGravity = 50f;
             public float surfaceGravity = 10;
-
-            public float minRotationSpeed = -30f;
-            public float maxRotationSpeed = 30f;
-            public float rotationSpeed = 0;
-
+            
             public Vector3 initialPosition = Vector3.zero;
 
             public float minSpeed = 0.1f;

@@ -38,6 +38,7 @@ namespace Game.UI.Menu.SystemEditing.Preview
         {
             velocityArrow.arrowHead.enabled = false;
             velocityArrow.arrowBody.enabled = false;
+            cBodyName.enabled = false;
 
             positionDrag.dragHandle.enabled = false;
         }
@@ -48,6 +49,7 @@ namespace Game.UI.Menu.SystemEditing.Preview
             
             velocityArrow.arrowHead.enabled = false;
             velocityArrow.arrowBody.enabled = false;
+            cBodyName.enabled = true;
 
             positionDrag.dragHandle.enabled = false;
 
