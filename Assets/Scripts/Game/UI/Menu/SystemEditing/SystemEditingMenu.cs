@@ -41,10 +41,6 @@ namespace Game.UI.Menu.SystemEditing
         // SHAPE & SHADING
         [SerializeField] private TMP_Text systemName = null;
         [SerializeField] private TMP_InputField inputCBodyName = null;
-        //[SerializeField] private ColorPicker colorPicker = null;
-        // [SerializeField] private Button bRandomizeColor = null;
-        // [SerializeField] private Button bRandomizeShape = null;
-        // [SerializeField] private Button bRandomizeAll = null;
         [SerializeField] private Button bResetRandomization = null;
 
         [SerializeField] private RectTransform colorHandle = null;
@@ -215,6 +211,7 @@ namespace Game.UI.Menu.SystemEditing
             
             SelectCurrentCBody();
 
+            // Set cBody HUD position
             SetDragHandlePosition();
             SetArrowHeadPosition();
 

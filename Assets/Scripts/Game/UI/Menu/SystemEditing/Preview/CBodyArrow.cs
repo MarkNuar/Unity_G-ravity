@@ -31,9 +31,7 @@ namespace Game.UI.Menu.SystemEditing.Preview
             
             _cam = GameManager.Instance.GetMainCamera();
             _cameraController = _cam.GetComponent<CameraController>();
-            
             _cameraController.onCameraDrag.AddListener(UpdateArrowOrigin);
-            //_cameraController.onCameraZoom.AddListener(UpdateDiff);
             _cameraController.onCameraZoom.AddListener(UpdateArrowOrigin);
             
             UpdateDiff();
