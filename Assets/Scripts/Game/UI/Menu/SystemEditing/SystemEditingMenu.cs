@@ -124,6 +124,7 @@ namespace Game.UI.Menu.SystemEditing
             l.shadows = LightShadows.Soft;
             SunShadowCaster ssc = sun.gameObject.AddComponent<SunShadowCaster>();
             ssc.cameraToTrack = GameManager.Instance.GetMainCamera().transform;
+            ssc.trackCamera = false;
             
             _orbitDisplay = FindObjectOfType<OrbitDisplay>();
             if (!_orbitDisplay) return;

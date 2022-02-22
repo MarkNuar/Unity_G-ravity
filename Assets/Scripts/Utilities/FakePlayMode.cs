@@ -1,6 +1,7 @@
 ﻿using System;
 using CBodies;
 using CBodies.Settings;
+using Game;
 using Game.UI.Menu;
 using Game.UI.Menu.SystemEditing;
 using UnityEngine;
@@ -40,8 +41,9 @@ namespace Utilities
                 flyCamera.enabled = true;
                 editMenu.SetActive(false);
                 //pauseMenu.SetActive(false);
-                starView.SetActive(true);
                 _isPlaying = true;
+                SunShadowCaster ssc = FindObjectOfType<SunShadowCaster>();
+                ssc.trackCamera = true;
             }
             else
             {
@@ -52,8 +54,9 @@ namespace Utilities
                 flyCamera.enabled = false;
                 editMenu.SetActive(true);
                 //pauseMenu.SetActive(true);
-                starView.SetActive(false);
                 _isPlaying = false;
+                SunShadowCaster ssc = FindObjectOfType<SunShadowCaster>();
+                ssc.trackCamera = false;
             }
         }
     }
