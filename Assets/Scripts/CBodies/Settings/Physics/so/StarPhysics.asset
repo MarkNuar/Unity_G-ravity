@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: StarPhysics
   m_EditorClassIdentifier: 
   physicsSettings:
-    radius: 13
-    surfaceGravity: 0.1
-    rotationSpeed: 0
+    minRadius: 15
+    maxRadius: 80
+    radius: 45
+    minSurfaceGravity: 2
+    maxSurfaceGravity: 30
+    surfaceGravity: 20
     initialPosition: {x: 0, y: 0, z: 0}
-    initialVelocity: {x: 0, y: 0.1, z: 0}
+    minSpeed: 5
+    maxSpeed: 30
+    initialVelocity: {x: 0, y: 10, z: 0}

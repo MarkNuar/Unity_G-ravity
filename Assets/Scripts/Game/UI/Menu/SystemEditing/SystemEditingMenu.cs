@@ -36,7 +36,7 @@ namespace Game.UI.Menu.SystemEditing
         // PHYSICS
         [SerializeField] private Slider radiusSlider = null;
         [SerializeField] private Slider gravitySlider = null;
-        // [SerializeField] private Slider speedSlider = null;
+        [SerializeField] private Slider speedSlider = null;
         
         // SHAPE & SHADING
         [SerializeField] private TMP_Text systemName = null;
@@ -270,6 +270,10 @@ namespace Game.UI.Menu.SystemEditing
             _physicsS.initialVelocity =
                 d * ((_physicsS.maxSpeed - _physicsS.minSpeed) * p + _physicsS.minSpeed);
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
+            
+            var speed = (_physicsS.initialVelocity.y - _physicsS.minSpeed) /
+                        (_physicsS.maxSpeed - _physicsS.minSpeed);
+            speedSlider.SetValueWithoutNotify(speed);
         }
 
         private void UpdateInitialPosition(Vector3 p)
@@ -292,12 +296,13 @@ namespace Game.UI.Menu.SystemEditing
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
-        // public void SetCBodySpeed()
-        // {
-        //     _physicsS.initialVelocity.y = speedSlider.value * (_physicsS.maxSpeed - _physicsS.minSpeed) + 
-        //                                   _physicsS.minSpeed;
-        //     SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
-        // }
+        public void SetCBodySpeed()
+        {
+            _physicsS.initialVelocity.y = speedSlider.value * (_physicsS.maxSpeed - _physicsS.minSpeed) + 
+                                          _physicsS.minSpeed;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
+            SetArrowHeadPosition();
+        }
 
         public void OpenEditMenu(bool fromCreation)
         {
@@ -471,12 +476,12 @@ namespace Game.UI.Menu.SystemEditing
                          (_physicsS.maxRadius - _physicsS.minRadius);
             var gravity = (_physicsS.surfaceGravity - _physicsS.minSurfaceGravity) /
                     (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity);
-            // var speed = (_physicsS.initialVelocity.y - _physicsS.minSpeed) /
-            //             (_physicsS.maxSpeed - _physicsS.minSpeed);
+            var speed = (_physicsS.initialVelocity.y - _physicsS.minSpeed) /
+                        (_physicsS.maxSpeed - _physicsS.minSpeed);
             
             radiusSlider.SetValueWithoutNotify(radius);
             gravitySlider.SetValueWithoutNotify(gravity);
-            // speedSlider.SetValueWithoutNotify(speed);
+            speedSlider.SetValueWithoutNotify(speed);
         }
         
         private CBodySettings GetCurrentCBodySettings()

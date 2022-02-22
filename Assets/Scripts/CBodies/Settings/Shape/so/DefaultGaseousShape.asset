@@ -15,7 +15,7 @@ MonoBehaviour:
   perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
   heightMapCompute: {fileID: 7200000, guid: f509f6a544569524aacda48217625494, type: 3}
   shapeSettings:
-    randomize: 0
-    seed: 0
+    randomize: 1
+    seed: 8793
     perturbVertices: 0
     perturbStrength: 0.303

@@ -15,14 +15,11 @@ MonoBehaviour:
   physicsSettings:
     minRadius: 15
     maxRadius: 80
-    radius: 71.61
-    minSurfaceGravity: 0.1
-    maxSurfaceGravity: 20
-    surfaceGravity: 0.1
-    minRotationSpeed: -30
-    maxRotationSpeed: 30
-    rotationSpeed: 0
+    radius: 20
+    minSurfaceGravity: 2
+    maxSurfaceGravity: 30
+    surfaceGravity: 5
     initialPosition: {x: 0, y: 0, z: 0}
-    minSpeed: 0.1
-    maxSpeed: 20
-    initialVelocity: {x: 0, y: 0.1, z: 0}
+    minSpeed: 5
+    maxSpeed: 30
+    initialVelocity: {x: 0, y: 25, z: 0}

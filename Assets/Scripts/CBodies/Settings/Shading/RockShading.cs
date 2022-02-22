@@ -18,8 +18,6 @@ namespace CBodies.Settings.Shading
         public override void InitSettings()
         {
             SetRandomColors();
-            // todo: eventually remove customized colors if players cannot choose directly every single color
-            // shadingSettings.baseColors = shadingSettings.randomColors;
             if (Observers == null) return;
             foreach (ICBodyObserver o in Observers)
             {

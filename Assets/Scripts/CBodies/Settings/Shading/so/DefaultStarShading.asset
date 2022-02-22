@@ -18,3 +18,7 @@ MonoBehaviour:
     randomize: 0
     seed: 0
     realisticColors: 1
+    mainColor: {r: 1, g: 1, b: 1, a: 1}
+    yellow: {r: 0.75, g: 0.58349997, b: 0.195, a: 1}
+    blue: {r: 0.2227501, g: 0.195, b: 0.75, a: 1}
+    red: {r: 0.75, g: 0.2135, b: 0.195, a: 1}

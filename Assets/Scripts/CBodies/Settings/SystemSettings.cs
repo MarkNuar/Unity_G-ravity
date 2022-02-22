@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CBodies.Settings
@@ -24,15 +25,10 @@ namespace CBodies.Settings
             cb.Init(type);
 
             // todo: position according to the type of planet
-            var posX = 0.0f;
-            foreach (var cbs in cBodiesSettings)
-            {
-                var p = cbs.physics.GetSettings().initialPosition.x + cbs.physics.GetSettings().maxRadius + cb.physics.GetSettings().maxRadius + 55;
-                if (p > posX)
-                {
-                    posX = p;
-                }
-            }
+            var posX = cBodiesSettings.Select(cbs => 
+                cbs.physics.GetSettings().initialPosition.x + 
+                cbs.physics.GetSettings().maxRadius + 
+                cb.physics.GetSettings().maxRadius + 100).Prepend(0.0f).Max();
             Vector3 pos = new Vector3( posX, 0, 0);
             Physics.Physics.PhysicsSettings ps = cb.physics.GetSettings();
             ps.initialPosition = pos;

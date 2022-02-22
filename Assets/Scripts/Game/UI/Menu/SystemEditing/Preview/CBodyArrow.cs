@@ -27,7 +27,7 @@ namespace Game.UI.Menu.SystemEditing.Preview
 
         private void Awake()
         {
-            maxArrowLen = Mathf.Min(Screen.width, Screen.height) * 0.4f;
+            maxArrowLen = Mathf.Min(Screen.width, Screen.height) * 0.3f;
             
             _cam = GameManager.Instance.GetMainCamera();
             _cameraController = _cam.GetComponent<CameraController>();

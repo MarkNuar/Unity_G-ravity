@@ -30,6 +30,8 @@ namespace Game.UI.Menu.SystemEditing
 
         private void Start()
         {
+            cam.orthographicSize = 250;
+            
             _initialCameraPosition = cam.transform.position;
             _initialCameraZoom = cam.orthographicSize;
 
