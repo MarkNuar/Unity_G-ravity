@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   atmosphereSettings:
     randomizeShading: 1
-    shadingSeed: -6858
+    shadingSeed: 1612
     realisticColors: 1
-    hasAtmosphere: 1
+    hasAtmosphere: 0
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 5
     densityFalloff: 7
     wavelengths: {x: 700, y: 530, z: 460}
-    randomWaveLengths: {x: 451.6441, y: 513.2882, z: 616.441}
+    randomWaveLengths: {x: 761.6274, y: 466.16275, z: 542.3255}
     scatteringStrength: 15
     intensity: 0.8
     ditherStrength: 0

@@ -39,10 +39,13 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private Slider speedSlider = null;
         
         // SHAPE & SHADING
-        [SerializeField] private TMP_Text systemName = null;
-        [SerializeField] private TMP_InputField inputCBodyName = null;
+        [SerializeField] private TMP_Text txtSystemName = null;
+        [SerializeField] private TMP_InputField iBodyName = null;
         [SerializeField] private Button bResetRandomization = null;
-
+        [SerializeField] private Toggle tRealisticColors = null;
+        [SerializeField] private Toggle tHasAtmosphere = null;
+        [SerializeField] private Toggle tHasOcean = null;
+        
         [SerializeField] private RectTransform colorHandle = null;
         
         [SerializeField] private CameraController cameraController;
@@ -81,7 +84,6 @@ namespace Game.UI.Menu.SystemEditing
                     _systemSettings = new SystemSettings();
                     SetSystemName(systemToLoad);
                     // Start by adding always a star to the system
-                    // TODO : ADD A STAR, NOT A ROCK PLANET AT THE BEGINNING
                     _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Star);
                     CreateCBodyAndPreview();
                 }
@@ -92,7 +94,7 @@ namespace Game.UI.Menu.SystemEditing
                     if (systemSettings != null)
                     {
                         _systemSettings = systemSettings;
-                        systemName.text = _systemSettings.systemName;
+                        txtSystemName.text = _systemSettings.systemName;
                         foreach (CBodySettings cb in _systemSettings.cBodiesSettings)
                         {
                             _currentCBodyIndex = _systemSettings.cBodiesSettings.IndexOf(cb);
@@ -135,7 +137,7 @@ namespace Game.UI.Menu.SystemEditing
         private void SetSystemName(string sysName)
         {
             _systemSettings.systemName = sysName;
-            systemName.text = sysName;
+            txtSystemName.text = sysName;
         }
 
         public void BeginCBodyCreation(bool loaded)
@@ -242,21 +244,20 @@ namespace Game.UI.Menu.SystemEditing
                     cb.shape.SetSettings(_shapeS);
                     break;
                 case CBodyGenerator.UpdateType.Shading:
+                    cb.atmosphere.SetSettings(_atmosphereS);
                     cb.ocean.SetSettings(_oceanS);
                     cb.ring.SetSettings(_ringS);
-                    cb.atmosphere.SetSettings(_atmosphereS);
                     cb.shading.SetSettings(_shadingS);
                     break;
                 case CBodyGenerator.UpdateType.Physics:
                     cb.physics.SetSettings(_physicsS);
                     break;
                 case CBodyGenerator.UpdateType.All:
+                    cb.atmosphere.SetSettings(_atmosphereS);
                     cb.ocean.SetSettings(_oceanS);
                     cb.ring.SetSettings(_ringS);
-                    cb.atmosphere.SetSettings(_atmosphereS);
                     cb.shape.SetSettings(_shapeS);
                     cb.shading.SetSettings(_shadingS);
-                    // cb.physics.SetSettings(_physicsS);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(updateType), updateType, null);
@@ -310,7 +311,7 @@ namespace Game.UI.Menu.SystemEditing
             
             DisableCBodyButtons();
             
-            inputCBodyName.text = GetCurrentCBodySettings().cBodyName;
+            iBodyName.text = GetCurrentCBodySettings().cBodyName;
             bResetRandomization.interactable = GetCurrentCBodySettings().IsRandomized();
 
             HideCurrentCBodySelectionHUD();

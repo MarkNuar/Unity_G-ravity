@@ -29,20 +29,20 @@ public class SystemUtils : MonoBehaviour
     
     // SHAPES 
     [Header("Shapes")] 
-    public RockShape rockShape;
+    public PlanetShape planetShape;
     public GaseousShape gaseousShape;
     public StarShape starShape;
 
     // SHADING 
     [Header("Shading")] 
-    public RockShading rockShading;
+    public PlanetShading planetShading;
     public GaseousShading gaseousShading;
     public StarShading starShading;
 
     // PHYSICS
     //[Header("Physics")] public Physics basePhysics;
     [Header("Physics")] 
-    public Physics rockPhysics;
+    public Physics planetPhysics;
     public Physics gaseousPhysics;
     public Physics starPhysics;
     
@@ -74,14 +74,14 @@ public class SystemUtils : MonoBehaviour
             _jSonSettings.ConstructorHandling = ConstructorHandling.Default;
             _jSonSettings.Converters.Add(JsonSubtypesConverterBuilder
                 .Of<Shape.ShapeSettings>("Type") // type property is only defined here
-                .RegisterSubtype<RockShape.RockShapeSettings>(CBodySettings.CBodyType.Rocky)
+                .RegisterSubtype<PlanetShape.PlanetShapeSettings>(CBodySettings.CBodyType.Planet)
                 .RegisterSubtype<GaseousShape.GaseousShapeSettings>(CBodySettings.CBodyType.Gaseous)
                 .RegisterSubtype<StarShape.StarShapeSettings>(CBodySettings.CBodyType.Star)
                 .SerializeDiscriminatorProperty() // ask to serialize the type property
                 .Build());
             _jSonSettings.Converters.Add(JsonSubtypesConverterBuilder
                 .Of<Shading.ShadingSettings>("Type") // type property is only defined here
-                .RegisterSubtype<RockShading.RockShadingSettings>(CBodySettings.CBodyType.Rocky)
+                .RegisterSubtype<PlanetShading.PlanetShadingSettings>(CBodySettings.CBodyType.Planet)
                 .RegisterSubtype<GaseousShading.GaseousShadingSettings>(CBodySettings.CBodyType.Gaseous)
                 .RegisterSubtype<StarShading.StarShadingSettings>(CBodySettings.CBodyType.Star)
                 .SerializeDiscriminatorProperty() // ask to serialize the type property
@@ -260,10 +260,10 @@ public class SystemUtils : MonoBehaviour
             
             switch (type)
             {
-                case CBodySettings.CBodyType.Rocky:
-                    shape = Instantiate(rockShape);
-                    shading = Instantiate(rockShading);
-                    physics = Instantiate(rockPhysics);
+                case CBodySettings.CBodyType.Planet:
+                    shape = Instantiate(planetShape);
+                    shading = Instantiate(planetShading);
+                    physics = Instantiate(planetPhysics);
                     break;
                 case CBodySettings.CBodyType.Gaseous:
                     shape = Instantiate(gaseousShape);
@@ -287,10 +287,10 @@ public class SystemUtils : MonoBehaviour
             
             switch (type)
             {
-                case CBodySettings.CBodyType.Rocky:
-                    shape = (rockShape);
-                    shading = (rockShading);
-                    physics = rockPhysics;
+                case CBodySettings.CBodyType.Planet:
+                    shape = (planetShape);
+                    shading = (planetShading);
+                    physics = planetPhysics;
                     break;
                 case CBodySettings.CBodyType.Gaseous:
                     shape = (gaseousShape);

@@ -159,7 +159,7 @@ namespace CBodies.PostProcessing.PlanetEffects
 				this.generator = generator;
 				switch (generator.cBodySettings.cBodyType)
 				{
-					case CBodySettings.CBodyType.Rocky:
+					case CBodySettings.CBodyType.Planet:
 						oceanEffect = new OceanEffect ();
 						atmosphereEffect = new AtmosphereEffect ();
 						break;

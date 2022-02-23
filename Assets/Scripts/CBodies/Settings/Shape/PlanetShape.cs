@@ -6,10 +6,10 @@ using Random = UnityEngine.Random;
 namespace CBodies.Settings.Shape
 {
     [Serializable][CreateAssetMenu]
-    public class RockShape : Shape
+    public class PlanetShape : Shape
     {
         // MEMENTO
-        [SerializeField] public RockShapeSettings shapeSettings;
+        [SerializeField] public PlanetShapeSettings shapeSettings;
         
         protected override void SetShapeData () {
             PRNG prng = new PRNG (shapeSettings.seed);
@@ -42,7 +42,7 @@ namespace CBodies.Settings.Shape
         }
         public override void SetSettings (ShapeSettings ss)
         {
-            shapeSettings = (RockShapeSettings)ss;
+            shapeSettings = (PlanetShapeSettings)ss;
             shapeSettings.UpdateMountainsHeights();
             
             if (Observers == null) return;
@@ -54,7 +54,7 @@ namespace CBodies.Settings.Shape
         // END MEMENTO
         
         [Serializable]
-        public class RockShapeSettings : ShapeSettings
+        public class PlanetShapeSettings : ShapeSettings
         {
             [Header ("Continent settings")]
             public bool hasOcean = true;

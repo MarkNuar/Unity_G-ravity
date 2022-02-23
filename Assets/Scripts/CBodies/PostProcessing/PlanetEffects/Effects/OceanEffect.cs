@@ -39,7 +39,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
                 _material.SetVector ("dirToSun", Vector3.up);
                 Debug.Log ("No SunShadowCaster found");
             }
-            generator.cBodySettings.ocean.SetOceanProperties(_material);
+            generator.cBodySettings.ocean.SetOceanProperties(_material, generator.cBodySettings.atmosphere.GetSettings().hasAtmosphere);
         }
 
         public Material GetMaterial () {

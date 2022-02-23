@@ -124,11 +124,6 @@ namespace CBodies.Editor
                     }
                 }
             }
-
-            
-            
-
-
             SaveState ();
         }
 
@@ -150,9 +145,9 @@ namespace CBodies.Editor
             // The order matters! 
             // Set the ocean update before shading update 
             // Otherwise the shading shader will get a wrong ocean level value
+            _cBodyGenerator.cBodySettings.atmosphere.SetSettings(aa);
             _cBodyGenerator.cBodySettings.ocean.SetSettings(os);
             _cBodyGenerator.cBodySettings.ring.SetSettings(rs);
-            _cBodyGenerator.cBodySettings.atmosphere.SetSettings(aa);
             _cBodyGenerator.cBodySettings.shape.SetSettings(sp);
             _cBodyGenerator.cBodySettings.shading.SetSettings(sd);
             _cBodyGenerator.cBodySettings.physics.SetSettings(ps);

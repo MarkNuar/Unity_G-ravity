@@ -19,7 +19,11 @@ namespace CBodies.Settings.PostProcessing.Ocean
         
         private bool _settingsUpToDate = false;
         
-        public void SetOceanProperties (Material material) {
+        public void SetOceanProperties (Material material, bool hasAtmosphere)
+        {
+            if (!hasAtmosphere)
+                oceanSettings.hasOcean = false;
+            
             if(_settingsUpToDate) return;
             
             if(!oceanSettings.hasOcean) return;
