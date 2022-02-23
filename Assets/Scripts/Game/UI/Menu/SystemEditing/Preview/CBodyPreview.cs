@@ -25,8 +25,8 @@ namespace Game.UI.Menu.SystemEditing.Preview
         {
             Selected = true;
             
-            velocityArrow.arrowHead.enabled = true;
-            velocityArrow.arrowBody.enabled = true;
+            velocityArrow.arrowHead.enabled = false;
+            velocityArrow.arrowBody.enabled = false;
 
             positionDrag.dragHandle.enabled = true; 
 

@@ -22,4 +22,4 @@ MonoBehaviour:
     initialPosition: {x: 0, y: 0, z: 0}
     minSpeed: 5
     maxSpeed: 30
-    initialVelocity: {x: 0, y: 10, z: 0}
+    initialVelocity: {x: 0, y: 0, z: 0}
