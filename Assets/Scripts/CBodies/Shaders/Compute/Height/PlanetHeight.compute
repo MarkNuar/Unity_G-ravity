@@ -33,8 +33,7 @@ void CSMain (uint id : SV_DispatchThreadID)
     float continentShape = simpleNoise(pos, noiseParams_continents);
 
     continentShape = smoothMax(continentShape, -oceanFloorDepth, oceanFloorSmoothing);
-
-
+    
     if (hasOcean && continentShape < 0) {
         continentShape *= 1 + oceanDepthMultiplier;
     }

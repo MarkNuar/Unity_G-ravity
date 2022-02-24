@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab3897b208c24327af678c5b9c03148e, type: 3}
+  m_Name: DefaultMoonShading
+  m_EditorClassIdentifier: 
+  shadingDataCompute: {fileID: 7200000, guid: 5b0448be305c4db6b3723469d7862c37, type: 3}
+  terrainMaterial: {fileID: 2100000, guid: f1b4a62d33e28234c843dd65ee4f5766, type: 2}
+  shadingSettings:
+    randomize: 1
+    seed: 100
+    realisticColors: 1
+    mainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    baseMoonColors:
+      primaryColorA: {r: 0.23896407, g: 0.2562029, b: 0.2830189, a: 1}
+      secondaryColorA: {r: 0.047169805, g: 0.039382335, b: 0.04035577, a: 1}
+      primaryColorB: {r: 0.3207547, g: 0.24467827, b: 0.24056603, a: 1}
+      secondaryColorB: {r: 0.1509434, g: 0.13314347, b: 0.13314347, a: 1}
+    randomMoonColors:
+      primaryColorA: {r: 0.27294028, g: 0.23896407, b: 0.2830189, a: 1}
+      secondaryColorA: {r: 0.046877544, g: 0.047169805, b: 0.039382335, a: 1}
+      primaryColorB: {r: 0.30360943, g: 0.3207547, b: 0.24056603, a: 1}
+      secondaryColorB: {r: 0.14805038, g: 0.1509434, b: 0.13314347, a: 1}
+    colorHRange: {x: 0, y: 0.2}
+    numBiomesPoints: 25
+    radiusMinMax: {x: 0.02, y: 0.1}
+    biomesWarpNoise:
+      numLayers: 4
+      lacunarity: 2
+      persistence: 0.5
+      scale: 1
+      elevation: 1
+      verticalShift: 0
+      offset: {x: 0, y: 0, z: 0}
+    detailNoise:
+      numLayers: 4
+      lacunarity: 2.34
+      persistence: 0.5
+      scale: 1.35
+      elevation: 1.43
+      verticalShift: 0
+      offset: {x: 0, y: 0, z: 0}
+    detailWarpNoise:
+      numLayers: 4
+      lacunarity: 2
+      persistence: 0.5
+      scale: 2.5
+      elevation: 5
+      verticalShift: 0
+      offset: {x: 0, y: 0, z: 0}

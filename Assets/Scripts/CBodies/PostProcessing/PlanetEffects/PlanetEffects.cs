@@ -167,6 +167,8 @@ namespace CBodies.PostProcessing.PlanetEffects
 						ringEffect = new RingEffect();
 						//atmosphereEffect = new AtmosphereEffect ();
 						break;
+					case CBodySettings.CBodyType.Moon : 
+						break;
 					case CBodySettings.CBodyType.Star:
 						break;
 					default:

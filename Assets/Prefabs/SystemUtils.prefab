@@ -51,12 +51,15 @@ MonoBehaviour:
   storePath: 
   testStorePath: 
   createCopyOfSettings: 1
+  moonShape: {fileID: 11400000, guid: 527e1ee86d9523f43931a7377bdf7433, type: 2}
   planetShape: {fileID: 11400000, guid: 56ecf2f17d21ca74c8de086ab9382e9d, type: 2}
   gaseousShape: {fileID: 11400000, guid: f39c0ee2497438b47a991e7ec80383b6, type: 2}
   starShape: {fileID: 11400000, guid: 09840366b9b480947b30944e459b3a8c, type: 2}
+  moonShading: {fileID: 11400000, guid: 6c3ac71ba0153864aa78a24c225dc06e, type: 2}
   planetShading: {fileID: 11400000, guid: cbbab0d588e903e4a89dad90bc61b65a, type: 2}
   gaseousShading: {fileID: 11400000, guid: 2262102604554b145ae0c640ac8e1c75, type: 2}
   starShading: {fileID: 11400000, guid: 65dd7af6b9e592a4d8f3874471939859, type: 2}
+  moonPhysics: {fileID: 11400000, guid: 47f941705957b06438270ed34021adf4, type: 2}
   planetPhysics: {fileID: 11400000, guid: 26f954138cb437b4c8ee9dd7fdda4490, type: 2}
   gaseousPhysics: {fileID: 11400000, guid: e66743414a79bd043928927c1ac759de, type: 2}
   starPhysics: {fileID: 11400000, guid: 9fc751b2546a27044a94d8d205523294, type: 2}

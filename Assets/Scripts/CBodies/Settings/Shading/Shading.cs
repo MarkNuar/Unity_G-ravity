@@ -21,7 +21,7 @@ namespace CBodies.Settings.Shading
         
         protected Vector4[] CachedShadingData;
         private ComputeBuffer _shadingBuffer;
-        
+
         private static System.Random _prng = new System.Random ();
         
         public virtual void ReleaseBuffers () {
@@ -31,7 +31,7 @@ namespace CBodies.Settings.Shading
         public virtual void Initialize (Shape.Shape shape) { }
         
         // Set shading properties on terrain
-        public virtual void SetSurfaceProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel, bool hasAtmosphere) 
+        public virtual void SetSurfaceProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
         {
 
         }
@@ -40,22 +40,21 @@ namespace CBodies.Settings.Shading
         public Vector4[] GenerateShadingData (ComputeBuffer vertexBuffer) {
             int numVertices = vertexBuffer.count;
             Vector4[] shadingData = new Vector4[numVertices];
-
+        
             if (shadingDataCompute) {
                 // Set data
                 SetShadingDataComputeProperties ();
-
+        
                 shadingDataCompute.SetInt ("numVertices", numVertices);
                 shadingDataCompute.SetBuffer (0, "vertices", vertexBuffer);
                 ComputeHelper.CreateAndSetBuffer<Vector4> (ref _shadingBuffer, numVertices, shadingDataCompute, "shadingData");
-
+        
                 // Run
                 ComputeHelper.Run (shadingDataCompute, numVertices);
-
+        
                 // Get data
                 _shadingBuffer.GetData (shadingData);
             }
-
             CachedShadingData = shadingData;
             return shadingData;
         }

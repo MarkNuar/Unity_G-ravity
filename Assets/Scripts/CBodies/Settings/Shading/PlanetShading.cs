@@ -37,15 +37,15 @@ namespace CBodies.Settings.Shading
             }
         }
         
-        protected override void SetShadingDataComputeProperties () {
-            PRNG random = new PRNG (shadingSettings.seed);
-            shadingSettings.detailNoise.SetComputeValues (shadingDataCompute, random, "_detail");
-            shadingSettings.detailWarpNoise.SetComputeValues (shadingDataCompute, random, "_detailWarp");
-            shadingSettings.largeNoise.SetComputeValues (shadingDataCompute, random, "_large");
-            shadingSettings.smallNoise.SetComputeValues (shadingDataCompute, random, "_small");
-        }
+        // protected override void SetShadingDataComputeProperties () {
+        //     PRNG random = new PRNG (shadingSettings.seed);
+        //     shadingSettings.detailNoise.SetComputeValues (shadingDataCompute, random, "_detail");
+        //     shadingSettings.detailWarpNoise.SetComputeValues (shadingDataCompute, random, "_detailWarp");
+        //     shadingSettings.largeNoise.SetComputeValues (shadingDataCompute, random, "_large");
+        //     shadingSettings.smallNoise.SetComputeValues (shadingDataCompute, random, "_small");
+        // }
         
-        public override void SetSurfaceProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel, bool hasAtmosphere) 
+        public override void SetSurfaceProperties (Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel) 
         {
             material.SetVector ("heightMinMax", heightMinMax);
             material.SetFloat ("oceanLevel", oceanLevel);
@@ -55,14 +55,14 @@ namespace CBodies.Settings.Shading
 
             if (shadingSettings.randomize)
             {
-                SetRandomColors (hasAtmosphere);
-                ApplyColours (material, shadingSettings.randomColors, hasAtmosphere);
+                SetRandomColors ();
+                ApplyColours (material, shadingSettings.randomColors);
 
                 shadingSettings.mainColor = shadingSettings.randomColors.flatColLowA;
             }
             else
             {
-                ApplyColours (material, shadingSettings.baseGreenColors, hasAtmosphere);
+                ApplyColours (material, shadingSettings.baseGreenColors);
                 
                 shadingSettings.mainColor = shadingSettings.baseGreenColors.flatColLowA;
             }
@@ -83,40 +83,32 @@ namespace CBodies.Settings.Shading
             material.SetFloat ("_BiomeWarpStrength", warpStrength);
         }
         
-        private void SetRandomColors (bool hasAtmosphere) {
+        private void SetRandomColors () {
             PRNG random = new PRNG (shadingSettings.seed);
             if (shadingSettings.realisticColors)
             {
                 var deltaH = 0.0f;
                 PlanetColors colors;
                 
-                if (hasAtmosphere)
+                var n = random.Range(0, 3);
+                switch(n)
                 {
-                    var n = random.Range(0, 3);
-                    switch(n)
-                    {
-                        case 0:
-                            colors = shadingSettings.baseGreenColors;
-                            deltaH = random.Range(shadingSettings.greenHRange.x, shadingSettings.greenHRange.y);
-                            break;
-                        case 1:
-                            colors = shadingSettings.baseRedColors;
-                            deltaH = random.Range(shadingSettings.redHRange.x, shadingSettings.redHRange.y);
-                            break;
-                        case 2:
-                            colors = shadingSettings.baseBlueColors;
-                            deltaH = random.Range(shadingSettings.blueHRange.x, shadingSettings.blueHRange.y);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    };
-                }
-                else // no atmosphere -> gray scale colors 
-                {
-                    deltaH = random.Range(shadingSettings.grayHRange.x, shadingSettings.grayHRange.y);
-                    colors = shadingSettings.baseGrayColors;
-                }
-                
+                    case 0:
+                        colors = shadingSettings.baseGreenColors;
+                        deltaH = random.Range(shadingSettings.greenHRange.x, shadingSettings.greenHRange.y);
+                        break;
+                    case 1:
+                        colors = shadingSettings.baseRedColors;
+                        deltaH = random.Range(shadingSettings.redHRange.x, shadingSettings.redHRange.y);
+                        break;
+                    case 2:
+                        colors = shadingSettings.baseBlueColors;
+                        deltaH = random.Range(shadingSettings.blueHRange.x, shadingSettings.blueHRange.y);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                };
+
                 shadingSettings.randomColors.shoreColLow =
                     ColorHelper.TweakHSV(colors.shoreColLow, deltaH, 0, 0);
                 shadingSettings.randomColors.shoreColHigh = 
@@ -158,7 +150,7 @@ namespace CBodies.Settings.Shading
             shadingSettings.mainColor = shadingSettings.randomColors.flatColLowA;
         }
         
-        void ApplyColours (Material material, PlanetColors colors, bool hasAtmosphere) {
+        void ApplyColours (Material material, PlanetColors colors) {
             material.SetColor ("_ShoreLow", colors.shoreColLow);
             material.SetColor ("_ShoreHigh", colors.shoreColHigh);
 
@@ -170,8 +162,6 @@ namespace CBodies.Settings.Shading
 
             material.SetColor ("_SteepLow", colors.steepLow);
             material.SetColor ("_SteepHigh", colors.steepHigh);
-            
-            material.SetInt("has_atmosphere", hasAtmosphere ? 1 : 0);
         }
         
         
@@ -190,15 +180,16 @@ namespace CBodies.Settings.Shading
             public Vector2 blueHRange;
             public Vector2 grayHRange;
                 
-            [Header ("Shading Data")]
-            public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
-            public SimpleNoiseSettings detailNoise = new SimpleNoiseSettings();
-            public SimpleNoiseSettings largeNoise = new SimpleNoiseSettings();
-            public SimpleNoiseSettings smallNoise = new SimpleNoiseSettings();
+        //     [Header ("Shading Data")]
+        //     public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
+        //     public SimpleNoiseSettings detailNoise = new SimpleNoiseSettings();
+        //     public SimpleNoiseSettings largeNoise = new SimpleNoiseSettings();
+        //     public SimpleNoiseSettings smallNoise = new SimpleNoiseSettings();
         }
         
         [System.Serializable]
-        public struct PlanetColors {
+        public struct PlanetColors 
+        {
             public Color shoreColLow;
             public Color shoreColHigh;
             public Color flatColLowA;

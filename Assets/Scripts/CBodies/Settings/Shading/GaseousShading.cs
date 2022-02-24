@@ -37,7 +37,7 @@ namespace CBodies.Settings.Shading
             }
         }
 
-        public override void SetSurfaceProperties(Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel, bool hasAtmosphere)
+        public override void SetSurfaceProperties(Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel)
         {
             SetRandomColors();
             

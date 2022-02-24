@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2da17f3f4424503bbbe8d51ef1b8735, type: 3}
+  m_Name: DefaultMoonShape
+  m_EditorClassIdentifier: 
+  perturbCompute: {fileID: 7200000, guid: 8155e84bfed51f34882b5d33e1efcadf, type: 3}
+  heightMapCompute: {fileID: 7200000, guid: de323a065c514be59ca8bd713806530f, type: 3}
+  shapeSettings:
+    randomize: 0
+    seed: 0
+    perturbVertices: 1
+    perturbStrength: 0.47
+    shapeNoise:
+      numLayers: 4
+      lacunarity: 2
+      persistence: 0.5
+      scale: 1.65
+      elevation: 0
+      verticalShift: 0
+      offset: {x: 0, y: 0, z: 0}
+    ridgeNoise:
+      numLayers: 4
+      lacunarity: 5
+      persistence: 0.42
+      scale: 1
+      power: 2
+      elevation: 6.8
+      gain: 1
+      verticalShift: 0
+      peakSmoothing: 2
+      offset: {x: 0, y: 0, z: 0}
+    ridgeNoise2:
+      numLayers: 5
+      lacunarity: 2
+      persistence: 0.5
+      scale: 1
+      power: 2
+      elevation: 1
+      gain: 1
+      verticalShift: 0
+      peakSmoothing: 0
+      offset: {x: 0, y: 0, z: 0}

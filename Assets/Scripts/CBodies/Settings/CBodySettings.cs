@@ -66,9 +66,11 @@ namespace CBodies.Settings
             at.InitSettings();
             ri.InitSettings();
             
-            // Enable ocean by default only on planets
+            // Enable ocean and atmosphere by default only on planets
             Ocean.OceanSettings os = ocean.GetSettings();
             os.hasOcean = cBodyType == CBodyType.Planet;
+            Atmosphere.AtmosphereSettings aa = atmosphere.GetSettings();
+            aa.hasAtmosphere = cBodyType == CBodyType.Planet;
             
             // Enable ring by default only on gaseous planets
             Ring.RingSettings rs = ring.GetSettings();
@@ -88,7 +90,7 @@ namespace CBodies.Settings
         [Serializable]
         public enum CBodyType
         {
-            Moon, // TODO
+            Moon,
             Planet,
             Gaseous,
             Star

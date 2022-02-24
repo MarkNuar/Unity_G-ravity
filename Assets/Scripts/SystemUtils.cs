@@ -29,19 +29,20 @@ public class SystemUtils : MonoBehaviour
     
     // SHAPES 
     [Header("Shapes")] 
+    public MoonShape moonShape;
     public PlanetShape planetShape;
     public GaseousShape gaseousShape;
     public StarShape starShape;
 
     // SHADING 
     [Header("Shading")] 
+    public MoonShading moonShading;
     public PlanetShading planetShading;
     public GaseousShading gaseousShading;
     public StarShading starShading;
-
-    // PHYSICS
-    //[Header("Physics")] public Physics basePhysics;
+    
     [Header("Physics")] 
+    public Physics moonPhysics;
     public Physics planetPhysics;
     public Physics gaseousPhysics;
     public Physics starPhysics;
@@ -77,6 +78,7 @@ public class SystemUtils : MonoBehaviour
                 .RegisterSubtype<PlanetShape.PlanetShapeSettings>(CBodySettings.CBodyType.Planet)
                 .RegisterSubtype<GaseousShape.GaseousShapeSettings>(CBodySettings.CBodyType.Gaseous)
                 .RegisterSubtype<StarShape.StarShapeSettings>(CBodySettings.CBodyType.Star)
+                .RegisterSubtype<MoonShape.MoonShapeSettings>(CBodySettings.CBodyType.Moon)
                 .SerializeDiscriminatorProperty() // ask to serialize the type property
                 .Build());
             _jSonSettings.Converters.Add(JsonSubtypesConverterBuilder
@@ -84,6 +86,7 @@ public class SystemUtils : MonoBehaviour
                 .RegisterSubtype<PlanetShading.PlanetShadingSettings>(CBodySettings.CBodyType.Planet)
                 .RegisterSubtype<GaseousShading.GaseousShadingSettings>(CBodySettings.CBodyType.Gaseous)
                 .RegisterSubtype<StarShading.StarShadingSettings>(CBodySettings.CBodyType.Star)
+                .RegisterSubtype<MoonShading.MoonShadingSettings>(CBodySettings.CBodyType.Moon)
                 .SerializeDiscriminatorProperty() // ask to serialize the type property
                 .Build());
         }
@@ -260,6 +263,11 @@ public class SystemUtils : MonoBehaviour
             
             switch (type)
             {
+                case CBodySettings.CBodyType.Moon:
+                    shape = Instantiate(moonShape);
+                    shading = Instantiate(moonShading);
+                    physics = Instantiate(moonPhysics);
+                    break;
                 case CBodySettings.CBodyType.Planet:
                     shape = Instantiate(planetShape);
                     shading = Instantiate(planetShading);
@@ -287,6 +295,11 @@ public class SystemUtils : MonoBehaviour
             
             switch (type)
             {
+                case CBodySettings.CBodyType.Moon:
+                    shape = (moonShape);
+                    shading = (moonShading);
+                    physics = (moonPhysics);
+                    break;
                 case CBodySettings.CBodyType.Planet:
                     shape = (planetShape);
                     shading = (planetShading);

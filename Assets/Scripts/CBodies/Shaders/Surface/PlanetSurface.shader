@@ -35,9 +35,6 @@ Shader "CBodies/Planet"
 		_NoiseZoomL("Noise Zoom Large", Float) = 1
 		_NoiseZoomM("Noise Zoom Medium", Float) = 1
 		_NoiseZoomS("Noise Zoom Small", Float) = 1
-		
-		[NoScaleOffset] _CraterNoiseTex ("Crater Noise Texture", 2D) = "white" {}
-		_CraterNoiseZoom("Noise Zoom", Float) = 1
 
 		[Header(Other)]
 		_FresnelCol("Fresnel Colour", Color) = (1,1,1,1)
@@ -50,10 +47,8 @@ Shader "CBodies/Planet"
 		[Header(Normals)]
 		[NoScaleOffset] _NormalMapFlat ("Normal Map Flat", 2D) = "white" {}
 		[NoScaleOffset] _NormalMapSteep ("Normal Map Steep", 2D) = "white" {}
-		[NoScaleOffset] _NormalMapCraters ("Normal Map Craters", 2D) = "white" {}
 		_NormalMapFlatScale ("Normal Map Flat Scale", Float) = 10
 		_NormalMapSteepScale ("Normal Map Steep Scale", Float) = 10
-		_NormalMapCratersScale ("Normal Map Craters Scale", Float) = 10
 		_NormalMapStrength ("Normal Map Strength", Range(0,1)) = 0.3
 		
 	}
@@ -142,17 +137,7 @@ Shader "CBodies/Planet"
 		float _NoiseZoomL;
 		float _NoiseZoomM;
 		float _NoiseZoomS;
-
-		sampler2D _CraterNoiseTex;
-		float _CraterNoiseZoom;
-
-		// Craters Properties
-		float _BiomeBlendStrength;
-		float _BiomeWarpStrength;
-		float4 _RandomBiomeValues;
 		
-	
-
 		// Height data:
 		float2 heightMinMax;
 		float oceanLevel;
@@ -160,14 +145,9 @@ Shader "CBodies/Planet"
 		
 		sampler2D _NormalMapFlat;
 		sampler2D _NormalMapSteep;
-		sampler2D _NormalMapCraters;
 		float _NormalMapFlatScale;
 		float _NormalMapSteepScale;
-		float _NormalMapCratersScale;
 		float _NormalMapStrength;
-
-		int has_atmosphere;
-		
 
 		void surf (Input i, inout SurfaceOutputStandard o)
 		{
@@ -188,8 +168,6 @@ Shader "CBodies/Planet"
 			float4 texNoiseZoomL = triplanar(i.vertPos, i.normal, _NoiseZoomL, _NoiseTex);
 			float4 texNoiseZoomM = triplanar(i.vertPos, i.normal, _NoiseZoomM, _NoiseTex);
 			float4 texNoiseZoomS = triplanar(i.vertPos, i.normal, _NoiseZoomS, _NoiseTex);
-
-			float4 texCraterNoise = triplanar(i.vertPos, i.normal, _CraterNoiseZoom, _CraterNoiseTex);
 			
 			// Flat terrain colour A and B
 			float flatColBlendWeight = Blend(0, _FlatColBlend, (flatHeight01-.35) + (texNoiseZoomL.b - 0.5) * _FlatColBlendNoise);
@@ -222,33 +200,15 @@ Shader "CBodies/Planet"
 			float flatStrength = 1 - Blend(_SteepnessThreshold + flatBlendNoise, _FlatToSteepBlend, steepness);
 			float flatHeightFalloff = 1 - Blend(_MaxFlatHeight + flatBlendNoise, _FlatToSteepBlend, aboveShoreHeight01);
 			flatStrength *= flatHeightFalloff;
-
-
-			// No Atmosphere color
-			// Use FlatLowA, FlatHighA, FlatLowB, FlatHighB as colors
-			float height01 = remap01(length(i.vertPos), heightMinMax.x, heightMinMax.y);
-			float warpNoise = Blend(0, 3, i.terrainData.z);
-			// Blend between primary and secondary colours by height (plus some noise)
-			float heightNoiseA = -texCraterNoise.g * steepness - (texCraterNoise.b - 0.5) * 0.7 + (texCraterNoise.a - 0.5) * _RandomBiomeValues.x;
-			float heightNoiseB = (texCraterNoise.g-0.5) * _RandomBiomeValues.y + (texCraterNoise.r-0.5) * _RandomBiomeValues.z;
-			float heightBlendWeightA = Blend(0.5, 0.6, height01 + heightNoiseA) * warpNoise;
-			float heightBlendWeightB = Blend(0.5, 0.6, height01 + heightNoiseB) * warpNoise;
-			float3 colBiomeA = lerp(_FlatLowA, _FlatHighA, heightBlendWeightA);
-			float3 colBiomeB = lerp(_FlatLowB, _FlatHighB, heightBlendWeightB);
-			// Blend between colour A and B based on terrain data noise
-			float biomeNoise = dot(texCraterNoise.ga - 0.5, _RandomBiomeValues.zw) * 4;
-			float biomeWeight = Blend(5 * 0.8 + i.terrainData.z * _BiomeWarpStrength, _BiomeBlendStrength + warpNoise * 15, i.terrainData.w + biomeNoise);
-			float3 craterCol = lerp(colBiomeA, colBiomeB, biomeWeight); 
-			// end no atmosphere section
-
+			
 			
 			// Set surface colour
 			float3 compositeCol = lerp(steepTerrainCol, flatTerrainCol, flatStrength);
 			compositeCol = lerp(compositeCol, _FresnelCol, i.fresnel);
-			o.Albedo = lerp(craterCol, compositeCol, has_atmosphere);
+			o.Albedo = compositeCol;
 			
 			// Glossiness
-			float glossiness = dot(o.Albedo, 1) / 3 * _Glossiness;
+			const float glossiness = dot(o.Albedo, 1) / 3 * _Glossiness;
 			o.Smoothness = glossiness;
 			o.Metallic = _Metallic;
 			
@@ -258,14 +218,11 @@ Shader "CBodies/Planet"
 			// Slopes always use the steep map, but flat regions blend between the flat and steep maps to add variety
 			float3 normalMapFlat = triplanar(i.vertPos, i.normal, _NormalMapFlatScale, _NormalMapFlat);
 			float3 normalMapSteep = triplanar(i.vertPos, i.normal, _NormalMapSteepScale, _NormalMapSteep);
-			float3 normalMapCraters = triplanar(i.vertPos, i.normal, _NormalMapCratersScale, _NormalMapCraters);
 			
 			// float normalBlend = lerp(n_texNoise.r, n_texNoise.g, Blend(0, 2, IN.terrainData.z));
 			// float3 flatAndSteepNormal = lerp(normalMapFlat, normalMapSteep, normalBlend);
 			// float3 normal = lerp(flatAndSteepNormal, normalMapSteep, steepness);
 			float3 normal = lerp(normalMapSteep, normalMapFlat, flatStrength);
-			// If no atmosphere, use the craters normal map
-			normal = lerp(normalMapCraters, normal, has_atmosphere);
 			// Normal map strength
 			normal = lerp(float3(0,0,1), normal, _NormalMapStrength);
 			

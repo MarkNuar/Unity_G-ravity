@@ -149,7 +149,7 @@ namespace CBodies
 				// Set material properties
 				cBodySettings.shading.Initialize(cBodySettings.shape);
 				cBodySettings.shading.SetSurfaceProperties(cBody.surfaceMaterial, _heightMinMax,
-					BodyScale, cBodySettings.ocean.GetSettings().GetOceanLevel(), cBodySettings.atmosphere.GetSettings().hasAtmosphere);
+					BodyScale, cBodySettings.ocean.GetSettings().GetOceanLevel());
 			}
 
 			ReleaseAllBuffers();

@@ -126,7 +126,7 @@ Material:
     - _NormalMapCratersScale: 5
     - _NormalMapFlatScale: 10
     - _NormalMapSteepScale: 10
-    - _NormalMapStrength: 1
+    - _NormalMapStrength: 0.5
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _ShoreBlend: 0.054

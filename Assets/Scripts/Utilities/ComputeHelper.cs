@@ -44,8 +44,9 @@ namespace Utilities
 		public static void CreateStructuredBuffer<T> (ref ComputeBuffer buffer, int count) {
 			int stride = System.Runtime.InteropServices.Marshal.SizeOf (typeof (T));
 			bool createNewBuffer = buffer == null || !buffer.IsValid () || buffer.count != count || buffer.stride != stride;
-			if (createNewBuffer) {
-				Release (buffer);
+			if (createNewBuffer)
+			{
+				buffer?.Release();
 				buffer = new ComputeBuffer (count, stride);
 			}
 		}

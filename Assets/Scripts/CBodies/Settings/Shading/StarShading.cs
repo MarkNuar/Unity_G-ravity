@@ -11,7 +11,7 @@ namespace CBodies.Settings.Shading
         // MEMENTO
         [SerializeField] protected StarShadingSettings shadingSettings;
 
-        public override void SetSurfaceProperties(Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel, bool hasAtmosphere)
+        public override void SetSurfaceProperties(Material material, Vector2 heightMinMax, float bodyScale, float oceanLevel)
         {
             Color surfaceColor = Color.black; 
             if (shadingSettings.randomize)
