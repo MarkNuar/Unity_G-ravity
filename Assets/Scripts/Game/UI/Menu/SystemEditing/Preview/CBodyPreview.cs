@@ -1,4 +1,5 @@
 using CBodies;
+using CBodies.Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public CBodyDrag positionDrag;
 
         public TMP_Text cBodyName;
+        public TMP_Text cBodyPosition;
         
         public LineRenderer lineRenderer;
         
@@ -24,12 +26,14 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public void SelectCBody()
         {
             Selected = true;
-            
-            velocityArrow.arrowHead.enabled = false;
-            velocityArrow.arrowBody.enabled = false;
-
-            positionDrag.dragHandle.enabled = true; 
-
+            if (cBody.cBodyGenerator.cBodySettings.cBodyType != CBodySettings.CBodyType.Star)
+            {
+                velocityArrow.arrowHead.enabled = false;
+                velocityArrow.arrowBody.enabled = false;
+                positionDrag.dragHandle.enabled = true;
+                
+                cBodyPosition.enabled = true;
+            }
             // Make it not clickable
             buttonCanvas.sortingOrder = 0;
         }
@@ -38,9 +42,11 @@ namespace Game.UI.Menu.SystemEditing.Preview
         {
             velocityArrow.arrowHead.enabled = false;
             velocityArrow.arrowBody.enabled = false;
-            cBodyName.enabled = false;
-
             positionDrag.dragHandle.enabled = false;
+            
+            cBodyName.enabled = false;
+            
+            cBodyPosition.enabled = false;
         }
 
         public void DeselectCBody()
@@ -49,10 +55,12 @@ namespace Game.UI.Menu.SystemEditing.Preview
             
             velocityArrow.arrowHead.enabled = false;
             velocityArrow.arrowBody.enabled = false;
-            cBodyName.enabled = true;
-
             positionDrag.dragHandle.enabled = false;
-
+            
+            cBodyName.enabled = true;
+            
+            cBodyPosition.enabled = false;
+            
             // Make it clickable
             buttonCanvas.sortingOrder = 1;
         }

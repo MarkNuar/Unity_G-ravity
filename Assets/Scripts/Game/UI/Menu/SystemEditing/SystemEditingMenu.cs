@@ -8,7 +8,6 @@ using CBodies.Settings.PostProcessing.Ring;
 using CBodies.Settings.Shading;
 using CBodies.Settings.Shape;
 using Game.UI.Menu.SystemEditing.Preview;
-using HSVPicker;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,21 +32,22 @@ namespace Game.UI.Menu.SystemEditing
 
         public int maxCBodyElements = 6;
         
-        // PHYSICS
         [SerializeField] private Slider radiusSlider = null;
+        [SerializeField] private TMP_Text radiusValue = null;
         [SerializeField] private Slider gravitySlider = null;
+        [SerializeField] private TMP_Text gravityValue = null;
         [SerializeField] private Slider speedSlider = null;
+        [SerializeField] private TMP_Text speedValue = null;
+        [SerializeField] private GameObject speedPanel = null;
         
-        // SHAPE & SHADING
+        
         [SerializeField] private TMP_Text txtSystemName = null;
         [SerializeField] private TMP_InputField iBodyName = null;
-        [SerializeField] private Button bResetRandomization = null;
         
+        [SerializeField] private Button bResetRandomization = null;
         [SerializeField] private Toggle tRealisticColors = null;
         [SerializeField] private Toggle tHasOcean = null;
-        
-        [SerializeField] private RectTransform colorHandle = null;
-        
+
         [SerializeField] private CameraController cameraController;
 
 
@@ -112,9 +112,6 @@ namespace Game.UI.Menu.SystemEditing
             // Set current system settings, available to whole program
             SystemUtils.Instance.currentSystemSettings = _systemSettings;
 
-            // sometimes the color handle is spawned in the wrong position
-            colorHandle.anchoredPosition = new Vector2(0, 0);
-
             bResetRandomization.interactable = false;
             
             
@@ -164,7 +161,7 @@ namespace Game.UI.Menu.SystemEditing
 
         private void OpenCBodyTypeSelection()
         {
-            OverlayPanel(4, true);
+            OverlayPanel(3, true);
         }
 
         public void CreateCBodyOfType(string type)
@@ -220,7 +217,9 @@ namespace Game.UI.Menu.SystemEditing
 
             // set gravity and radius
             UpdateContextualSliders();
-            
+
+            speedPanel.SetActive(GetCurrentCBodySettings().cBodyType != CBodySettings.CBodyType.Star);
+
             ShowPanel(1);
         }
 
@@ -278,6 +277,7 @@ namespace Game.UI.Menu.SystemEditing
         private void UpdateInitialPosition(Vector3 p)
         {
             _physicsS.initialPosition = p;
+            CBodyPreviews[_currentCBodyIndex].cBodyPosition.text = Mathf.Abs(_physicsS.initialPosition.x).ToString("0.0");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
         
@@ -285,6 +285,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             _physicsS.radius = radiusSlider.value * (_physicsS.maxRadius - _physicsS.minRadius) 
                                + _physicsS.minRadius;
+            radiusValue.text = _physicsS.radius.ToString("0.0");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
@@ -292,6 +293,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             _physicsS.surfaceGravity = gravitySlider.value * (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity) + 
                                        _physicsS.minSurfaceGravity;
+            gravityValue.text = _physicsS.surfaceGravity.ToString("0.0");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
         }
 
@@ -299,9 +301,15 @@ namespace Game.UI.Menu.SystemEditing
         {
             _physicsS.initialVelocity.y = speedSlider.value * (_physicsS.maxSpeed - _physicsS.minSpeed) + 
                                           _physicsS.minSpeed;
+            speedValue.text = _physicsS.initialVelocity.y.ToString("0.0");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
             SetArrowHeadPosition();
         }
+
+        // private float Truncate(int decimalValues)
+        // {
+        //     
+        // }
 
         public void OpenEditMenu(bool fromCreation)
         {
@@ -485,10 +493,15 @@ namespace Game.UI.Menu.SystemEditing
         private void SetDragHandlePosition()
         {
             CBodyPreviews[_currentCBodyIndex].positionDrag.ResetDragHandlePosition();
+            CBodyPreviews[_currentCBodyIndex].cBodyPosition.text = Mathf.Abs(_physicsS.initialPosition.x).ToString("0.0");
         }
 
         private void UpdateContextualSliders()
         {
+            radiusValue.text = _physicsS.radius.ToString("0.0");
+            gravityValue.text = _physicsS.surfaceGravity.ToString("0.0");
+            speedValue.text = _physicsS.initialVelocity.y.ToString("0.0");
+            
             var radius = (_physicsS.radius - _physicsS.minRadius) /
                          (_physicsS.maxRadius - _physicsS.minRadius);
             var gravity = (_physicsS.surfaceGravity - _physicsS.minSurfaceGravity) /
