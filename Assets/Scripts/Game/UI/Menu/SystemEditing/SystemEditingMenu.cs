@@ -42,8 +42,8 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private TMP_Text txtSystemName = null;
         [SerializeField] private TMP_InputField iBodyName = null;
         [SerializeField] private Button bResetRandomization = null;
+        
         [SerializeField] private Toggle tRealisticColors = null;
-        [SerializeField] private Toggle tHasAtmosphere = null;
         [SerializeField] private Toggle tHasOcean = null;
         
         [SerializeField] private RectTransform colorHandle = null;
@@ -312,13 +312,17 @@ namespace Game.UI.Menu.SystemEditing
             DisableCBodyButtons();
             
             iBodyName.text = GetCurrentCBodySettings().cBodyName;
+            // Disable buttons that must not be used
             bResetRandomization.interactable = GetCurrentCBodySettings().IsRandomized();
-
+            tHasOcean.interactable = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet;
+            tRealisticColors.interactable = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet ||
+                                            GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Moon;
+            
             HideCurrentCBodySelectionHUD();
 
             ShowPanel(2);
         }
-        
+
         public void CloseAllMenu()
         {
             cameraController.FreeCam();
@@ -390,6 +394,20 @@ namespace Game.UI.Menu.SystemEditing
             bResetRandomization.interactable = false;
         }
 
+        public void HasOcean(bool val)
+        {
+            _oceanS.hasOcean = val;
+            SetCurrentSettings(CBodyGenerator.UpdateType.All);
+        }
+
+        public void HasRealisticColors(bool val)
+        {
+            _shadingS.realisticColors = val;
+            _oceanS.realisticColors = val;
+            _atmosphereS.realisticColors = val;
+            SetCurrentSettings(CBodyGenerator.UpdateType.All);
+        }
+        
         private void DestroyCurrentCBody()
         {
             GetCurrentCBodySettings().Unsubscribe();
