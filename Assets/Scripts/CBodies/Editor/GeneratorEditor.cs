@@ -42,7 +42,7 @@ namespace CBodies.Editor
 
             if (newValue != _cBodyGenerator.cBodySettings.cBodyType)
             {
-                _cBodyGenerator.cBodySettings.UpdateCBodyType(newValue);
+                _cBodyGenerator.cBodySettings.UpdateCBodySettings(newValue);
                 shadingS = _cBodyGenerator.cBodySettings.shading.GetSettings();
                 shapeS = _cBodyGenerator.cBodySettings.shape.GetSettings();
                 physicsS = _cBodyGenerator.cBodySettings.physics.GetSettings();

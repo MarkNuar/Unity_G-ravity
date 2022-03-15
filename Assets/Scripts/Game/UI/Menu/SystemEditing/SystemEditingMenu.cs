@@ -84,7 +84,7 @@ namespace Game.UI.Menu.SystemEditing
                     _systemSettings = new SystemSettings();
                     SetSystemName(systemToLoad);
                     // Start by adding always a star to the system
-                    _currentCBodyIndex = _systemSettings.AddNewCBody(CBodySettings.CBodyType.Star);
+                    _currentCBodyIndex = _systemSettings.AddNewCBodySettings(CBodySettings.CBodyType.Star);
                     CreateCBodyAndPreview();
                 }
                 else
@@ -168,7 +168,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             CBodySettings.CBodyType enumType =
                 (CBodySettings.CBodyType) Enum.Parse(typeof(CBodySettings.CBodyType), type);
-            _currentCBodyIndex = _systemSettings.AddNewCBody(enumType);
+            _currentCBodyIndex = _systemSettings.AddNewCBodySettings(enumType);
             
             CreateCBodyAndPreview();
 

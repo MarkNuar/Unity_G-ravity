@@ -28,7 +28,7 @@ namespace CBodies.Settings
         public void Init(CBodyType type)
         {
             cBodyName = BaseNames[Random.Range(0, BaseNames.Length)];
-            UpdateCBodyType(type);
+            UpdateCBodySettings(type);
         }
 
         public void Subscribe(ICBodyObserver observer)
@@ -48,7 +48,7 @@ namespace CBodies.Settings
             physics.UnsubscribeAll();
         }
 
-        public void UpdateCBodyType(CBodyType newType)
+        public void UpdateCBodySettings(CBodyType newType)
         {
             cBodyType = newType;
             (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph, Ocean oc, Atmosphere at, Ring ri) = SystemUtils.Instance.GetShapeShadingPhysics(cBodyType);

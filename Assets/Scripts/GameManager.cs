@@ -31,11 +31,6 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(Instance);
-
-            // // apply some quality settings 
-            // QualitySettings.vSyncCount = 0;
-            // Application.targetFrameRate = 300;
-            
             JsonConvert.DefaultSettings().Converters.Add(new ColorConverter());
         }
         else
@@ -61,7 +56,7 @@ public class GameManager : MonoBehaviour
             var t = Time.realtimeSinceStartup;
             var sleepTime = _currentFrameTime - t - 0.01f;
             if (sleepTime > 0)
-                Thread.Sleep((int)(sleepTime * 1000));
+                Thread.Sleep((int) (sleepTime * 1000));
             while (t < _currentFrameTime)
                 t = Time.realtimeSinceStartup;
         }

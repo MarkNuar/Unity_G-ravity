@@ -29,7 +29,7 @@ namespace Utilities
                 {
                     systemName = "Test"
                 };
-                _ss.AddNewCBody(type);
+                _ss.AddNewCBodySettings(type);
             }
             
             

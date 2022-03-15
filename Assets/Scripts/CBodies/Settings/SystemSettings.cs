@@ -18,7 +18,7 @@ namespace CBodies.Settings
         
         
         
-        public int AddNewCBody(CBodySettings.CBodyType type)
+        public int AddNewCBodySettings(CBodySettings.CBodyType type)
         {
             CBodySettings cb = new CBodySettings();
             // Initialize cBodySettings values
