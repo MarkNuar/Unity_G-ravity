@@ -111,26 +111,16 @@ namespace CBodies.Settings.Shading
         }
         
         protected override void SetShadingDataComputeProperties () {
-            SetRandomPoints ();
             SetShadingNoise ();
         }
 
         private void SetShadingNoise () {
-            const string biomesWarpNoiseSuffix = "_biomesWarp";
             const string detailWarpNoiseSuffix = "_detailWarp";
             const string detailNoiseSuffix = "_detail";
 
             PRNG prng = new PRNG (shadingSettings.seed);
             PRNG prng2 = new PRNG (shadingSettings.seed);
             if (shadingSettings.randomize) {
-                // warp 1
-                SimpleNoiseSettings randomizedBiomesWarpNoise = new SimpleNoiseSettings
-                {
-                    elevation = prng.Range (0.8f, 3f),
-                    scale = prng.Range (1f, 3f)
-                };
-                randomizedBiomesWarpNoise.SetComputeValues (shadingDataCompute, prng2, biomesWarpNoiseSuffix);
-
                 // warp 2
                 SimpleNoiseSettings randomizedDetailWarpNoise = new SimpleNoiseSettings
                 {
@@ -142,28 +132,9 @@ namespace CBodies.Settings.Shading
                 shadingSettings.detailNoise.SetComputeValues (shadingDataCompute, prng2, detailNoiseSuffix);
 
             } else {
-                shadingSettings.biomesWarpNoise.SetComputeValues (shadingDataCompute, prng2, biomesWarpNoiseSuffix);
                 shadingSettings.detailWarpNoise.SetComputeValues (shadingDataCompute, prng2, detailWarpNoiseSuffix);
                 shadingSettings.detailNoise.SetComputeValues (shadingDataCompute, prng2, detailNoiseSuffix);
             }
-        }
-
-        private void SetRandomPoints () {
-            Random.InitState (shadingSettings.seed);
-
-            var randomizedNumPoints = shadingSettings.numBiomesPoints;
-            if (shadingSettings.randomize) {
-                randomizedNumPoints = Random.Range (15, 50);
-            }
-            Random.InitState (shadingSettings.seed);
-            var randomPoints = new Vector4[randomizedNumPoints];
-            for (int i = 0; i < randomPoints.Length; i++) {
-                var point = Random.onUnitSphere;
-                var radius = Mathf.Lerp (shadingSettings.radiusMinMax.x, shadingSettings.radiusMinMax.y, Random.value);
-                randomPoints[i] = new Vector4 (point.x, point.y, point.z, radius);
-            }
-            ComputeHelper.CreateAndSetBuffer<Vector4> (ref _pointBuffer, randomPoints, shadingDataCompute, "points");
-            shadingDataCompute.SetInt ("numRandomPoints", randomPoints.Length);
         }
 
         [Serializable]
@@ -173,11 +144,8 @@ namespace CBodies.Settings.Shading
             public MoonColors randomMoonColors;
             public Vector2 colorHRange;
 
-            public int numBiomesPoints;
-            
             public Vector2 radiusMinMax = new Vector2 (0.02f, 0.1f);
             
-            public SimpleNoiseSettings biomesWarpNoise = new SimpleNoiseSettings();
             public SimpleNoiseSettings detailNoise = new SimpleNoiseSettings();
             public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
         }

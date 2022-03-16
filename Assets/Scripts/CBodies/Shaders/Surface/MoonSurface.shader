@@ -20,7 +20,7 @@ Shader "CBodies/Moon"
 		_NormalMapCratersScale ("Normal Map Craters Scale", Float) = 10
 		_NormalMapStrength ("Normal Map Strength", Range(0,1)) = 0.3
 		
-	}
+		}
 	SubShader
 	{
 		Tags { "RenderType"="Opaque" }
@@ -84,7 +84,7 @@ Shader "CBodies/Moon"
 		sampler2D _CraterNoiseTex;
 		float _CraterNoiseZoom;
 
-		// Craters Properties
+		// Biome Properties
 		float _BiomeBlendStrength;
 		float _BiomeWarpStrength;
 		float4 _RandomBiomeValues;
@@ -122,11 +122,11 @@ Shader "CBodies/Moon"
 			float3 colBiomeB = lerp(primaryColorB, secondaryColorB, heightBlendWeightB);
 			// Blend between colour A and B based on terrain data noise
 			float biomeNoise = dot(texCraterNoise.ga - 0.5, _RandomBiomeValues.zw) * 4;
-			float biomeWeight = Blend(5 * 0.8 + i.terrainData.z * _BiomeWarpStrength, _BiomeBlendStrength + warpNoise * 15, i.terrainData.w + biomeNoise);
-			float3 craterCol = lerp(colBiomeA, colBiomeB, biomeWeight); 
-			// end no atmosphere section
+			float biomeWeight = Blend(5 * 0.8 + i.terrainData.z * _BiomeWarpStrength, _BiomeBlendStrength + warpNoise * 15,  biomeNoise);
+			float3 craterCol = lerp(colBiomeA, colBiomeB, biomeWeight);
+			
 			o.Albedo = craterCol;
-
+			
 			// Normal
 			float3 normal = triplanar(i.vertPos, i.normal, _NormalMapCratersScale, _NormalMapCraters);
 			normal = lerp(float3(0,0,1), normal, _NormalMapStrength);

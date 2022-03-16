@@ -19,7 +19,6 @@ MonoBehaviour:
     seed: 4413
     perturbVertices: 1
     perturbStrength: 0.65
-    hasOcean: 1
     oceanDepthMultiplier: 5
     oceanFloorDepth: 1.36
     oceanFloorSmoothing: 0

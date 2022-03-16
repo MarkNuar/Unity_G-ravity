@@ -17,8 +17,7 @@ namespace CBodies.Settings.Shape
             shapeSettings.continentNoise.SetComputeValues (heightMapCompute, prng, "_continents");
             shapeSettings.ridgeNoise.SetComputeValues (heightMapCompute, prng, "_mountains");
             shapeSettings.maskNoise.SetComputeValues (heightMapCompute, prng, "_mask");
-
-            heightMapCompute.SetBool("hasOcean", shapeSettings.hasOcean);
+            
             heightMapCompute.SetFloat ("oceanDepthMultiplier", shapeSettings.oceanDepthMultiplier);
             heightMapCompute.SetFloat ("oceanFloorDepth", shapeSettings.oceanFloorDepth);
             heightMapCompute.SetFloat ("oceanFloorSmoothing", shapeSettings.oceanFloorSmoothing);
@@ -57,7 +56,6 @@ namespace CBodies.Settings.Shape
         public class PlanetShapeSettings : ShapeSettings
         {
             [Header ("Continent settings")]
-            public bool hasOcean = true;
             public float oceanDepthMultiplier = 5;
             public float oceanFloorDepth = 1.36f;
             public float oceanFloorSmoothing = 0.5f;

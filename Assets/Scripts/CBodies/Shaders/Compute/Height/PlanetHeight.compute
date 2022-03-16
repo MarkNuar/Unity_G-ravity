@@ -10,7 +10,6 @@ uint numVertices;
 
 
 // Continent settings:
-bool hasOcean;
 float oceanDepthMultiplier;
 float oceanFloorDepth;
 float oceanFloorSmoothing;
@@ -34,7 +33,7 @@ void CSMain (uint id : SV_DispatchThreadID)
 
     continentShape = smoothMax(continentShape, -oceanFloorDepth, oceanFloorSmoothing);
     
-    if (hasOcean && continentShape < 0) {
+    if (continentShape < 0) {
         continentShape *= 1 + oceanDepthMultiplier;
     }
 

@@ -219,9 +219,6 @@ Shader "CBodies/Planet"
 			float3 normalMapFlat = triplanar(i.vertPos, i.normal, _NormalMapFlatScale, _NormalMapFlat);
 			float3 normalMapSteep = triplanar(i.vertPos, i.normal, _NormalMapSteepScale, _NormalMapSteep);
 			
-			// float normalBlend = lerp(n_texNoise.r, n_texNoise.g, Blend(0, 2, IN.terrainData.z));
-			// float3 flatAndSteepNormal = lerp(normalMapFlat, normalMapSteep, normalBlend);
-			// float3 normal = lerp(flatAndSteepNormal, normalMapSteep, steepness);
 			float3 normal = lerp(normalMapSteep, normalMapFlat, flatStrength);
 			// Normal map strength
 			normal = lerp(float3(0,0,1), normal, _NormalMapStrength);

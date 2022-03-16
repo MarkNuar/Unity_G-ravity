@@ -171,20 +171,12 @@ namespace CBodies.Settings.Shading
             public PlanetColors baseGreenColors;
             public PlanetColors baseRedColors;
             public PlanetColors baseBlueColors;
-            public PlanetColors baseGrayColors;
 
             public PlanetColors randomColors;
             
             public Vector2 greenHRange;
             public Vector2 redHRange;
             public Vector2 blueHRange;
-            public Vector2 grayHRange;
-                
-        //     [Header ("Shading Data")]
-        //     public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();
-        //     public SimpleNoiseSettings detailNoise = new SimpleNoiseSettings();
-        //     public SimpleNoiseSettings largeNoise = new SimpleNoiseSettings();
-        //     public SimpleNoiseSettings smallNoise = new SimpleNoiseSettings();
         }
         
         [System.Serializable]

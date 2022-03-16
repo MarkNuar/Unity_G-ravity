@@ -39,8 +39,6 @@ void CSMain (uint id : SV_DispatchThreadID)
     warpOffset2.y = simpleNoise(pos + 99999, noiseParams_warp2);
     warpOffset2.z = simpleNoise(pos - 99999, noiseParams_warp2);
     float warpedNoise2 = simpleNoise(pos + warpOffset2 * 0.1, noiseParams_noise2);
-
-
-
+    
     shadingData[id] = float4(largeNoise, detailNoise, smallNoise, warpedNoise2);
 }
