@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   atmosphereSettings:
     randomizeShading: 1
-    shadingSeed: -6142
+    shadingSeed: -2228
     realisticColors: 1
     hasAtmosphere: 0
     textureSize: 256
@@ -22,11 +22,7 @@ MonoBehaviour:
     opticalDepthPoints: 5
     densityFalloff: 7
     wavelengths: {x: 700, y: 530, z: 460}
-    randomWaveLengths: {x: 469.8895, y: 549.779, z: 798.8949}
     scatteringStrength: 15
-    intensity: 0.8
-    ditherStrength: 0
-    ditherScale: 3.89
+    intensity: 1
     atmosphereScale: 0.4
   opticalDepthCompute: {fileID: 7200000, guid: 9161c1a99fde39d4998b212573a8bf4c, type: 3}
-  blueNoise: {fileID: 2800000, guid: 0102334e98a3b8547ba17ba594bd3ffa, type: 3}

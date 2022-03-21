@@ -99,14 +99,12 @@ Shader "Hidden/Ocean"
 
 				const float raw_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
 				const float scene_depth = correct_depth(raw_depth, view_length);
-
-				//return scene_depth / 1000;
 				
 				float2 hit_info = ray_sphere(oceanCentre, oceanRadius, ray_pos, ray_dir);
 				const float dst_to_ocean = hit_info.x;
 				const float dst_through_ocean = hit_info.y;
 				const float3 ray_ocean_intersect_pos = ray_pos + ray_dir * dst_to_ocean - oceanCentre;
-
+				
 				// dst that view ray travels through ocean (before hitting terrain / exiting ocean)
 				const float ocean_view_depth = min(dst_through_ocean, scene_depth - dst_to_ocean);
 

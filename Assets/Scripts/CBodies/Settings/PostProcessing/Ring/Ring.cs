@@ -25,7 +25,7 @@ namespace CBodies.Settings.PostProcessing.Ring
                 PRNG randomColor = new PRNG(ringSettings.shadingSeed);
                 PRNG randomShape = new PRNG(ringSettings.shapeSeed);
                 Vector3 a = new Vector3(0.5f, .25f+(Mathf.Sin(randomColor.Range(0.0f,20.0f)*.1f))-.25f+.25f, 0.5f);
-                Vector3 b = new Vector3(0.1f, 0.1f, 0.1f);
+                Vector3 b = new Vector3(0.35f, 0.35f, 0.35f);
                 Vector3 c = new Vector3(1.0f, 1.0f, 1.0f);
                 Vector3 d = new Vector3(0.0f, 0.33f, 0.64f);
                 
@@ -37,8 +37,10 @@ namespace CBodies.Settings.PostProcessing.Ring
                 
                 if (ringSettings.randomizeShape)
                 {
-                    var innerRadiusPercent = 1.05f + randomShape.Range(0.0f, 0.4f);
-                    var outerRadiusPercent = innerRadiusPercent + randomShape.Range(0.2f, 0.5f);
+                    // var innerRadiusIncrement = 1.05f + randomShape.Range(0.0f, 0.4f);
+                    var innerRadiusIncrement = ringSettings.baseInnerRadiusIncrement + randomShape.Range(-0.3f, 0.3f);
+                    // var outerRadiusIncremrement = 1.05f + randomShape.Range(0.0f, 0.4f);
+                    var outerRadiusIncrement = ringSettings.baseOuterRadiusIncrement + randomShape.Range(-0.3f,0.3f);
 
                     var yNormal = 1 - randomShape.Range(0.0f, 0.4f);
                     var xNormal = 0.1f + randomShape.Range(-0.2f, 0.2f);
@@ -46,15 +48,15 @@ namespace CBodies.Settings.PostProcessing.Ring
                 
                     Vector3 ringNormal = new Vector3(xNormal, yNormal, zNormal);
                 
-                    ringMaterial.SetFloat("inner_radius_percent", innerRadiusPercent);
-                    ringMaterial.SetFloat("outer_radius_percent", outerRadiusPercent);
+                    ringMaterial.SetFloat("inner_radius_increment", innerRadiusIncrement);
+                    ringMaterial.SetFloat("outer_radius_increment", outerRadiusIncrement);
                     ringMaterial.SetVector("ring_normal", ringNormal.normalized);
                     
                 }
                 else
                 {
-                    ringMaterial.SetFloat("inner_radius_percent", ringSettings.baseInnerRadiusPercent);
-                    ringMaterial.SetFloat("outer_radius_percent", ringSettings.baseOuterRadiusPercent);
+                    ringMaterial.SetFloat("inner_radius_increment", ringSettings.baseInnerRadiusIncrement);
+                    ringMaterial.SetFloat("outer_radius_increment", ringSettings.baseOuterRadiusIncrement);
                     ringMaterial.SetVector("ring_normal", ringSettings.baseRingNormal.normalized);
                 }
             }
@@ -72,10 +74,10 @@ namespace CBodies.Settings.PostProcessing.Ring
 
             public bool hasRing;
 
-            // ring radius percent with respect to planet radius
+            // ring radius increments with respect to planet radius
             // these values must be greater than 1
-            [Range(1.1f, 10)] public float baseInnerRadiusPercent = 1.5f;
-            [Range(1.1f, 10)] public float baseOuterRadiusPercent = 3.4f; 
+            [Range(1.1f, 10)] public float baseInnerRadiusIncrement = 1.5f;
+            [Range(1.1f, 10)] public float baseOuterRadiusIncrement = 3.4f; 
             
             // serialize plane normal inclination, quaternion, vector 3, angles?
             public Vector3 baseRingNormal = new Vector3(0.0f, 1.0f, 0.2f);

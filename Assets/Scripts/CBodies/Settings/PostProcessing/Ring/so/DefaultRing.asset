@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: DefaultRing
   m_EditorClassIdentifier: 
   ringSettings:
-    randomizeColor: 0
-    randomizeShape: 0
-    colorSeed: 0
-    shapeSeed: 0
+    randomizeShading: 1
+    randomizeShape: 1
+    shadingSeed: 8984
+    shapeSeed: 9688
     hasRing: 1
-    baseInnerRadiusPercent: 1.1
-    baseOuterRadiusPercent: 1.65
+    baseInnerRadiusIncrement: 1.5
+    baseOuterRadiusIncrement: 2.5
     baseRingNormal: {x: -0.22, y: 2.54, z: 0.2}
-  hasPhysicChanged: 1

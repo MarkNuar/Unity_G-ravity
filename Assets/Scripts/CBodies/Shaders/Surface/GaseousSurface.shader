@@ -62,30 +62,6 @@ Shader "CBodies/Gaseous"
         UNITY_INSTANCING_BUFFER_START(Props)
         // put more per-instance properties here
         UNITY_INSTANCING_BUFFER_END(Props)
-
-        
-        // //Precision-adjusted variations of https://www.shadertoy.com/view/4djSRW
-        // float hash(float p) { p = frac(p * 0.011); p *= p + 7.5; p *= p + p; return frac(p); }
-        // float noise(float3 x) {
-        //     const float3 step = float3(110, 241, 171);
-        //     const float3 i = floor(x);
-        //     const float3 f = frac(x);
-        //     const float n = dot(i, step);
-        //     float3 u = f * f * (3.0 - 2.0 * f);
-        //     return lerp(lerp(lerp( hash(n + dot(step, float3(0, 0, 0))), hash(n + dot(step, float3(1, 0, 0))), u.x),
-        //                    lerp( hash(n + dot(step, float3(0, 1, 0))), hash(n + dot(step, float3(1, 1, 0))), u.x), u.y),
-        //                lerp(lerp( hash(n + dot(step, float3(0, 0, 1))), hash(n + dot(step, float3(1, 0, 1))), u.x),
-        //                    lerp( hash(n + dot(step, float3(0, 1, 1))), hash(n + dot(step, float3(1, 1, 1))), u.x), u.y), u.z);
-        // }
-
-        
-        
-        // float noise(float3 p)
-        // {
-	       //  return sin(p.x) * sin(p.y) * sin(p.z);
-        // }
-
-
         
 		// hash based 3d value noise
 		// function taken from https://www.shadertoy.com/view/XslGRr
@@ -143,14 +119,6 @@ Shader "CBodies/Gaseous"
             const float3 r = float3(fbm(x + 1.0*q + 0.01 * _Time.y), fbm(x + q), fbm(x + q));
         	//const float v = fbm(x + 5.0*r + _Time.y * 0.005);
         	const float v = fbm(x + 5.0*r + _Time.y * 0.00005);
-            
-            // convert noise value into color
-            // three colors: top - mid - bottom (mid being constructed by three colors)
-            // col_top = float3(1.0, 1.0, 1.0);
-            // col_bot = float3(0.0, 0.0, 0.0);
-            // col_mid1 = float3(0.1, 0.2, 0.0);
-            // col_mid2 = float3(0.7, 0.4, 0.3);
-            // col_mid3 = float3(1.0, 0.4, 0.2);
             
             // lerp mid color based on intermediate results
             float3 col_mid = lerp(col_mid1, col_mid2, clamp(r, 0.0, 1.0));

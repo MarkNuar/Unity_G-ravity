@@ -16,7 +16,7 @@ MonoBehaviour:
   terrainMaterial: {fileID: 2100000, guid: f1b4a62d33e28234c843dd65ee4f5766, type: 2}
   shadingSettings:
     randomize: 1
-    seed: 100
+    seed: 4403
     realisticColors: 1
     mainColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     baseMoonColors:
@@ -25,21 +25,11 @@ MonoBehaviour:
       primaryColorB: {r: 0.3207547, g: 0.24467827, b: 0.24056603, a: 1}
       secondaryColorB: {r: 0.1509434, g: 0.13314347, b: 0.13314347, a: 1}
     randomMoonColors:
-      primaryColorA: {r: 0.27294028, g: 0.23896407, b: 0.2830189, a: 1}
-      secondaryColorA: {r: 0.046877544, g: 0.047169805, b: 0.039382335, a: 1}
-      primaryColorB: {r: 0.30360943, g: 0.3207547, b: 0.24056603, a: 1}
-      secondaryColorB: {r: 0.14805038, g: 0.1509434, b: 0.13314347, a: 1}
+      primaryColorA: {r: 0.2727355, g: 0.23896407, b: 0.2830189, a: 1}
+      secondaryColorA: {r: 0.04691374, g: 0.047169805, b: 0.039382335, a: 1}
+      primaryColorB: {r: 0.3039821, g: 0.3207547, b: 0.24056603, a: 1}
+      secondaryColorB: {r: 0.14813311, g: 0.1509434, b: 0.13314347, a: 1}
     colorHRange: {x: 0, y: 0.2}
-    numBiomesPoints: 25
-    radiusMinMax: {x: 0.02, y: 0.1}
-    biomesWarpNoise:
-      numLayers: 4
-      lacunarity: 2
-      persistence: 0.5
-      scale: 1
-      elevation: 1
-      verticalShift: 0
-      offset: {x: 0, y: 0, z: 0}
     detailNoise:
       numLayers: 4
       lacunarity: 2.34

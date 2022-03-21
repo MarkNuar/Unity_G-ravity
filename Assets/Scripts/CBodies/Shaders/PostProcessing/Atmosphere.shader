@@ -51,9 +51,7 @@
 				return float2 (x/scale, y/scale);
 			}
 
-
-
-			sampler2D _BlueNoise;
+			
 			sampler2D _MainTex;
 			sampler2D _BakedOpticalDepth;
 			sampler2D _CameraDepthTexture;
@@ -71,8 +69,6 @@
 			int numOpticalDepthPoints;
 			float intensity;
 			float4 scatteringCoefficients;
-			float ditherStrength;
-			float ditherScale;
 			float densityFalloff;
 
 			int has_atmosphere;
@@ -110,7 +106,6 @@
 			float opticalDepthBaked2(float3 rayOrigin, float3 rayDir, float rayLength) {
 				float3 endPoint = rayOrigin + rayDir * rayLength;
 				float d = dot(rayDir, normalize(rayOrigin-planetCentre));
-				float opticalDepth = 0;
 
 				const float blendStrength = 1.5;
 				float w = saturate(d * blendStrength + .5);
@@ -118,48 +113,30 @@
 				float d1 = opticalDepthBaked(rayOrigin, rayDir) - opticalDepthBaked(endPoint, rayDir);
 				float d2 = opticalDepthBaked(endPoint, -rayDir) - opticalDepthBaked(rayOrigin, -rayDir);
 
-				opticalDepth = lerp(d2, d1, w);
+				const float opticalDepth = lerp(d2, d1, w);
 				return opticalDepth;
 			}
 			
 			float3 calculateLight(float3 rayOrigin, float3 rayDir, float rayLength, float3 originalCol, float2 uv) {
-				float blueNoise = tex2Dlod(_BlueNoise, float4(squareUV(uv) * ditherScale,0,0));
-				blueNoise = (blueNoise - 0.5) * ditherStrength;
 				
 				float3 inScatterPoint = rayOrigin;
 				float stepSize = rayLength / (numInScatteringPoints - 1);
 				float3 inScatteredLight = 0;
-				float viewRayOpticalDepth = 0;
-				
+
 				for (int i = 0; i < numInScatteringPoints; i ++) {
 					float sunRayLength = ray_sphere(planetCentre, atmosphereRadius, inScatterPoint, dirToSun).y;
-					float sunRayOpticalDepth = opticalDepthBaked(inScatterPoint + dirToSun * ditherStrength, dirToSun);
+					float sunRayOpticalDepth = opticalDepthBaked(inScatterPoint, dirToSun);
 					float localDensity = densityAtPoint(inScatterPoint);
-					viewRayOpticalDepth = opticalDepthBaked2(rayOrigin, rayDir, stepSize * i);
+					float viewRayOpticalDepth = opticalDepthBaked2(rayOrigin, rayDir, stepSize * i);
 					float3 transmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth) * scatteringCoefficients);
-					
+					//const float cosTheta = dot(normalize(dirToSun), normalize(rayDir));
+					//inScatteredLight += localDensity * transmittance * (1 + cosTheta * cosTheta);
 					inScatteredLight += localDensity * transmittance;
 					inScatterPoint += rayDir * stepSize;
 				}
 				inScatteredLight *= scatteringCoefficients * intensity * stepSize / planetRadius;
-				inScatteredLight += blueNoise * 0.01;
-
-				// return inScatteredLight;
 				
-				// Attenuate brightness of original col (i.e light reflected from planet surfaces)
-				// This is a hacky mess, TODO: figure out a proper way to do this
-				const float brightnessAdaptionStrength = 0.15;
-				const float reflectedLightOutScatterStrength = 0.1;
-				// const float reflectedLightOutScatterStrength = 0.1;
-				float brightnessAdaption = dot (inScatteredLight,1) * brightnessAdaptionStrength;
-				float brightnessSum = viewRayOpticalDepth * intensity * reflectedLightOutScatterStrength + brightnessAdaption;
-				float reflectedLightStrength = exp(-brightnessSum);
-				float hdrStrength = saturate(dot(originalCol,1)/3-1);
-				reflectedLightStrength = lerp(reflectedLightStrength, 1, hdrStrength);
-				float3 reflectedLight = originalCol * reflectedLightStrength;
-				
-				float3 finalCol = reflectedLight + inScatteredLight;
-				return finalCol;
+				return inScatteredLight + originalCol;
 			}
 
 			float correct_depth(float rawDepth, float viewLength)

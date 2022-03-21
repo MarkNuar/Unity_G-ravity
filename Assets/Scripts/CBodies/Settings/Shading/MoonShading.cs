@@ -143,8 +143,6 @@ namespace CBodies.Settings.Shading
             public MoonColors baseMoonColors;
             public MoonColors randomMoonColors;
             public Vector2 colorHRange;
-
-            public Vector2 radiusMinMax = new Vector2 (0.02f, 0.1f);
             
             public SimpleNoiseSettings detailNoise = new SimpleNoiseSettings();
             public SimpleNoiseSettings detailWarpNoise = new SimpleNoiseSettings();

@@ -51,14 +51,14 @@ Shader "Hidden/Ring"
 
 			bool has_ring;
 			float3 ring_normal;
-			float inner_radius_percent;
-			float outer_radius_percent;
+			float inner_radius_increment;
+			float outer_radius_increment;
 			float seed;
 
 			float3 ring_color;
 
 			// todo : add shadows to the ring
-			int receive_shadow;
+			int receive_shadow = 1;
 			float3 light_direction;
 
 
@@ -94,7 +94,6 @@ Shader "Hidden/Ring"
 			    float ortho = lerp(_ProjectionParams.y, _ProjectionParams.z, t);
 			    return lerp(persp,ortho,unity_OrthoParams.w);
 			}
-
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -125,16 +124,16 @@ Shader "Hidden/Ring"
 				const float raw_depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
 				const float scene_depth = correct_depth(raw_depth, view_length);
 
-				const float inner_radius = inner_radius_percent * c_body_radius;
-				const float outer_radius = outer_radius_percent * c_body_radius;
+				const float inner_radius = inner_radius_increment * c_body_radius;
+				const float outer_radius = outer_radius_increment * c_body_radius;
 				
 				const float2 hit_info = intersect_ring( ring_normal, c_body_center, inner_radius, outer_radius, ray_pos, ray_dir);
 				
 				if(scene_depth - hit_info.x > 0)
 				{
 					ring_color = pow( ring_color, ( 0.20 ) );
-					const float alpha = smoothstep(-0.2, 1.0, fbm1(0.2 * (15*hit_info.y/(outer_radius - inner_radius) + 3.0 * fbm1(sin(_Time.y * 0.005f)))));
-
+					const float alpha = smoothstep(-0.2, 1.0, fbm1(0.2 * (15*hit_info.y/(outer_radius - inner_radius) + 3.0 * (sin(_Time.y * 0.005f)))));
+					// const float alpha = smoothstep(-0.2, 1.0, fbm1(0.2 * (15*hit_info.y/(outer_radius - inner_radius) + 3.0 * fbm1(sin(_Time.y * 0.005f)))));
 					if(receive_shadow)
 					{
 						const float3 vertex_pos = ray_pos + hit_info.x * ray_dir;
@@ -142,8 +141,6 @@ Shader "Hidden/Ring"
 						if(sphere_hit_info.x < maxFloat)
 							ring_color *= 0.05;
 					}
-					
-					
 					return float4(lerp(originalCol, ring_color, alpha), 1);
 				}
 				

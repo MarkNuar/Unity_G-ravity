@@ -15,8 +15,6 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
         
         public ComputeShader opticalDepthCompute;
         
-        public Texture2D blueNoise;
-        
         private RenderTexture _opticalDepthTexture;
 
         private bool _settingsUpToDate = false;
@@ -60,17 +58,13 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
                 {
                     wv += new Vector3(random.Range(-500, 500), random.Range(-50, 50), random.Range(-10, 10));
                 }
-                atmosphereSettings.randomWaveLengths = wv;
             }
             float scatterX = Mathf.Pow (400 / wv.x, 4);
             float scatterY = Mathf.Pow (400 / wv.y, 4);
             float scatterZ = Mathf.Pow (400 / wv.z, 4);
             material.SetVector ("scatteringCoefficients", new Vector3 (scatterX, scatterY, scatterZ) * atmosphereSettings.scatteringStrength);
             material.SetFloat ("intensity", atmosphereSettings.intensity);
-            material.SetFloat ("ditherStrength", atmosphereSettings.ditherStrength);
-            material.SetFloat ("ditherScale", atmosphereSettings.ditherScale);
-            material.SetTexture ("_BlueNoise", blueNoise);
-            
+
             PrecomputeOutScattering ();
             material.SetTexture ("_BakedOpticalDepth", _opticalDepthTexture);
             
@@ -107,14 +101,10 @@ namespace CBodies.Settings.PostProcessing.Atmosphere
             public float densityFalloff = 4.3f;
 
             public Vector3 wavelengths = new Vector3 (700, 530, 460);
-            public Vector3 randomWaveLengths;
-            
+
             public float scatteringStrength = 21.23f;
             public float intensity = 1;
 
-            public float ditherStrength = 1f;
-            public float ditherScale = 3.89f;
-            
             [Range (0, 10)]
             public float atmosphereScale = 0.322f;
             

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DefaultMoonPhysics
   m_EditorClassIdentifier: 
   physicsSettings:
-    minRadius: 4
-    maxRadius: 15
+    minRadius: 2
+    maxRadius: 10
     radius: 6
     minSurfaceGravity: 2
     maxSurfaceGravity: 30
