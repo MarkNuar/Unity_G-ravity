@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   atmosphereSettings:
     randomizeShading: 1
-    shadingSeed: -2228
+    shadingSeed: -6933
     realisticColors: 1
     hasAtmosphere: 0
     textureSize: 256

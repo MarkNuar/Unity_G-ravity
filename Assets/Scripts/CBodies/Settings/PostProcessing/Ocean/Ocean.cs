@@ -113,7 +113,6 @@ namespace CBodies.Settings.PostProcessing.Ocean
 
             public void UpdateOceanLevel()
             {
-                Debug.Log("Updating ocean level");
                 if (randomizeHeight)
                 {
                     PRNG random = new PRNG (heightSeed);

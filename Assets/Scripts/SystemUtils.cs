@@ -50,7 +50,7 @@ public class SystemUtils : MonoBehaviour
     // OCEAN
     [Header("Ocean")] 
     public Ocean baseOcean;
-
+    
     // ATMOSPHERE
     [Header("Atmosphere")] 
     public Atmosphere baseAtmosphere;
@@ -121,21 +121,21 @@ public class SystemUtils : MonoBehaviour
         namesWriter.Close();
 
 
-        // Stores the types of the newly created system cbodies
-        CBodiesTypes cBodiesTypes = new CBodiesTypes
-        {
-            types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
-        };
-        for (var i = 0; i < systemSettings.cBodiesSettings.Count; i++)
-        {
-            cBodiesTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
-        }
-
-        var cBodiesTypesPath = storePath + systemSettings.systemName + "_cBodies_types.txt";
-        StreamWriter typesWriter = new StreamWriter(cBodiesTypesPath, false);
-        var typesJson = JsonConvert.SerializeObject(cBodiesTypes);
-        typesWriter.WriteLine(typesJson);
-        typesWriter.Close();
+        // // Stores the types of the newly created system cbodies
+        // CBodiesTypes cBodiesTypes = new CBodiesTypes
+        // {
+        //     types = new CBodySettings.CBodyType[systemSettings.cBodiesSettings.Count]
+        // };
+        // for (var i = 0; i < systemSettings.cBodiesSettings.Count; i++)
+        // {
+        //     cBodiesTypes.types[i] = systemSettings.cBodiesSettings[i].cBodyType;
+        // }
+        //
+        // var cBodiesTypesPath = storePath + systemSettings.systemName + "_cBodies_types.txt";
+        // StreamWriter typesWriter = new StreamWriter(cBodiesTypesPath, false);
+        // var typesJson = JsonConvert.SerializeObject(cBodiesTypes);
+        // typesWriter.WriteLine(typesJson);
+        // typesWriter.Close();
 
 
         // Stores cBody settings for each cBody
@@ -180,15 +180,16 @@ public class SystemUtils : MonoBehaviour
 
     public SystemSettings LoadSystem(string systemName)
     {
-        var cBodiesTypesPath = storePath + systemName + "_cBodies_types.txt";
+        // var cBodiesTypesPath = storePath + systemName + "_cBodies_types.txt";
         var cBodiesSettingsPath = storePath + systemName + "_cBodies_settings.txt";
         var systemPath = storePath + systemName + "_system_settings.txt";
         
-        if (File.Exists(systemPath) && File.Exists(cBodiesTypesPath) && File.Exists(cBodiesSettingsPath))
+        // if (File.Exists(systemPath) && File.Exists(cBodiesTypesPath) && File.Exists(cBodiesSettingsPath))
+        if (File.Exists(systemPath) && File.Exists(cBodiesSettingsPath))
         {
             // There exists already a previous saved state
-            StreamReader cBodiesTypesReader = new StreamReader(cBodiesTypesPath);
-            CBodiesTypes loadedCBodiesTypes = JsonConvert.DeserializeObject<CBodiesTypes>(cBodiesTypesReader.ReadToEnd());
+            // StreamReader cBodiesTypesReader = new StreamReader(cBodiesTypesPath);
+            // CBodiesTypes loadedCBodiesTypes = JsonConvert.DeserializeObject<CBodiesTypes>(cBodiesTypesReader.ReadToEnd());
             
             StreamReader cBodiesSettingsReader = new StreamReader(cBodiesSettingsPath);
 
@@ -196,13 +197,14 @@ public class SystemUtils : MonoBehaviour
             SystemSettings loadedSystemSettings = JsonConvert.DeserializeObject<SystemSettings>(systemSettingsReader.ReadToEnd());
             
         
-            if (loadedCBodiesTypes != null && loadedSystemSettings != null)
+            // if (loadedCBodiesTypes != null && loadedSystemSettings != null)
+            if (loadedSystemSettings != null)
             {
                 CBodiesSettings loadedCBodiesSettings = JsonConvert.DeserializeObject<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd(),_jSonSettings);
 
-                for (int i = 0; i < loadedCBodiesTypes.types.Length; i ++)
+                for (int i = 0; i < loadedSystemSettings.cBodiesSettings.Count; i ++)
                 {
-                    (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) = Instance.GetShapeShadingPhysics(loadedCBodiesTypes.types[i]);
+                    (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) = Instance.GetSettings(loadedSystemSettings.cBodiesSettings[i].cBodyType);
                     
                     shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
                     loadedSystemSettings.cBodiesSettings[i].shape = shape;
@@ -245,7 +247,7 @@ public class SystemUtils : MonoBehaviour
         // delete the files containing system types and system settings 
     }
 
-    public (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) GetShapeShadingPhysics(CBodySettings.CBodyType type)
+    public (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) GetSettings(CBodySettings.CBodyType type)
     {
         // todo return atmosphere too
         Shape shape = null;
@@ -358,5 +360,4 @@ public class SystemUtils : MonoBehaviour
     {
         public List<string> savedSysNames = new List<string>();
     }
-
 }

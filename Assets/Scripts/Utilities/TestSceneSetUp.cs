@@ -1,4 +1,5 @@
 using CBodies;
+using CBodies.PostProcessing;
 using CBodies.Settings;
 using UnityEngine;
 using Physics = CBodies.Settings.Physics.Physics;
@@ -42,6 +43,7 @@ namespace Utilities
 
             // Set current system settings, available to whole program
             SystemUtils.Instance.currentSystemSettings = _ss;
+            GameManager.Instance.GetMainCamera().GetComponent<CustomPostProcessing>().AwakeEffects();
         }
 
         private void OnDestroy()

@@ -125,8 +125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effects:
-  - {fileID: 11400000, guid: deac0839a18e4cad87f7cbc8494cbd3b, type: 2}
   - {fileID: 11400000, guid: 84b638ca20bd24edf9d42d3686bb3b4d, type: 2}
+  - {fileID: 11400000, guid: deac0839a18e4cad87f7cbc8494cbd3b, type: 2}
 --- !u!114 &7645408000976412511
 MonoBehaviour:
   m_ObjectHideFlags: 0

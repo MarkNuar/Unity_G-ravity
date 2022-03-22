@@ -21,6 +21,14 @@ namespace CBodies.PostProcessing
 			_defaultMat = new Material (_defaultShader);
 		}
 
+		public void AwakeEffects()
+		{
+			foreach (var e in effects)
+			{
+				e.Awake_ScriptableObject();
+			}
+		}
+
 		[ImageEffectOpaque]
 		private void OnRenderImage (RenderTexture initialSource, RenderTexture finalDestination) {
 			onPostProcessingBegin?.Invoke (finalDestination);

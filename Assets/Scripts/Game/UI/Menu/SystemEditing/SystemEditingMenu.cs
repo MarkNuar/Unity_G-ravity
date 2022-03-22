@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CBodies;
+using CBodies.PostProcessing;
 using CBodies.Settings;
 using CBodies.Settings.PostProcessing.Atmosphere;
 using CBodies.Settings.PostProcessing.Ocean;
@@ -48,6 +49,13 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private Toggle tRealisticColors = null;
         [SerializeField] private Toggle tHasOcean = null;
 
+        [SerializeField] private GameObject HasRealistColorsPanel = null;
+        [SerializeField] private GameObject HasOceanPanel = null;
+        [SerializeField] private GameObject HasAtmospherePanel = null;
+        [SerializeField] private GameObject HasRingPanel = null;
+        
+        
+        
         [SerializeField] private CameraController cameraController;
 
 
@@ -111,6 +119,7 @@ namespace Game.UI.Menu.SystemEditing
             }
             // Set current system settings, available to whole program
             SystemUtils.Instance.currentSystemSettings = _systemSettings;
+            GameManager.Instance.GetMainCamera().GetComponent<CustomPostProcessing>().AwakeEffects();
 
             bResetRandomization.interactable = false;
             
@@ -306,11 +315,6 @@ namespace Game.UI.Menu.SystemEditing
             SetArrowHeadPosition();
         }
 
-        // private float Truncate(int decimalValues)
-        // {
-        //     
-        // }
-
         public void OpenEditMenu(bool fromCreation)
         {
             Vector3 pos = CBodyPreviews[_currentCBodyIndex].cBody.transform.position;
@@ -319,16 +323,40 @@ namespace Game.UI.Menu.SystemEditing
             
             DisableCBodyButtons();
             
-            iBodyName.text = GetCurrentCBodySettings().cBodyName;
-            // Disable buttons that must not be used
-            bResetRandomization.interactable = GetCurrentCBodySettings().IsRandomized();
-            tHasOcean.interactable = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet;
-            tRealisticColors.interactable = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet ||
-                                            GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Moon;
+            UpdateEditMenuContent();
             
             HideCurrentCBodySelectionHUD();
 
             ShowPanel(2);
+        }
+
+        private void UpdateEditMenuContent()
+        {
+            iBodyName.text = GetCurrentCBodySettings().cBodyName;
+            // Disable buttons that must not be used
+            bResetRandomization.interactable = GetCurrentCBodySettings().IsRandomized();
+
+            var hasRealisticColors = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet ||
+                                     GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Moon;
+            HasRealistColorsPanel.SetActive(hasRealisticColors);
+            if (hasRealisticColors)
+                HasAtmospherePanel.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify(GetHasRealisticColors());
+            
+            var hasOcean = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet;
+            HasOceanPanel.SetActive(hasOcean);
+            if (hasOcean)
+                HasOceanPanel.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify(_oceanS.hasOcean);
+            
+            var hasAtmosphere = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Planet;
+            HasAtmospherePanel.SetActive(hasAtmosphere);
+            if (hasAtmosphere)
+                HasAtmospherePanel.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify(_atmosphereS.hasAtmosphere);
+
+            var hasRing = GetCurrentCBodySettings().cBodyType == CBodySettings.CBodyType.Gaseous;
+            HasRingPanel.SetActive(hasRing);
+            if (hasRing)
+                HasRingPanel.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify(_ringS.hasRing);
+
         }
 
         public void CloseAllMenu()
@@ -405,7 +433,19 @@ namespace Game.UI.Menu.SystemEditing
         public void HasOcean(bool val)
         {
             _oceanS.hasOcean = val;
-            SetCurrentSettings(CBodyGenerator.UpdateType.All);
+            SetCurrentSettings(CBodyGenerator.UpdateType.Shading);
+        }
+        
+        public void HasAtmosphere(bool val)
+        {
+            _atmosphereS.hasAtmosphere = val;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Shading);
+        }
+        
+        public void HasRing(bool val)
+        {
+            _ringS.hasRing = val;
+            SetCurrentSettings(CBodyGenerator.UpdateType.Shading);
         }
 
         public void HasRealisticColors(bool val)
@@ -413,7 +453,12 @@ namespace Game.UI.Menu.SystemEditing
             _shadingS.realisticColors = val;
             _oceanS.realisticColors = val;
             _atmosphereS.realisticColors = val;
-            SetCurrentSettings(CBodyGenerator.UpdateType.All);
+            SetCurrentSettings(CBodyGenerator.UpdateType.Shading);
+        }
+
+        private bool GetHasRealisticColors()
+        {
+            return _shadingS.realisticColors && _oceanS.realisticColors && _atmosphereS.realisticColors;
         }
         
         private void DestroyCurrentCBody()

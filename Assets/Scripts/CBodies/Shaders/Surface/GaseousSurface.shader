@@ -20,7 +20,7 @@ Shader "CBodies/Gaseous"
     }
     SubShader {
         Tags { "RenderType"="Opaque" }
-        LOD 200
+        LOD 100
         
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
@@ -88,7 +88,7 @@ Shader "CBodies/Gaseous"
         
         // number of octaves of fbm
         // #define NUM_NOISE_OCTAVES 10
-        #define NUM_NOISE_OCTAVES 6
+        #define NUM_NOISE_OCTAVES 5
 
         float fbm(float3 x) {
 	        float v = 0.0;
@@ -117,7 +117,6 @@ Shader "CBodies/Gaseous"
             // calculate fbm noise (3 steps)
             const float3 q = float3(fbm(x + 0.025 * _Time.y), fbm(x), fbm(x));
             const float3 r = float3(fbm(x + 1.0*q + 0.01 * _Time.y), fbm(x + q), fbm(x + q));
-        	//const float v = fbm(x + 5.0*r + _Time.y * 0.005);
         	const float v = fbm(x + 5.0*r + _Time.y * 0.00005);
             
             // lerp mid color based on intermediate results

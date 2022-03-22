@@ -16,5 +16,11 @@ namespace CBodies.PostProcessing
         }
 
         public abstract void Render (RenderTexture source, RenderTexture destination);
+
+        public virtual void Awake_ScriptableObject()
+        {
+            
+        }
+        
     }
 }

@@ -21,13 +21,11 @@ namespace CBodies.PostProcessing.PlanetEffects
 		public bool displayAtmospheres = true;
 		public bool displayRings = true;
 
-		private List<EffectHolder> _effectHolders;
+		[SerializeField] private List<EffectHolder> _effectHolders = null;
 		private List<float> _sortDistances;
 
 		private List<Material> _postProcessingMaterials;
 
-		private List<CBodyGenerator> _previousGenerators;
-		
 		public bool active = true;
 
 		public override void Render (RenderTexture source, RenderTexture destination) {
@@ -36,7 +34,18 @@ namespace CBodies.PostProcessing.PlanetEffects
 			CustomPostProcessing.RenderMaterials (source, destination, materials);
 		}
 
+		
+		// TODO: 
+		// use three events (onSystemCreation, onSystemUpdate, onSystemDestroy) to update effect holders 
+		
+		public override void Awake_ScriptableObject()
+		{
+			base.Awake_ScriptableObject();
+			_effectHolders?.Clear();
+		}
+
 		private void Init () {
+		
 			if (_effectHolders == null)
 			{
 				var generators = new List<CBodyGenerator>(FindObjectsOfType<CBodyGenerator> ());
@@ -45,9 +54,8 @@ namespace CBodies.PostProcessing.PlanetEffects
 				{
 					_effectHolders.Add (new EffectHolder (t));
 				}
-				_previousGenerators = generators;
 			}
-
+			
 			if (_effectHolders.Count != SystemUtils.Instance.currentSystemSettings.cBodiesSettings.Count)
 			{
 				var prevGenerators = _effectHolders.Select(e => e.generator).ToList();
@@ -74,8 +82,6 @@ namespace CBodies.PostProcessing.PlanetEffects
 						}
 					}
 				}
-				
-				_previousGenerators = curGenerators;
 			}
 
 			_postProcessingMaterials ??= new List<Material>();
