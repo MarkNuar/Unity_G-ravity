@@ -784,7 +784,7 @@ GameObject:
   - component: {fileID: 4932631801748688318}
   - component: {fileID: 4167640467121153314}
   m_Layer: 0
-  m_Name: CBodyPreview_WorldCanvas
+  m_Name: CBodyPreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
