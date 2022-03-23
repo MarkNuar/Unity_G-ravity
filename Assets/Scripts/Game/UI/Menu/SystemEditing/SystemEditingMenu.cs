@@ -40,15 +40,12 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private Slider speedSlider = null;
         [SerializeField] private TMP_Text speedValue = null;
         [SerializeField] private GameObject speedPanel = null;
-        
+        [SerializeField] private GameObject deleteButton = null;
         
         [SerializeField] private TMP_Text txtSystemName = null;
         [SerializeField] private TMP_InputField iBodyName = null;
         
         [SerializeField] private Button bResetRandomization = null;
-        [SerializeField] private Toggle tRealisticColors = null;
-        [SerializeField] private Toggle tHasOcean = null;
-
         [SerializeField] private GameObject HasRealistColorsPanel = null;
         [SerializeField] private GameObject HasOceanPanel = null;
         [SerializeField] private GameObject HasAtmospherePanel = null;
@@ -185,7 +182,7 @@ namespace Game.UI.Menu.SystemEditing
             
             FetchCurrentSettings();
             
-            OpenEditMenu(true);
+            OpenAppearanceContextualMenu(true);
         }
 
         private void CreateCBodyAndPreview()
@@ -198,7 +195,7 @@ namespace Game.UI.Menu.SystemEditing
             cBodySettings.Subscribe(preview.cBody.cBodyGenerator);
             if(_orbitDisplay) cBodySettings.Subscribe(_orbitDisplay);
 
-            preview.selectButton.onClick.AddListener(() => OpenContextualMenu(_systemSettings.cBodiesSettings.IndexOf(cBodySettings)));
+            preview.selectButton.onClick.AddListener(() => OpenPhysicsContextualMenu(_systemSettings.cBodiesSettings.IndexOf(cBodySettings)));
             preview.velocityArrow.onDrag.AddListener(UpdateInitialVelocity);
             preview.positionDrag.onDrag.AddListener(UpdateInitialPosition);
 
@@ -209,7 +206,7 @@ namespace Game.UI.Menu.SystemEditing
         }
 
         // This method sets the current cBody index
-        private void OpenContextualMenu(int currentCBodyIndex)
+        private void OpenPhysicsContextualMenu(int currentCBodyIndex)
         {
             // avoid unwanted clicks
             if (cameraController.isDragging) return;
@@ -227,8 +224,10 @@ namespace Game.UI.Menu.SystemEditing
             // set gravity and radius
             UpdateContextualSliders();
 
-            speedPanel.SetActive(GetCurrentCBodySettings().cBodyType != CBodySettings.CBodyType.Star);
-
+            var isNotStar = GetCurrentCBodySettings().cBodyType != CBodySettings.CBodyType.Star;
+            speedPanel.SetActive(isNotStar);
+            deleteButton.SetActive(isNotStar);
+            
             ShowPanel(1);
         }
 
@@ -315,7 +314,7 @@ namespace Game.UI.Menu.SystemEditing
             SetArrowHeadPosition();
         }
 
-        public void OpenEditMenu(bool fromCreation)
+        public void OpenAppearanceContextualMenu(bool fromCreation)
         {
             Vector3 pos = CBodyPreviews[_currentCBodyIndex].cBody.transform.position;
 

@@ -1,3 +1,4 @@
+using System;
 using CBodies;
 using CBodies.Settings;
 using TMPro;
@@ -22,6 +23,11 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public CBody cBody;
 
         public bool Selected { get; set; }
+
+        // private void Start()
+        // {
+        //     buttonCanvas.worldCamera = GameManager.Instance.GetMainCamera();
+        // }
 
         public void SelectCBody()
         {

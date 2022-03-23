@@ -1948,7 +1948,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4847441321436044078}
         m_TargetAssemblyTypeName: UI.Menu.SystemEditing.SystemEditingMenu, Assembly-CSharp
-        m_MethodName: OpenEditMenu
+        m_MethodName: OpenAppearanceContextualMenu
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5455,11 +5455,10 @@ MonoBehaviour:
   speedSlider: {fileID: 1971628052884118352}
   speedValue: {fileID: 6155057605083718752}
   speedPanel: {fileID: 6050318222186170446}
+  deleteButton: {fileID: 4023922041111170461}
   txtSystemName: {fileID: 4510186815339087581}
   iBodyName: {fileID: 7406132113689112544}
   bResetRandomization: {fileID: 3743089127882005112}
-  tRealisticColors: {fileID: 6347707519795731459}
-  tHasOcean: {fileID: 6057286693339202849}
   HasRealistColorsPanel: {fileID: 7617289910943267685}
   HasOceanPanel: {fileID: 5634944610992636168}
   HasAtmospherePanel: {fileID: 5437544008933236939}
