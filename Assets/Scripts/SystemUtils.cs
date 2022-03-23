@@ -204,7 +204,7 @@ public class SystemUtils : MonoBehaviour
 
                 for (int i = 0; i < loadedSystemSettings.cBodiesSettings.Count; i ++)
                 {
-                    (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) = Instance.GetSettings(loadedSystemSettings.cBodiesSettings[i].cBodyType);
+                    (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) = Instance.CreateFeatures(loadedSystemSettings.cBodiesSettings[i].cBodyType);
                     
                     shape.SetSettings(loadedCBodiesSettings.shapeSettingsList[i]);
                     loadedSystemSettings.cBodiesSettings[i].shape = shape;
@@ -247,7 +247,7 @@ public class SystemUtils : MonoBehaviour
         // delete the files containing system types and system settings 
     }
 
-    public (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) GetSettings(CBodySettings.CBodyType type)
+    public (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) CreateFeatures(CBodySettings.CBodyType type)
     {
         // todo return atmosphere too
         Shape shape = null;
@@ -336,12 +336,12 @@ public class SystemUtils : MonoBehaviour
         return savedNames.savedSysNames;
     }
 
-    // Utility class for serializing system cBodies types
-    [Serializable]
-    private class CBodiesTypes
-    {
-        public CBodySettings.CBodyType[] types;
-    }
+    // // Utility class for serializing system cBodies types
+    // [Serializable]
+    // private class CBodiesTypes
+    // {
+    //     public CBodySettings.CBodyType[] types;
+    // }
 
     [Serializable]
     private class CBodiesSettings

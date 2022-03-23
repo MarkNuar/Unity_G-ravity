@@ -31,7 +31,7 @@ namespace Utilities
 
         private void Update()
         {
-            if (!Input.GetKeyDown(KeyCode.P)) return;
+            if (!Input.GetKeyDown(KeyCode.F9)) return;
             if (!_isPlaying)
             {
                 var transform1 = cam.transform;

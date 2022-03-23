@@ -9,12 +9,12 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/Main.unity
     guid: 97c4d769e993a6c4a9986905a328eed3
   - enabled: 1
-    path: Assets/Scenes/SystemEditing.unity
+    path: Assets/Scenes/Editing.unity
     guid: 74f315263fde374489e9973d333fb3ad
   - enabled: 1
-    path: Assets/Scenes/SystemExploration.unity
+    path: Assets/Scenes/Exploration.unity
     guid: 4e5e9461d7d33f14787be876687d1bd0
   m_configObjects: {}

@@ -51,7 +51,7 @@ namespace CBodies.Settings
         public void UpdateCBodySettings(CBodyType newType)
         {
             cBodyType = newType;
-            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph, Ocean oc, Atmosphere at, Ring ri) = SystemUtils.Instance.GetSettings(cBodyType);
+            (Shape.Shape sp, Shading.Shading sd, Physics.Physics ph, Ocean oc, Atmosphere at, Ring ri) = SystemUtils.Instance.CreateFeatures(cBodyType);
             shape = sp;
             shading = sd;
             physics = ph;

@@ -17,7 +17,7 @@ namespace CBodies
         [Tooltip("Time step of the simulation, the smaller, the more accurate the simulation is")]
         [Range(0.1f, 10)]public float timeStep = 0.1f;
 
-        [Tooltip("When simulation speed is set to 1, the number of points computed per second is equal to the framerate of the game")]
+        [Tooltip("Number of points computed at each application update")]
         [Range(1, 15)] public int simulationSpeed = 5;
         
         public bool relativeToBody;
@@ -36,7 +36,7 @@ namespace CBodies
         
         private void Update ()
         {
-            if (!Input.GetKeyDown(KeyCode.T)) return;
+            if (!Input.GetKeyDown(KeyCode.F10)) return;
             drawOrbits = !drawOrbits;
             if (drawOrbits)
             {

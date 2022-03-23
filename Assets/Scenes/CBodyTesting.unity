@@ -442,7 +442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cBody: {fileID: 743628649}
-  type: 0
+  type: 2
 --- !u!1001 &3532549738547021286
 PrefabInstance:
   m_ObjectHideFlags: 0

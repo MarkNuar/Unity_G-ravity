@@ -42,12 +42,14 @@ namespace CBodies.Settings.PostProcessing.Ring
                     // var outerRadiusIncremrement = 1.05f + randomShape.Range(0.0f, 0.4f);
                     var outerRadiusIncrement = ringSettings.baseOuterRadiusIncrement + randomShape.Range(-0.3f,0.3f);
 
-                    var yNormal = 1 - randomShape.Range(0.0f, 0.4f);
-                    var xNormal = 0.1f + randomShape.Range(-0.2f, 0.2f);
-                    var zNormal = 0.2f + randomShape.Range(0.0f, 0.3f);
+                    var xNormal = ringSettings.baseRingNormal.x + randomShape.Range(-1.2f, 1.2f);
+                    var yNormal = ringSettings.baseRingNormal.y;
+                    var zNormal = ringSettings.baseRingNormal.z + randomShape.Range(-2.5f, 2.5f);
                 
                     Vector3 ringNormal = new Vector3(xNormal, yNormal, zNormal);
-                
+
+                    ringSettings.currentRingNormal = ringNormal;
+                    
                     ringMaterial.SetFloat("inner_radius_increment", innerRadiusIncrement);
                     ringMaterial.SetFloat("outer_radius_increment", outerRadiusIncrement);
                     ringMaterial.SetVector("ring_normal", ringNormal.normalized);
@@ -81,6 +83,8 @@ namespace CBodies.Settings.PostProcessing.Ring
             
             // serialize plane normal inclination, quaternion, vector 3, angles?
             public Vector3 baseRingNormal = new Vector3(0.0f, 1.0f, 0.2f);
+            
+            public Vector3 currentRingNormal = Vector3.zero;
             
             public void RandomizeShading(bool rand)
             {
