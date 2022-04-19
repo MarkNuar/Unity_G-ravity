@@ -70,5 +70,11 @@ namespace Game.UI.Menu.SystemEditing.Preview
             // Make it clickable
             buttonCanvas.sortingOrder = 1;
         }
+
+        public void ToggleHUD(bool showHUD)
+        {
+            selectButton.interactable = showHUD;
+            cBodyName.enabled = showHUD;
+        }
     }
 }

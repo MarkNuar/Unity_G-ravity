@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 using System.Collections;
 using System.Threading;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,7 +24,14 @@ public class GameManager : MonoBehaviour
     public bool gamePaused = false;
 
     public enum GameMode {Menu, Editing, Explore, Unknown}
-    public GameMode gameMode; 
+    public GameMode gameMode;
+
+
+    public AudioTriggerer MainMenuMusicTriggerer;
+    public AudioTriggerer EditingMusicTriggerer;
+    public AudioTriggerer ExplorationMusicTriggerer;
+
+    public float globalAudioVolume = 0.7f;
     
     private void Awake()
     {
@@ -45,6 +53,8 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 9999;
         _currentFrameTime = Time.realtimeSinceStartup;
         StartCoroutine(nameof(WaitForNextFrame));
+        
+        MainMenuMusicTriggerer.PlayAudioClip();
     }
 
     private IEnumerator WaitForNextFrame()
@@ -84,13 +94,25 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(int index)
     {
-        gameMode = index switch
+        switch (index)
         {
-            0 => GameMode.Menu,
-            1 => GameMode.Editing,
-            2 => GameMode.Explore,
-            _ => GameMode.Unknown
-        };
+            case 0:
+                gameMode = GameMode.Menu;
+                MainMenuMusicTriggerer.PlayAudioClip();
+                break;
+            case 1:
+                gameMode = GameMode.Editing;
+                EditingMusicTriggerer.PlayAudioClip();
+                break;
+            case 2:
+                gameMode = GameMode.Explore;
+                ExplorationMusicTriggerer.PlayAudioClip();
+                break;
+            default:
+                gameMode = GameMode.Unknown;
+                break;
+        }
+        
         SceneManager.LoadScene(index, LoadSceneMode.Single);
     }
 }

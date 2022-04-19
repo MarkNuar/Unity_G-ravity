@@ -10,12 +10,14 @@ namespace CBodies
     public class OrbitDisplay : MonoBehaviour, ICBodyObserver
     {
         public bool drawOrbits;
+
+        private bool _waitingForOrbits; 
         
         [Tooltip("Increment in the lenght of the line. When 1 the line is as long as the circle with radius the distance of the planet from the centre")]
         [Range(1, 5)]public int lengthIncrement = 2;
 
         [Tooltip("Time step of the simulation, the smaller, the more accurate the simulation is")]
-        [Range(0.1f, 10)]public float timeStep = 0.1f;
+        [Range(0.01f, 1)]public float timeStep = 0.1f;
 
         [Tooltip("Number of points computed at each application update")]
         [Range(1, 15)] public int simulationSpeed = 5;
@@ -34,30 +36,32 @@ namespace CBodies
 
         public SystemEditingMenu systemEditingMenu;
         
-        private void Update ()
-        {
-            if (!Input.GetKeyDown(KeyCode.F10)) return;
-            drawOrbits = !drawOrbits;
-            if (drawOrbits)
-            {
-                DrawOrbits();
-            }
-            else
-            {
-                HideOrbits();
-            }
-        }
+        // private void Update ()
+        // {
+        //     if (!Input.GetKeyDown(KeyCode.F10)) return;
+        //     drawOrbits = !drawOrbits;
+        //     if (drawOrbits)
+        //     {
+        //         DrawOrbits();
+        //     }
+        //     else
+        //     {
+        //         HideOrbits();
+        //     }
+        // }
 
         private IEnumerator BeforeDrawTimer(float time)
         {
             yield return new WaitForSeconds(time);
+            _waitingForOrbits = false;
             DrawOrbits();
         }
         
-        private void DrawOrbits () {
+        public void DrawOrbits ()
+        {
             // Hides previous drawn orbits
             HideOrbits();
-
+            
             _previews = systemEditingMenu.CBodyPreviews;
             _virtualBodies = new VirtualBody[_previews.Count];
             
@@ -126,7 +130,10 @@ namespace CBodies
                         _points[i].Dequeue();
                     }
                     _points[i].Enqueue(newPos);
-  
+
+                    // TODO: MOVE ALSO CBODIES
+                    _previews[i].cBody.transform.position = newPos;
+
                     _previews[i].lineRenderer.positionCount = _points[i].Count + 1;
                     _previews[i].lineRenderer.SetPositions(_points[i].ToArray());
                     _previews[i].lineRenderer.SetPosition(_points[i].Count, _referenceBodyInitialPosition);
@@ -152,13 +159,14 @@ namespace CBodies
             return acceleration;
         }
 
-        private void HideOrbits ()
+        public void HideOrbits ()
         {
             StopAllCoroutines();
             _previews = systemEditingMenu.CBodyPreviews;
             // Draw paths
             foreach (CBodyPreview p in _previews)
             {
+                p.cBody.transform.position = p.cBody.cBodyGenerator.cBodySettings.physics.GetSettings().initialPosition;
                 p.lineRenderer.positionCount = 0;
             }
         }
@@ -195,14 +203,10 @@ namespace CBodies
         {
             if (drawOrbits)
             {
+                // _waitingForOrbits = true;
                 HideOrbits();
                 StopAllCoroutines();
                 StartCoroutine(BeforeDrawTimer(0.2f));
-                //DrawOrbits();
-            }
-            else
-            {
-                HideOrbits();
             }
         }
 

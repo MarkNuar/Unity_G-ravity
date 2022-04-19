@@ -12,6 +12,7 @@ using Game.UI.Menu.SystemEditing.Preview;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 using Physics = CBodies.Settings.Physics.Physics;
 
 namespace Game.UI.Menu.SystemEditing
@@ -50,12 +51,13 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private GameObject HasOceanPanel = null;
         [SerializeField] private GameObject HasAtmospherePanel = null;
         [SerializeField] private GameObject HasRingPanel = null;
-        
-        
-        
+
+        [SerializeField] private GameObject SimulationSpeedPanel = null;
+        [SerializeField] private GameObject SimulationTimeStepPanel = null;
+
         [SerializeField] private CameraController cameraController;
 
-
+        
         private Shading.ShadingSettings _shadingS = null;
         private Shape.ShapeSettings _shapeS = null;
         private Physics.PhysicsSettings _physicsS = null;
@@ -64,6 +66,34 @@ namespace Game.UI.Menu.SystemEditing
         private Ring.RingSettings _ringS = null;
 
         private OrbitDisplay _orbitDisplay;
+
+        public void EnableSimulationControls(bool drawOrbits)
+        {
+            _orbitDisplay.drawOrbits = drawOrbits;
+            if (drawOrbits)
+            {
+                _orbitDisplay.DrawOrbits();
+            }
+            else
+            {
+                _orbitDisplay.HideOrbits();
+            }
+            
+            SimulationSpeedPanel.SetActive(drawOrbits);
+            SimulationSpeedPanel.GetComponentInChildren<Slider>().value = _orbitDisplay.simulationSpeed;
+            SimulationTimeStepPanel.SetActive(drawOrbits);
+            SimulationTimeStepPanel.GetComponentInChildren<Slider>().value = _orbitDisplay.timeStep;
+        }
+
+        public void SetSimulationSpeed(float simulationSpeed)
+        {
+            _orbitDisplay.simulationSpeed = (int)simulationSpeed;
+        }
+
+        public void SetSimulationTimeStep(float simulationTimeStep)
+        {
+            _orbitDisplay.timeStep = simulationTimeStep;
+        }
         
         private void Start()
         {

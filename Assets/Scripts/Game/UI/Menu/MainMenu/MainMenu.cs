@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.UI.Menu.MainMenu
 {
@@ -20,6 +22,50 @@ namespace Game.UI.Menu.MainMenu
         private readonly List<string> _editLoadedSystems = new List<string>();
         private readonly List<string> _exploreLoadedSystems = new List<string>();
 
+        
+        [SerializeField] private Slider volumeSlider;
+        
+        private void Start()
+        {
+            SetVolume(GameManager.Instance.globalAudioVolume);
+            switch (GameManager.Instance.gameMode)
+            {
+                case GameManager.GameMode.Menu:
+                    volumeSlider.value = GameManager.Instance.globalAudioVolume;
+                    break;
+                case GameManager.GameMode.Editing:
+                    volumeSlider.value = GameManager.Instance.globalAudioVolume;
+                    break;
+                case GameManager.GameMode.Explore:
+                    volumeSlider.value = GameManager.Instance.globalAudioVolume;
+                    break;
+                case GameManager.GameMode.Unknown:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public void SetVolume(float volume)
+        {
+            GameManager.Instance.globalAudioVolume = volume;
+            switch (GameManager.Instance.gameMode)
+            {
+                case GameManager.GameMode.Menu:
+                    GameManager.Instance.MainMenuMusicTriggerer.SetVolume(volume);
+                    break;
+                case GameManager.GameMode.Editing:
+                    GameManager.Instance.EditingMusicTriggerer.SetVolume(volume);
+                    break;
+                case GameManager.GameMode.Explore:
+                    GameManager.Instance.ExplorationMusicTriggerer.SetVolume(volume);
+                    break;
+                case GameManager.GameMode.Unknown:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         public void QuitGame()
         {

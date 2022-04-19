@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: DefaultOcean
   m_EditorClassIdentifier: 
   oceanSettings:
-    randomizeShading: 1
-    randomizeHeight: 1
-    shadingSeed: 8984
-    heightSeed: 9688
+    randomizeShading: 0
+    randomizeHeight: 0
+    shadingSeed: 0
+    heightSeed: 0
     realisticColors: 1
     hueRange: 0.05
-    hasOcean: 0
-    oceanLevel: 0.987881
+    hasOcean: 1
+    oceanLevel: 0.68
     baseOceanLevel: 0.68
     minOceanLevel: 0.3
     maxOceanLevel: 1

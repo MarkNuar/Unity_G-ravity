@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: defaultAtmosphere
   m_EditorClassIdentifier: 
   atmosphereSettings:
-    randomizeShading: 1
-    shadingSeed: -6933
+    randomizeShading: 0
+    shadingSeed: 0
     realisticColors: 1
-    hasAtmosphere: 0
+    hasAtmosphere: 1
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 5

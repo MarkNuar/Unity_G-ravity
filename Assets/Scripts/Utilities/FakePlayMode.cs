@@ -4,6 +4,7 @@ using CBodies.Settings;
 using Game;
 using Game.UI.Menu;
 using Game.UI.Menu.SystemEditing;
+using Game.UI.Menu.SystemEditing.Preview;
 using UnityEngine;
 using Physics = CBodies.Settings.Physics.Physics;
 
@@ -20,20 +21,26 @@ namespace Utilities
         private Vector3 _storedPos;
         private Quaternion _storedRot;
         private bool _isPlaying;
-
+        
         // Start is called before the first frame update
         private void Start()
         {
             cam = GameManager.Instance.GetMainCamera();
             _isPlaying = false;
         }
-
+        
 
         private void Update()
         {
             if (!Input.GetKeyDown(KeyCode.F9)) return;
             if (!_isPlaying)
             {
+                CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
+                foreach (var preview in previews)
+                {
+                    preview.ToggleHUD(false);   
+                }
+                
                 var transform1 = cam.transform;
                 _storedPos = transform1.position;
                 _storedRot = transform1.rotation;
@@ -47,6 +54,13 @@ namespace Utilities
             }
             else
             {
+                CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
+                foreach (var preview in previews)
+                {
+                    preview.ToggleHUD(true);
+                    preview.cBody.transform.rotation = Quaternion.Euler(0,0,0);
+                }
+                
                 var transform1 = cam.transform;
                 transform1.position = _storedPos;
                 transform1.rotation = _storedRot;

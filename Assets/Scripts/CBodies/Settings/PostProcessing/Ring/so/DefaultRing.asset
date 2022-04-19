@@ -17,7 +17,7 @@ MonoBehaviour:
     randomizeShape: 0
     shadingSeed: 0
     shapeSeed: 0
-    hasRing: 1
+    hasRing: 0
     baseInnerRadiusIncrement: 1.5
     baseOuterRadiusIncrement: 2.5
     baseRingNormal: {x: 0, y: 10, z: -3.5}
