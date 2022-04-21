@@ -19,14 +19,18 @@ namespace Game.UI.Menu.MainMenu
         public TMP_Text systemNameError;
 
         private readonly List<string> _cachedNames = new List<string>();
-        private readonly List<string> _editLoadedSystems = new List<string>();
-        private readonly List<string> _exploreLoadedSystems = new List<string>();
-
+        private readonly List<string> _loadedEditingSystems = new List<string>();
+        private readonly List<string> _loadedExplorationSystems = new List<string>();
+        
         
         [SerializeField] private Slider volumeSlider;
         
         private void Start()
         {
+            _cachedNames.Clear();
+            _loadedEditingSystems.Clear();
+            _loadedExplorationSystems.Clear();
+
             SetVolume(GameManager.Instance.globalAudioVolume);
             switch (GameManager.Instance.gameMode)
             {
@@ -74,42 +78,55 @@ namespace Game.UI.Menu.MainMenu
 
         public void OpenEditSelection()
         {
+            _cachedNames.Clear();
+
             ShowPanel(1);
 
             List<string> savedSystems = SystemUtils.Instance.GetSystemNames();
 
+            _cachedNames.AddRange(savedSystems);
+            
             foreach (var systemName in savedSystems)
             {
-                if (!_editLoadedSystems.Contains(systemName))
-                {
-                    GameObject el = Instantiate(scrollViewElementPrefab, editScrollView, true);
-                    el.transform.localScale = Vector3.one;
-                    ListElementHelper helper = el.GetComponent<ListElementHelper>();
-                    helper.text.text = systemName;
-                    helper.button.onClick.AddListener(() => LoadSystemEditingScene(systemName, false));
-                    _editLoadedSystems.Add(systemName);
-                }
+                if(_loadedEditingSystems.Contains(systemName)) continue;
+
+                GameObject el = Instantiate(scrollViewElementPrefab, editScrollView, true);
+                el.transform.localScale = Vector3.one;
+                ListElementHelper helper = el.GetComponent<ListElementHelper>();
+                helper.text.text = systemName;
+                helper.button.onClick.AddListener(() => LoadSystemEditingScene(systemName, false));
+                helper.deleteButton.onClick.AddListener(() => DeleteSystem(systemName, el));
+                _loadedEditingSystems.Add(systemName);
             }
+        }
+
+        public void DeleteSystem(string systemName, GameObject listElement)
+        {
+            Destroy(listElement);
+            SystemUtils.Instance.DeleteSystem(systemName);
+            OpenEditSelection();
         }
 
         public void OpenExploreSelection()
         {
+            _cachedNames.Clear();
+
             ShowPanel(2);
             
             List<string> savedSystems = SystemUtils.Instance.GetSystemNames();
             
+            _cachedNames.AddRange(savedSystems);
+            
             foreach (var systemName in savedSystems)
             {
-                if (!_exploreLoadedSystems.Contains(systemName))
-                {
-                    GameObject el = Instantiate(scrollViewElementPrefab, exploreScrollView, true);
-                    el.transform.localScale = Vector3.one;
-                    ListElementHelper helper = el.GetComponent<ListElementHelper>();
-                    helper.text.text = systemName;
-                    helper.button.onClick.AddListener(() => LoadSystemExplorationScene(systemName));
-                    _exploreLoadedSystems.Add(systemName);
-                }
+                if(_loadedExplorationSystems.Contains(systemName)) continue;
                 
+                GameObject el = Instantiate(scrollViewElementPrefab, exploreScrollView, true);
+                el.transform.localScale = Vector3.one;
+                ListElementHelper helper = el.GetComponent<ListElementHelper>();
+                helper.text.text = systemName;
+                helper.button.onClick.AddListener(() => LoadSystemExplorationScene(systemName));
+                _loadedExplorationSystems.Add(systemName);
             }
         }
         
@@ -144,8 +161,8 @@ namespace Game.UI.Menu.MainMenu
         private void LoadSystemEditingScene(string systemName, bool isNew)
         {
             _cachedNames.Clear();
-            _editLoadedSystems.Clear();
-            _exploreLoadedSystems.Clear();
+            _loadedEditingSystems.Clear();
+            _loadedExplorationSystems.Clear();
             GameManager.Instance.SetSystemToLoad(systemName, isNew);
             //SceneManager.LoadScene("Scenes/SystemEditing", LoadSceneMode.Single);
             GameManager.Instance.LoadScene(1);
@@ -154,8 +171,8 @@ namespace Game.UI.Menu.MainMenu
         private void LoadSystemExplorationScene(string systemName)
         {
             _cachedNames.Clear();
-            _editLoadedSystems.Clear();
-            _exploreLoadedSystems.Clear();
+            _loadedEditingSystems.Clear();
+            _loadedExplorationSystems.Clear();
             GameManager.Instance.SetSystemToLoad(systemName, false);
             //SceneManager.LoadScene("Scenes/SystemExploration", LoadSceneMode.Single);
             GameManager.Instance.LoadScene(2);

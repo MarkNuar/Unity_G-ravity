@@ -40,7 +40,7 @@ namespace CBodies.PostProcessing.PlanetEffects.Effects
                 _material.SetInt("receive_shadow", 0);
             }
             
-            generator.cBodySettings.ring.SetRingProperties (_material);
+            generator.cBodySettings.ring.SetRingProperties (_material, generator.cBody.transform);
         }
 
         public Material GetMaterial () {

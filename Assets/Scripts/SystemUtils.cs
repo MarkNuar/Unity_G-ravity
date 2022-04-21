@@ -201,7 +201,7 @@ public class SystemUtils : MonoBehaviour
             if (loadedSystemSettings != null)
             {
                 CBodiesSettings loadedCBodiesSettings = JsonConvert.DeserializeObject<CBodiesSettings>(cBodiesSettingsReader.ReadToEnd(),_jSonSettings);
-
+                
                 for (int i = 0; i < loadedSystemSettings.cBodiesSettings.Count; i ++)
                 {
                     (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) = Instance.CreateFeatures(loadedSystemSettings.cBodiesSettings[i].cBodyType);
@@ -219,10 +219,15 @@ public class SystemUtils : MonoBehaviour
                     ring.SetSettings(loadedCBodiesSettings.ringSettingsList[i]);
                     loadedSystemSettings.cBodiesSettings[i].ring = ring;
                 }
+                cBodiesSettingsReader.Close();
+                systemSettingsReader.Close();
+                
                 return loadedSystemSettings;
             }
             else
             {
+                cBodiesSettingsReader.Close();
+                systemSettingsReader.Close();
                 Debug.LogError("System types not correctly loaded");
                 return null;
             }
@@ -240,11 +245,35 @@ public class SystemUtils : MonoBehaviour
         return ss;
     }
 
-    public void DeleteSystem(string systemName)
+    public void DeleteSystem(string systemNameToDelete)
     {
         // todo 
         // remove the system name from the names list 
         // delete the files containing system types and system settings 
+        List<string> names = GetSystemNames();
+        
+        if (!names.Contains(systemNameToDelete)) return;
+        
+        names.Remove(systemNameToDelete);
+        var systemNamesPath = storePath + "names_of_systems.txt";
+        StreamWriter namesWriter = new StreamWriter(systemNamesPath, false);
+        SavedSystemsNames savedSystemsNames = new SavedSystemsNames();
+        savedSystemsNames.savedSysNames = names;
+        var namesJson = JsonConvert.SerializeObject(savedSystemsNames);
+        namesWriter.WriteLine(namesJson);
+        namesWriter.Close();
+            
+        string cBSettingsPath = storePath + systemNameToDelete + "_cBodies_settings.txt";
+        if (File.Exists(cBSettingsPath))
+        {
+            File.Delete(cBSettingsPath);
+        }
+            
+        string sysSettingsPath = storePath + systemNameToDelete + "_system_settings.txt";
+        if (File.Exists(sysSettingsPath))
+        {
+            File.Delete(sysSettingsPath);
+        }
     }
 
     public (Shape shape, Shading shading, Physics physics, Ocean ocean, Atmosphere atmosphere, Ring ring) CreateFeatures(CBodySettings.CBodyType type)
@@ -333,6 +362,7 @@ public class SystemUtils : MonoBehaviour
         if (!File.Exists(systemNamesPath)) return savedNames.savedSysNames;
         StreamReader reader = new StreamReader(systemNamesPath);
         savedNames = JsonConvert.DeserializeObject<SavedSystemsNames>(reader.ReadToEnd());
+        reader.Close();
         return savedNames.savedSysNames;
     }
 

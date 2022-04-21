@@ -44,6 +44,10 @@ namespace CBodies.Settings.Physics
             public float minSpeed = 0.1f;
             public float maxSpeed = 20f;
             public Vector3 initialVelocity = Vector3.up * 5;
+
+            public float minRotationSpeed = 0f;
+            public float maxRotationSpeed = 10f;
+            public float initialRotationSpeed = 3;
         }
         
         

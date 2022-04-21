@@ -14,7 +14,7 @@ namespace CBodies.Settings.PostProcessing.Ring
 
         private bool _settingsUpToDate = false;
         
-        public void SetRingProperties(Material ringMaterial)
+        public void SetRingProperties(Material ringMaterial, Transform cBodyTransform)
         {
             if (_settingsUpToDate) return;
             
@@ -42,28 +42,34 @@ namespace CBodies.Settings.PostProcessing.Ring
                     // var outerRadiusIncremrement = 1.05f + randomShape.Range(0.0f, 0.4f);
                     var outerRadiusIncrement = ringSettings.baseOuterRadiusIncrement + randomShape.Range(-0.3f,0.3f);
 
-                    var xNormal = ringSettings.baseRingNormal.x + randomShape.Range(-1.2f, 1.2f);
-                    var yNormal = ringSettings.baseRingNormal.y;
-                    var zNormal = ringSettings.baseRingNormal.z + randomShape.Range(-2.5f, 2.5f);
+                    var xNormal = ringSettings.baseRingNormal.x + randomShape.Range(-0.2f, 0.2f);
+                    var yNormal = ringSettings.baseRingNormal.y + randomShape.Range(-0.2f, 0.2f);
+                    var zNormal = ringSettings.baseRingNormal.z;// + randomShape.Range(-2.5f, 2.5f);
                 
                     Vector3 ringNormal = new Vector3(xNormal, yNormal, zNormal);
 
                     ringSettings.currentRingNormal = ringNormal;
-                    
+
                     ringMaterial.SetFloat("inner_radius_increment", innerRadiusIncrement);
                     ringMaterial.SetFloat("outer_radius_increment", outerRadiusIncrement);
-                    ringMaterial.SetVector("ring_normal", ringNormal.normalized);
+                    ringMaterial.SetVector("ring_normal", cBodyTransform.localRotation * ringNormal.normalized);
                     
                 }
                 else
                 {
                     ringMaterial.SetFloat("inner_radius_increment", ringSettings.baseInnerRadiusIncrement);
                     ringMaterial.SetFloat("outer_radius_increment", ringSettings.baseOuterRadiusIncrement);
-                    ringMaterial.SetVector("ring_normal", ringSettings.baseRingNormal.normalized);
+                    ringMaterial.SetVector("ring_normal", cBodyTransform.localRotation * ringSettings.baseRingNormal.normalized);
                 }
             }
 
             _settingsUpToDate = true;
+        }
+        
+        static void RotateAround (Transform transform, Vector3 pivotPoint, Quaternion rot)
+        {
+            transform.position = rot * (transform.position - pivotPoint) + pivotPoint;
+            transform.rotation = rot * transform.rotation;
         }
 
         [Serializable]

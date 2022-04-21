@@ -60,7 +60,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 5000
+  far clip plane: 8000
   field of view: 40
   orthographic: 1
   orthographic size: 100
@@ -102,7 +102,7 @@ MonoBehaviour:
   cam: {fileID: 7645408000976412507}
   panSensitivity: 20
   minZoom: 1
-  maxZoom: 600
+  maxZoom: 2000
   zoomSpeed: 4
   cinematicPrecision: 0.1
   isDragging: 0
@@ -162,3 +162,6 @@ MonoBehaviour:
   editMenu: {fileID: 0}
   pauseMenu: {fileID: 0}
   starView: {fileID: 0}
+  trackCBody: 0
+  transformToTrack: {fileID: 0}
+  trackedCBodyIndex: 0

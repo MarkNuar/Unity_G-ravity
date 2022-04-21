@@ -152,7 +152,7 @@ namespace Game.UI.Menu.SystemEditing
         
         public void LockCamAt(Vector3 pos, float cBodyRadius, bool fromCreation)
         {
-            _cinematicMinZoom = cBodyRadius + 4;
+            _cinematicMinZoom = cBodyRadius * 2f;
             _enableControl = false;
             _restoringControl = false; 
             Transform camTransform = cam.transform;

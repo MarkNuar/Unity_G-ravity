@@ -8,5 +8,7 @@ namespace Game.UI.Menu.MainMenu
     {
         public Button button;
         public TMP_Text text;
+
+        public Button deleteButton;
     }
 }

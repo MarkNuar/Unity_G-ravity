@@ -21,6 +21,10 @@ namespace Utilities
         private Vector3 _storedPos;
         private Quaternion _storedRot;
         private bool _isPlaying;
+
+        public bool trackCBody;
+        public Transform transformToTrack;
+        public int trackedCBodyIndex;
         
         // Start is called before the first frame update
         private void Start()
@@ -32,45 +36,65 @@ namespace Utilities
 
         private void Update()
         {
-            if (!Input.GetKeyDown(KeyCode.F9)) return;
-            if (!_isPlaying)
+            if (Input.GetKeyDown(KeyCode.F9))
             {
-                CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
-                foreach (var preview in previews)
+                if (!_isPlaying)
                 {
-                    preview.ToggleHUD(false);   
+                    CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
+                    foreach (var preview in previews)
+                    {
+                        preview.ShowEditingHUD(false);   
+                    }
+
+                    var camTransform = cam.transform;
+                    _storedPos = camTransform.position;
+                    
+                    if (trackCBody)
+                    {
+                        camTransform.parent = transformToTrack;
+                        var targetPosition = transformToTrack.position;
+                        camTransform.position = new Vector3(targetPosition.x, targetPosition.y,
+                            camTransform.position.z);
+                    }
+                    else
+                    {
+                        camTransform.position = new Vector3(0, 0, camTransform.position.z);
+                    }
+
+                    cam.transform.rotation = Quaternion.Euler(0,0,0);
+                    
+                    //_storedRot = transform1.rotation;
+                    cam.orthographic = false;
+                    flyCamera.enabled = true;
+                    editMenu.SetActive(false);
+                    //pauseMenu.SetActive(false);
+                    _isPlaying = true;
+                    // SunShadowCaster ssc = FindObjectOfType<SunShadowCaster>();
+                    // ssc.trackCamera = true;
                 }
-                
-                var transform1 = cam.transform;
-                _storedPos = transform1.position;
-                _storedRot = transform1.rotation;
-                cam.orthographic = false;
-                flyCamera.enabled = true;
-                editMenu.SetActive(false);
-                //pauseMenu.SetActive(false);
-                _isPlaying = true;
-                SunShadowCaster ssc = FindObjectOfType<SunShadowCaster>();
-                ssc.trackCamera = true;
-            }
-            else
-            {
-                CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
-                foreach (var preview in previews)
+                else
                 {
-                    preview.ToggleHUD(true);
-                    preview.cBody.transform.rotation = Quaternion.Euler(0,0,0);
-                }
+                    CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
+                    foreach (var preview in previews)
+                    {
+                        preview.ShowEditingHUD(true);
+                        preview.cBody.transform.rotation = Quaternion.Euler(0,0,0);
+                    }
+
+                    cam.transform.parent = null;
                 
-                var transform1 = cam.transform;
-                transform1.position = _storedPos;
-                transform1.rotation = _storedRot;
-                cam.orthographic = true;
-                flyCamera.enabled = false;
-                editMenu.SetActive(true);
-                //pauseMenu.SetActive(true);
-                _isPlaying = false;
-                SunShadowCaster ssc = FindObjectOfType<SunShadowCaster>();
-                ssc.trackCamera = false;
+                    var camTransform = cam.transform;
+                    camTransform.position = _storedPos;
+                    camTransform.rotation = Quaternion.Euler(0,0,0);
+                    
+                    cam.orthographic = true;
+                    flyCamera.enabled = false;
+                    editMenu.SetActive(true);
+                    //pauseMenu.SetActive(true);
+                    _isPlaying = false;
+                    // SunShadowCaster ssc = FindObjectOfType<SunShadowCaster>();
+                    // ssc.trackCamera = false;
+                }
             }
         }
     }

@@ -59,7 +59,10 @@ public class FlyCamera : MonoBehaviour {
 		}
 		
 		Quaternion rotation = transform.rotation;
-		Quaternion deltaRotation = Quaternion.Euler(mouseDelta.y, mouseDelta.x, rollDelta * rollSpeed);
+		var rollSpeedTemp = rollSpeed;
+		if (Input.GetKey(KeyCode.LeftShift))
+			rollSpeedTemp *= accSprintMultiplier;
+		Quaternion deltaRotation = Quaternion.Euler(mouseDelta.y, mouseDelta.x, rollDelta * rollSpeedTemp);
 		transform.rotation = rotation * deltaRotation;
 		
 		// Leave cursor lock

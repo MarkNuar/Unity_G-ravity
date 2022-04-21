@@ -17,11 +17,12 @@ namespace Game.UI.Menu.SystemEditing.Preview
 
         public TMP_Text cBodyName;
         public TMP_Text cBodyPosition;
+        public Image cBodyPositionBGD;
         
         public LineRenderer lineRenderer;
         
         public CBody cBody;
-
+        
         public bool Selected { get; set; }
 
         // private void Start()
@@ -32,13 +33,14 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public void SelectCBody()
         {
             Selected = true;
-            if (cBody.cBodyGenerator.cBodySettings.cBodyType != CBodySettings.CBodyType.Star)
+            //if (cBody.cBodyGenerator.cBodySettings.cBodyType != CBodySettings.CBodyType.Star)
             {
                 velocityArrow.arrowHead.enabled = false;
                 velocityArrow.arrowBody.enabled = false;
                 positionDrag.dragHandle.enabled = true;
                 
                 cBodyPosition.enabled = true;
+                cBodyPositionBGD.enabled = true;
             }
             // Make it not clickable
             buttonCanvas.sortingOrder = 0;
@@ -53,6 +55,7 @@ namespace Game.UI.Menu.SystemEditing.Preview
             cBodyName.enabled = false;
             
             cBodyPosition.enabled = false;
+            cBodyPositionBGD.enabled = false;
         }
 
         public void DeselectCBody()
@@ -66,12 +69,13 @@ namespace Game.UI.Menu.SystemEditing.Preview
             cBodyName.enabled = true;
             
             cBodyPosition.enabled = false;
+            cBodyPositionBGD.enabled = false;
             
             // Make it clickable
             buttonCanvas.sortingOrder = 1;
         }
 
-        public void ToggleHUD(bool showHUD)
+        public void ShowEditingHUD(bool showHUD)
         {
             selectButton.interactable = showHUD;
             cBodyName.enabled = showHUD;

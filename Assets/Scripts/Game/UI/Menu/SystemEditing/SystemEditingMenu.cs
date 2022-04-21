@@ -10,6 +10,7 @@ using CBodies.Settings.Shading;
 using CBodies.Settings.Shape;
 using Game.UI.Menu.SystemEditing.Preview;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -40,7 +41,10 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private TMP_Text gravityValue = null;
         [SerializeField] private Slider speedSlider = null;
         [SerializeField] private TMP_Text speedValue = null;
+        [SerializeField] private Slider rotationSlider = null;
+        [SerializeField] private TMP_Text rotationValue = null;
         [SerializeField] private GameObject speedPanel = null;
+        [SerializeField] private GameObject rotationPanel = null;
         [SerializeField] private GameObject deleteButton = null;
         
         [SerializeField] private TMP_Text txtSystemName = null;
@@ -54,10 +58,15 @@ namespace Game.UI.Menu.SystemEditing
 
         [SerializeField] private GameObject SimulationSpeedPanel = null;
         [SerializeField] private GameObject SimulationTimeStepPanel = null;
+        [SerializeField] private GameObject ToggleOrbitsPanel = null;
+        [SerializeField] private GameObject ToggleSimulationPanel = null;
 
         [SerializeField] private CameraController cameraController;
 
-        
+        [SerializeField] private TMP_Text errorMessage;
+
+        [SerializeField] private Toggle trackCBody;
+
         private Shading.ShadingSettings _shadingS = null;
         private Shape.ShapeSettings _shapeS = null;
         private Physics.PhysicsSettings _physicsS = null;
@@ -65,34 +74,76 @@ namespace Game.UI.Menu.SystemEditing
         private Atmosphere.AtmosphereSettings _atmosphereS = null;
         private Ring.RingSettings _ringS = null;
 
-        private OrbitDisplay _orbitDisplay;
+        private cBodiesSimulation _cBodiesSimulation;
 
-        public void EnableSimulationControls(bool drawOrbits)
+        private FakePlayMode _fakePlayMode;
+        
+        public void ToggleCBodyTracking(bool tracking)
         {
-            _orbitDisplay.drawOrbits = drawOrbits;
-            if (drawOrbits)
+            ToggleCBodyTracking(tracking, _currentCBodyIndex);
+        }
+
+        private void ToggleCBodyTracking(bool tracking, int index)
+        {
+            if (tracking)
             {
-                _orbitDisplay.DrawOrbits();
+                _fakePlayMode.trackCBody = true;
+                _fakePlayMode.transformToTrack = CBodyPreviews[index].cBody.transform;
+                _fakePlayMode.trackedCBodyIndex = index;
+
+                _cBodiesSimulation.relativeToBody = true;
+                _cBodiesSimulation.centralBody = CBodyPreviews[index].cBody;
+                _cBodiesSimulation.centralBodyIndex = index;
             }
             else
             {
-                _orbitDisplay.HideOrbits();
+                _fakePlayMode.trackCBody = false;
+                _fakePlayMode.transformToTrack = null;
+                _fakePlayMode.trackedCBodyIndex = -1;
+
+                _cBodiesSimulation.relativeToBody = false;
+                _cBodiesSimulation.centralBody = null;
+                _cBodiesSimulation.centralBodyIndex = -1;
+            }
+        }
+        
+        
+        public void ToggleSimulation(bool toggleSimulation)
+        {
+            _cBodiesSimulation.simulating = toggleSimulation;
+            if (toggleSimulation)
+            {
+                ShowPanel(4);
+                _cBodiesSimulation.StartSimulation();
+            }
+            else
+            {
+                ShowPanel(0);
+                OverlayPanel(4, true);
+                _cBodiesSimulation.StopSimulation();
             }
             
-            SimulationSpeedPanel.SetActive(drawOrbits);
-            SimulationSpeedPanel.GetComponentInChildren<Slider>().value = _orbitDisplay.simulationSpeed;
-            SimulationTimeStepPanel.SetActive(drawOrbits);
-            SimulationTimeStepPanel.GetComponentInChildren<Slider>().value = _orbitDisplay.timeStep;
+            SimulationSpeedPanel.SetActive(toggleSimulation);
+            SimulationSpeedPanel.GetComponentInChildren<Slider>().value = _cBodiesSimulation.simulationSpeed;
+            SimulationTimeStepPanel.SetActive(toggleSimulation);
+            SimulationTimeStepPanel.GetComponentInChildren<Slider>().value = _cBodiesSimulation.timeStep;
+            ToggleOrbitsPanel.SetActive(toggleSimulation);
+            ToggleOrbitsPanel.GetComponentInChildren<Toggle>().isOn = _cBodiesSimulation.showOrbits;
+        }
+
+        public void ShowOrbits(bool show)
+        {
+            _cBodiesSimulation.showOrbits = show;
         }
 
         public void SetSimulationSpeed(float simulationSpeed)
         {
-            _orbitDisplay.simulationSpeed = (int)simulationSpeed;
+            _cBodiesSimulation.simulationSpeed = (int)simulationSpeed;
         }
 
         public void SetSimulationTimeStep(float simulationTimeStep)
         {
-            _orbitDisplay.timeStep = simulationTimeStep;
+            _cBodiesSimulation.timeStep = simulationTimeStep;
         }
         
         private void Start()
@@ -100,8 +151,10 @@ namespace Game.UI.Menu.SystemEditing
             // load saved CBodies
             var (systemToLoad, isNew) = GameManager.Instance.GetSystemToLoad();
             // Find orbit display, if any
-            _orbitDisplay = FindObjectOfType<OrbitDisplay>();
-            if (_orbitDisplay) _orbitDisplay.systemEditingMenu = this;
+            _cBodiesSimulation = FindObjectOfType<cBodiesSimulation>();
+            if (_cBodiesSimulation) _cBodiesSimulation.systemEditingMenu = this;
+
+            _fakePlayMode = FindObjectOfType<FakePlayMode>();
             
             // todo: REMOVE FROM BUILD
             // systemToLoad is null if game started from editing menu, otherwise always not null
@@ -161,10 +214,9 @@ namespace Game.UI.Menu.SystemEditing
             ssc.cameraToTrack = GameManager.Instance.GetMainCamera().transform;
             ssc.trackCamera = false;
             
-            _orbitDisplay = FindObjectOfType<OrbitDisplay>();
-            if (!_orbitDisplay) return;
-            _orbitDisplay.centralBody = CBodyPreviews[0].cBody;
-            _orbitDisplay.relativeToBody = true;
+            
+            if (!_cBodiesSimulation) return;
+            ToggleCBodyTracking(true, 0); // set central sun as reference cBody for orbits and exploration 
         }
 
         private void SetSystemName(string sysName)
@@ -189,10 +241,16 @@ namespace Game.UI.Menu.SystemEditing
                 }
             }
             else
-            {
-                // todo make a visual message
-                Debug.LogError("Too many elements");
+            { 
+                var error = "Cannot add more than " + maxCBodyElements + " cBodies";
+                errorMessage.text = error;
+                OverlayPanel(5, true);
             }
+        }
+
+        public void CloseErrorMessage()
+        {
+            OverlayPanel(5, false);
         }
 
         private void OpenCBodyTypeSelection()
@@ -208,11 +266,12 @@ namespace Game.UI.Menu.SystemEditing
             
             CreateCBodyAndPreview();
 
-            SelectCurrentCBody(); 
-            
             FetchCurrentSettings();
             
-            OpenAppearanceContextualMenu(true);
+            SelectCurrentCBody(); 
+            
+            if(!_cBodiesSimulation.simulating)
+                OpenAppearanceContextualMenu(true);
         }
 
         private void CreateCBodyAndPreview()
@@ -223,7 +282,7 @@ namespace Game.UI.Menu.SystemEditing
             CBodySettings cBodySettings = GetCurrentCBodySettings();
             preview.cBody.cBodyGenerator.cBodySettings = cBodySettings;
             cBodySettings.Subscribe(preview.cBody.cBodyGenerator);
-            if(_orbitDisplay) cBodySettings.Subscribe(_orbitDisplay);
+            if(_cBodiesSimulation) cBodySettings.Subscribe(_cBodiesSimulation);
 
             preview.selectButton.onClick.AddListener(() => OpenPhysicsContextualMenu(_systemSettings.cBodiesSettings.IndexOf(cBodySettings)));
             preview.velocityArrow.onDrag.AddListener(UpdateInitialVelocity);
@@ -240,6 +299,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             // avoid unwanted clicks
             if (cameraController.isDragging) return;
+            if (_cBodiesSimulation.simulating) return;
             
             _currentCBodyIndex = currentCBodyIndex;
             
@@ -253,10 +313,18 @@ namespace Game.UI.Menu.SystemEditing
 
             // set gravity and radius
             UpdateContextualSliders();
+            
+            // set tracking toggle 
+            trackCBody.SetIsOnWithoutNotify(
+                _fakePlayMode.trackCBody && 
+                _fakePlayMode.trackedCBodyIndex == _currentCBodyIndex && 
+                _cBodiesSimulation.relativeToBody && 
+                _cBodiesSimulation.centralBodyIndex == _currentCBodyIndex);
 
-            var isNotStar = GetCurrentCBodySettings().cBodyType != CBodySettings.CBodyType.Star;
-            speedPanel.SetActive(isNotStar);
-            deleteButton.SetActive(isNotStar);
+            // var isNotStar = GetCurrentCBodySettings().cBodyType != CBodySettings.CBodyType.Star;
+            // speedPanel.SetActive(isNotStar);
+            // rotationPanel.SetActive(isNotStar);
+            // deleteButton.SetActive(isNotStar);
             
             ShowPanel(1);
         }
@@ -344,6 +412,14 @@ namespace Game.UI.Menu.SystemEditing
             SetArrowHeadPosition();
         }
 
+        public void SetCBodyRotation()
+        {
+            _physicsS.initialRotationSpeed = rotationSlider.value * (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed) + 
+                                          _physicsS.minRotationSpeed;
+            rotationValue.text = _physicsS.initialRotationSpeed.ToString("0.0");
+            SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
+        }
+
         public void OpenAppearanceContextualMenu(bool fromCreation)
         {
             Vector3 pos = CBodyPreviews[_currentCBodyIndex].cBody.transform.position;
@@ -390,21 +466,39 @@ namespace Game.UI.Menu.SystemEditing
 
         public void CloseAllMenu()
         {
+            if(_cBodiesSimulation.simulating) return;
+            
             cameraController.FreeCam();
 
             EnableCBodyButtons();
             DeselectCurrentCBody();
+
             ShowPanel(0);
+            // if (_cBodiesSimulation.simulating)
+            // {
+            //     ToggleSimulationPanel.GetComponentInChildren<Toggle>().isOn = false;
+            //     ToggleSimulation(false);
+            // }
+            OverlayPanel(4, true);
         }
 
         public void DeleteCBody()
         {
             DestroyCurrentCBody();
             
-            if(_orbitDisplay) _orbitDisplay.OnPhysicsUpdate();
+            if(_cBodiesSimulation) _cBodiesSimulation.OnPhysicsUpdate();
+
+            if (_fakePlayMode.trackCBody && 
+                _fakePlayMode.trackedCBodyIndex == _currentCBodyIndex && 
+                _cBodiesSimulation.relativeToBody && 
+                _cBodiesSimulation.centralBodyIndex == _currentCBodyIndex)
+            {
+                ToggleCBodyTracking(false);
+            }
             
             _currentCBodyIndex = -1;
             ShowPanel(0);
+            OverlayPanel(4, true);
         }
 
         public void SetCBodyName(string cbName)
@@ -513,6 +607,12 @@ namespace Game.UI.Menu.SystemEditing
 
         private void SelectCurrentCBody()
         {
+            if (_cBodiesSimulation.simulating)
+            {
+                DeselectCurrentCBody();
+                CloseAllMenu();
+                return;
+            }
             for (var i = 0; i < CBodyPreviews.Count; i++)
             {
                 if (i == _currentCBodyIndex)
@@ -522,7 +622,7 @@ namespace Game.UI.Menu.SystemEditing
             }
         }
 
-        private void DeselectCurrentCBody()
+        public void DeselectCurrentCBody()
         {
             if (_currentCBodyIndex != -1)
             {
@@ -575,6 +675,7 @@ namespace Game.UI.Menu.SystemEditing
             radiusValue.text = _physicsS.radius.ToString("0.0");
             gravityValue.text = _physicsS.surfaceGravity.ToString("0.0");
             speedValue.text = _physicsS.initialVelocity.y.ToString("0.0");
+            rotationValue.text = _physicsS.initialRotationSpeed.ToString("0.0");
             
             var radius = (_physicsS.radius - _physicsS.minRadius) /
                          (_physicsS.maxRadius - _physicsS.minRadius);
@@ -582,10 +683,13 @@ namespace Game.UI.Menu.SystemEditing
                     (_physicsS.maxSurfaceGravity - _physicsS.minSurfaceGravity);
             var speed = (_physicsS.initialVelocity.y - _physicsS.minSpeed) /
                         (_physicsS.maxSpeed - _physicsS.minSpeed);
+            var rotation= (_physicsS.initialRotationSpeed - _physicsS.minRotationSpeed) /
+                       (_physicsS.maxRotationSpeed - _physicsS.minRotationSpeed);
             
             radiusSlider.SetValueWithoutNotify(radius);
             gravitySlider.SetValueWithoutNotify(gravity);
             speedSlider.SetValueWithoutNotify(speed);
+            rotationSlider.SetValueWithoutNotify(rotation);
         }
         
         private CBodySettings GetCurrentCBodySettings()

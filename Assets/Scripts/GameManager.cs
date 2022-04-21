@@ -1,6 +1,7 @@
 // precise frame rate from:
 // https://blog.unity.com/technology/precise-framerates-in-unity
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UnityEngine;
@@ -32,7 +33,7 @@ public class GameManager : MonoBehaviour
     public AudioTriggerer ExplorationMusicTriggerer;
 
     public float globalAudioVolume = 0.7f;
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(Instance);
             JsonConvert.DefaultSettings().Converters.Add(new ColorConverter());
+
+            globalAudioVolume = PlayerPrefs.GetFloat("volume", 0.7f);
         }
         else
         {
@@ -53,7 +56,7 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 9999;
         _currentFrameTime = Time.realtimeSinceStartup;
         StartCoroutine(nameof(WaitForNextFrame));
-        
+
         MainMenuMusicTriggerer.PlayAudioClip();
     }
 
@@ -114,5 +117,10 @@ public class GameManager : MonoBehaviour
         }
         
         SceneManager.LoadScene(index, LoadSceneMode.Single);
+    }
+
+    private void OnDestroy()
+    {
+        PlayerPrefs.SetFloat("volume", globalAudioVolume);
     }
 }

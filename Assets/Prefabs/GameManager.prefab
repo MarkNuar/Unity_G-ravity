@@ -99,6 +99,7 @@ MonoBehaviour:
   MainMenuMusicTriggerer: {fileID: 8770757847676782669}
   EditingMusicTriggerer: {fileID: 731161792759636261}
   ExplorationMusicTriggerer: {fileID: 731161792759636261}
+  globalAudioVolume: 0.7
 --- !u!114 &7400218977926392041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +128,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.7
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
