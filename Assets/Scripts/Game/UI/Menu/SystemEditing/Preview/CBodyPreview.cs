@@ -12,7 +12,6 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public Canvas buttonCanvas;
         public Button selectButton;
         
-        public CBodyArrow velocityArrow;
         public CBodyDrag positionDrag;
 
         public TMP_Text cBodyName;
@@ -33,41 +32,29 @@ namespace Game.UI.Menu.SystemEditing.Preview
         public void SelectCBody()
         {
             Selected = true;
-            //if (cBody.cBodyGenerator.cBodySettings.cBodyType != CBodySettings.CBodyType.Star)
-            {
-                velocityArrow.arrowHead.enabled = false;
-                velocityArrow.arrowBody.enabled = false;
-                positionDrag.dragHandle.enabled = true;
-                
-                cBodyPosition.enabled = true;
-                cBodyPositionBGD.enabled = true;
-            }
+            
+            positionDrag.dragHandle.enabled = true;
+            cBodyPosition.enabled = true;
+            cBodyPositionBGD.enabled = true;
+            
             // Make it not clickable
             buttonCanvas.sortingOrder = 0;
         }
 
-        public void HideSelectionHUD()
+        public void ToggleSelectionHUD(bool show)
         {
-            velocityArrow.arrowHead.enabled = false;
-            velocityArrow.arrowBody.enabled = false;
-            positionDrag.dragHandle.enabled = false;
-            
-            cBodyName.enabled = false;
-            
-            cBodyPosition.enabled = false;
-            cBodyPositionBGD.enabled = false;
+            positionDrag.dragHandle.enabled = show;
+            cBodyName.enabled = show;
+            cBodyPosition.enabled = show;
+            cBodyPositionBGD.enabled = show;
         }
 
         public void DeselectCBody()
         {
             Selected = false;
             
-            velocityArrow.arrowHead.enabled = false;
-            velocityArrow.arrowBody.enabled = false;
             positionDrag.dragHandle.enabled = false;
-            
             cBodyName.enabled = true;
-            
             cBodyPosition.enabled = false;
             cBodyPositionBGD.enabled = false;
             
@@ -79,6 +66,9 @@ namespace Game.UI.Menu.SystemEditing.Preview
         {
             selectButton.interactable = showHUD;
             cBodyName.enabled = showHUD;
+            
+            if(Selected)
+                ToggleSelectionHUD(showHUD);
         }
     }
 }

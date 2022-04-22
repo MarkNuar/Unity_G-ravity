@@ -23,3 +23,6 @@ MonoBehaviour:
     minSpeed: 0
     maxSpeed: 20
     initialVelocity: {x: 0, y: 10, z: 0}
+    minRotationSpeed: 0
+    maxRotationSpeed: 10
+    initialRotationSpeed: 3

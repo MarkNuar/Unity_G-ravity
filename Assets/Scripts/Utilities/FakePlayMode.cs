@@ -17,6 +17,8 @@ namespace Utilities
         public GameObject editMenu;
         public GameObject pauseMenu;
         public GameObject starView;
+
+        public SystemEditingMenu systemEditingMenu;
         
         private Vector3 _storedPos;
         private Quaternion _storedRot;
@@ -40,6 +42,8 @@ namespace Utilities
             {
                 if (!_isPlaying)
                 {
+                    systemEditingMenu.CloseAllMenu();
+                    
                     CBodyPreview[] previews = FindObjectsOfType<CBodyPreview>();
                     foreach (var preview in previews)
                     {

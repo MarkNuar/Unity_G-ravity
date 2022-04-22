@@ -43,10 +43,7 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private TMP_Text speedValue = null;
         [SerializeField] private Slider rotationSlider = null;
         [SerializeField] private TMP_Text rotationValue = null;
-        [SerializeField] private GameObject speedPanel = null;
-        [SerializeField] private GameObject rotationPanel = null;
-        [SerializeField] private GameObject deleteButton = null;
-        
+
         [SerializeField] private TMP_Text txtSystemName = null;
         [SerializeField] private TMP_InputField iBodyName = null;
         
@@ -59,7 +56,6 @@ namespace Game.UI.Menu.SystemEditing
         [SerializeField] private GameObject SimulationSpeedPanel = null;
         [SerializeField] private GameObject SimulationTimeStepPanel = null;
         [SerializeField] private GameObject ToggleOrbitsPanel = null;
-        [SerializeField] private GameObject ToggleSimulationPanel = null;
 
         [SerializeField] private CameraController cameraController;
 
@@ -285,7 +281,6 @@ namespace Game.UI.Menu.SystemEditing
             if(_cBodiesSimulation) cBodySettings.Subscribe(_cBodiesSimulation);
 
             preview.selectButton.onClick.AddListener(() => OpenPhysicsContextualMenu(_systemSettings.cBodiesSettings.IndexOf(cBodySettings)));
-            preview.velocityArrow.onDrag.AddListener(UpdateInitialVelocity);
             preview.positionDrag.onDrag.AddListener(UpdateInitialPosition);
 
             preview.cBodyName.text = cBodySettings.cBodyName;
@@ -309,7 +304,6 @@ namespace Game.UI.Menu.SystemEditing
 
             // Set cBody HUD position
             SetDragHandlePosition();
-            SetArrowHeadPosition();
 
             // set gravity and radius
             UpdateContextualSliders();
@@ -409,7 +403,6 @@ namespace Game.UI.Menu.SystemEditing
                                           _physicsS.minSpeed;
             speedValue.text = _physicsS.initialVelocity.y.ToString("0.0");
             SetCurrentSettings(CBodyGenerator.UpdateType.Physics);
-            SetArrowHeadPosition();
         }
 
         public void SetCBodyRotation()
@@ -635,7 +628,7 @@ namespace Game.UI.Menu.SystemEditing
         {
             if (_currentCBodyIndex != -1)
             {
-                CBodyPreviews[_currentCBodyIndex].HideSelectionHUD();
+                CBodyPreviews[_currentCBodyIndex].ToggleSelectionHUD(false);
             }
         }
 
@@ -653,15 +646,6 @@ namespace Game.UI.Menu.SystemEditing
             {
                 help.selectButton.enabled = true;
             }
-        }
-
-        private void SetArrowHeadPosition()
-        {
-            var percent = 
-                (_physicsS.initialVelocity.magnitude - _physicsS.minSpeed) /
-                          (_physicsS.maxSpeed - _physicsS.minSpeed);
-            CBodyPreviews[_currentCBodyIndex].velocityArrow.SetArrowHeadPosition(
-                _physicsS.initialVelocity.normalized,percent);
         }
 
         private void SetDragHandlePosition()

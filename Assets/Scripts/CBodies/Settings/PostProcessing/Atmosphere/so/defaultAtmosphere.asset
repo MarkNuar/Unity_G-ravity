@@ -16,7 +16,7 @@ MonoBehaviour:
     randomizeShading: 0
     shadingSeed: 0
     realisticColors: 1
-    hasAtmosphere: 1
+    hasAtmosphere: 0
     textureSize: 256
     inScatteringPoints: 10
     opticalDepthPoints: 5
